@@ -1,0 +1,37 @@
+{
+  "name": "Primanota Cassa",
+  "short_name": "Primanota",
+  "description": "Invio file a Primanota di cassa",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#1c2b39",
+  "theme_color": "#1c2b39",
+  "icons": [
+    {
+      "src": "gla_logo_color.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any"
+    },
+    {
+      "src": "gla_logo_color.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "maskable"
+    },
+    {
+      "src": "gla_logo_color.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any"
+    },
+    {
+      "src": "gla_logo_color.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "maskable"
+    }
+  ]
+}

@@ -1,0 +1,1119 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Primanota Cassa</title>
+<meta name="theme-color" content="#1c2b39" />
+<link rel="manifest" href="manifest.json" />
+<link rel="icon" href="gla_logo_color.jpg" />
+<link rel="apple-touch-icon" href="gla_logo_color.jpg" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --ink:#1c2b39;
+    --ink-soft:#3c4c5c;
+    --paper:#f7f5ef;
+    --paper-deep:#efece2;
+    --brass:#ab8b3c;
+    --brass-dark:#8a6f2c;
+    --line:#d8d3c4;
+    --success:#2f6f4e;
+    --success-bg:#e8f1ec;
+    --danger:#a23b32;
+    --danger-bg:#f7e9e7;
+    --muted:#6b7280;
+    --radius:10px;
+    --sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --mono: 'IBM Plex Mono', 'SFMono-Regular', Consolas, monospace;
+  }
+
+  *{box-sizing:border-box;}
+
+  .hidden{ display:none !important; }
+
+  body{
+    margin:0;
+    min-height:100vh;
+    background:
+      radial-gradient(circle at 15% 0%, #24374a 0%, transparent 45%),
+      var(--ink);
+    font-family:var(--sans);
+    color:var(--ink);
+    display:flex;
+    justify-content:center;
+    padding:32px 16px 64px;
+  }
+
+  .app{
+    width:100%;
+    max-width:480px;
+  }
+
+  .brand{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:12px;
+    margin-bottom:22px;
+    padding:0 4px;
+  }
+  .brand-mark{
+    height:44px;
+    border-radius:9px;
+    background:#fff;
+    display:flex;align-items:center;justify-content:center;
+    padding:4px 10px;
+    flex-shrink:0;
+  }
+  .brand-mark img{
+    height:100%;
+    width:auto;
+    display:block;
+  }
+  .brand-text{
+    text-align:center;
+  }
+  .brand-text h1{
+    font-size:17px;margin:0;color:#f7f5ef;letter-spacing:.2px;font-weight:700;
+  }
+  .brand-text p{
+    margin:2px 0 0;font-size:12px;color:#9fb0be;
+  }
+
+  .card{
+    background:var(--paper);
+    border-radius:var(--radius);
+    padding:24px;
+    box-shadow:0 18px 40px -18px rgba(0,0,0,.55);
+  }
+
+  .card + .card{
+    margin-top:16px;
+  }
+
+  .field{
+    margin-bottom:18px;
+  }
+  .field label{
+    display:block;
+    font-size:12px;
+    font-weight:600;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    margin-bottom:8px;
+  }
+
+  .choose-row{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    margin-bottom:8px;
+  }
+
+  .btn-outline{
+    background:transparent;
+    border:1px solid var(--ink-soft);
+    color:var(--ink);
+    padding:0 16px;
+    border-radius:8px;
+    font-size:13px;
+    font-weight:700;
+    white-space:nowrap;
+  }
+  .btn-outline:hover:not(:disabled){
+    border-color:var(--brass);
+    color:var(--ink);
+  }
+  .btn-outline:disabled{
+    opacity:.7;
+    cursor:not-allowed;
+  }
+
+  .file-row{
+    display:flex;
+    gap:10px;
+  }
+  .file-name{
+    flex:1;
+    display:flex;
+    align-items:center;
+    padding:0 12px;
+    border:1px dashed var(--line);
+    border-radius:8px;
+    font-size:13px;
+    color:var(--muted);
+    background:#fff;
+    min-width:0;
+  }
+  .file-name span{
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  }
+  .file-name.filled{
+    color:var(--ink);
+    border-style:solid;
+    border-color:var(--brass);
+  }
+
+  .text-input{
+    width:100%;
+    padding:11px 12px;
+    border:1px solid var(--line);
+    border-radius:8px;
+    font-family:var(--sans);
+    font-size:13.5px;
+    color:var(--ink);
+    background:#fff;
+  }
+  .text-input:focus{
+    outline:none;
+    border-color:var(--brass);
+  }
+
+  input[type="file"]{ display:none; }
+
+  button{
+    font-family:var(--sans);
+    cursor:pointer;
+    border:none;
+  }
+
+  .btn-choose{
+    background:var(--ink);
+    color:#fff;
+    padding:0 16px;
+    border-radius:8px;
+    font-size:13px;
+    font-weight:600;
+    white-space:nowrap;
+  }
+  .btn-choose:hover{ background:var(--ink-soft); }
+
+  .btn-primary{
+    width:100%;
+    background:var(--brass);
+    color:var(--ink);
+    padding:13px 16px;
+    border-radius:8px;
+    font-size:14px;
+    font-weight:700;
+    letter-spacing:.02em;
+    transition:transform .12s ease, background .15s ease;
+  }
+  .btn-primary:hover:not(:disabled){ background:var(--brass-dark); }
+  .btn-primary:active:not(:disabled){ transform:scale(.99); }
+  .btn-primary:disabled{
+    background:#cdc6ac;
+    color:#8b8672;
+    cursor:not-allowed;
+  }
+
+  .btn-primary .spinner{
+    display:inline-block;
+    width:14px;height:14px;
+    border:2px solid rgba(28,43,57,.35);
+    border-top-color:var(--ink);
+    border-radius:50%;
+    margin-right:8px;
+    vertical-align:-2px;
+    animation:spin .7s linear infinite;
+  }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+
+  .login-error{
+    background:var(--danger-bg);
+    color:var(--danger);
+    border-radius:8px;
+    padding:10px 12px;
+    font-size:13px;
+    font-weight:600;
+    margin-bottom:14px;
+    white-space:pre-wrap;
+    word-break:break-word;
+    max-height:260px;
+    overflow-y:auto;
+    font-family:var(--mono);
+  }
+
+  .login-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:16px;
+  }
+  .login-head h2{
+    margin:0;
+    font-size:15px;
+    color:var(--ink);
+  }
+  .login-head-actions{
+    display:flex;
+    align-items:center;
+    gap:14px;
+  }
+  .menu-buttons{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+  .btn-link{
+    background:transparent;
+    border:none;
+    color:var(--ink-soft);
+    font-size:12.5px;
+    font-weight:600;
+    text-decoration:underline;
+    padding:0;
+  }
+  .btn-link:hover{ color:var(--brass-dark); }
+
+  .result-wrap{
+    margin-top:22px;
+  }
+  .result-wrap.hidden{ display:none; }
+
+  .receipt{
+    position:relative;
+    background:#fffefb;
+    border-radius:2px;
+    padding:20px 18px 22px;
+    box-shadow:0 10px 24px -14px rgba(0,0,0,.4);
+  }
+  .receipt::before{
+    content:"";
+    position:absolute;
+    top:-6px; left:0; right:0; height:12px;
+    background-image: radial-gradient(circle, var(--ink) 4px, transparent 4.5px);
+    background-position: 0 0;
+    background-size: 16px 12px;
+    background-repeat: repeat-x;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 50%, black 50%);
+    mask-image: linear-gradient(to bottom, transparent 50%, black 50%);
+  }
+  .receipt pre{
+    font-family:var(--mono);
+    font-size:13px;
+    line-height:1.6;
+    white-space:pre-wrap;
+    word-break:break-word;
+    margin:0;
+    color:var(--ink);
+  }
+
+  .downloads{
+    display:flex;
+    gap:10px;
+    margin-top:16px;
+  }
+  .btn-ghost{
+    flex:1;
+    background:transparent;
+    border:1px solid var(--line);
+    color:var(--ink-soft);
+    font-size:12.5px;
+    font-weight:600;
+    padding:10px 8px;
+    border-radius:8px;
+  }
+  .btn-ghost:hover:not(:disabled){
+    border-color:var(--brass);
+    color:var(--ink);
+  }
+  .btn-ghost:disabled{
+    opacity:.45;
+    cursor:not-allowed;
+  }
+
+  .panels{
+    margin-top:16px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .panel{
+    border:1px solid var(--line);
+    border-radius:8px;
+    background:#fffefb;
+    overflow:hidden;
+  }
+  .panel summary{
+    list-style:none;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    padding:10px 14px;
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:.03em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    background:var(--paper-deep);
+  }
+  .panel summary::-webkit-details-marker{ display:none; }
+  .panel summary .chev{
+    font-size:11px;
+    color:var(--brass-dark);
+    transition:transform .15s ease;
+  }
+  .panel[open] summary .chev{ transform:rotate(90deg); }
+  .panel pre{
+    margin:0;
+    padding:14px;
+    font-family:var(--mono);
+    font-size:11.5px;
+    line-height:1.55;
+    white-space:pre-wrap;
+    word-break:break-all;
+    max-height:220px;
+    overflow-y:auto;
+    color:var(--ink);
+  }
+  .panel .empty{
+    color:var(--muted);
+    font-style:italic;
+  }
+
+  .foot-note{
+    text-align:center;
+    font-size:11px;
+    color:#8ea0ae;
+    margin-top:18px;
+  }
+
+  .install-card{
+    margin-top:16px;
+    background:var(--paper);
+    border-radius:var(--radius);
+    overflow:hidden;
+  }
+  .install-card summary{
+    list-style:none;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    padding:14px 18px;
+    font-size:13px;
+    font-weight:700;
+    color:var(--ink);
+  }
+  .install-card summary::-webkit-details-marker{ display:none; }
+  .install-card summary .chev{
+    font-size:11px;
+    color:var(--brass-dark);
+    transition:transform .15s ease;
+  }
+  .install-card[open] summary .chev{ transform:rotate(90deg); }
+  .install-body{
+    padding:0 18px 18px;
+  }
+  .install-os{
+    margin-top:10px;
+  }
+  .install-os h3{
+    font-size:12px;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+    color:var(--ink-soft);
+    margin:0 0 8px;
+  }
+  .install-os ol{
+    margin:0;
+    padding-left:20px;
+    font-size:13px;
+    line-height:1.6;
+    color:var(--ink);
+  }
+  .install-os li{
+    margin-bottom:4px;
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <div class="brand">
+    <div class="brand-mark"><img src="gla_logo_color.jpg" alt="Gruppo Lucchi Associati" /></div>
+    <div class="brand-text">
+      <h1>WIGEST 5.5</h1>
+      <p>Sistema Informativo Gestionale sul Web</p>
+    </div>
+  </div>
+
+  <!-- LOGIN VIEW -->
+  <div id="loginView">
+    <div class="card">
+      <div class="login-head"><h2>Accedi</h2></div>
+      <div id="loginError" class="login-error hidden">Credenziali errate</div>
+      <div class="field">
+        <label for="userInput">Utente</label>
+        <input type="text" id="userInput" class="text-input" placeholder="Nome utente" autocomplete="username" autocapitalize="off" autocorrect="off" spellcheck="false" />
+      </div>
+      <div class="field">
+        <label for="passInput">Password</label>
+        <input type="password" id="passInput" class="text-input" placeholder="Password" autocomplete="current-password" />
+      </div>
+      <button type="button" class="btn-primary" id="loginBtn">Accedi</button>
+      <div class="downloads">
+        <button type="button" class="btn-ghost" id="toggleLoginReqBtn" disabled>Visualizza chiamata</button>
+        <button type="button" class="btn-ghost" id="toggleLoginRespBtn" disabled>Visualizza risposta</button>
+      </div>
+      <div class="panels">
+        <div class="panel hidden" id="loginReqPanel">
+          <pre id="loginReqPanelText"></pre>
+        </div>
+        <div class="panel hidden" id="loginRespPanel">
+          <pre id="loginRespPanelText"></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MENU VIEW (visible dopo il login, prima di scegliere un'applicazione) -->
+  <div id="menuView" class="hidden">
+    <div class="card">
+      <div class="login-head">
+        <h2 id="menuUserLabel">Utente</h2>
+        <button type="button" class="btn-link" id="menuLogoutBtn">Cambia utente</button>
+      </div>
+      <div class="menu-buttons">
+        <button type="button" class="btn-primary hidden" id="btnScontrini">Inserimento Scontrini</button>
+        <button type="button" class="btn-primary hidden" id="btnCliforupdate">Aggiornamento clienti/fornitori</button>
+      </div>
+      <div id="menuEmpty" class="login-error hidden">Nessuna applicazione disponibile per questo utente.</div>
+    </div>
+  </div>
+
+  <!-- APP VIEW (visible only after successful login) -->
+  <div id="appView" class="hidden">
+    <div class="card">
+      <div class="login-head">
+        <h2 id="loggedUserLabel">Utente</h2>
+        <div class="login-head-actions">
+          <button type="button" class="btn-link" id="backToMenuBtn">Menu</button>
+          <button type="button" class="btn-link" id="logoutBtn">Cambia utente</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="fileInput">File da caricare</label>
+        <div class="choose-row">
+          <button type="button" class="btn-choose" id="chooseBtn">Scegli file</button>
+          <button type="button" class="btn-choose" id="cameraBtn">Scatta foto</button>
+        </div>
+        <div class="file-row">
+          <div class="file-name" id="fileNameBox"><span id="fileNameText">Nessun file selezionato</span></div>
+          <button type="button" class="btn-outline" id="viewFileBtn" disabled>Visualizza file caricato</button>
+        </div>
+        <input type="file" id="fileInput" />
+        <input type="file" id="cameraInput" accept="image/*" capture="environment" />
+      </div>
+
+      <div class="field">
+        <label for="descrizioneInput">Descrizione</label>
+        <input type="text" id="descrizioneInput" class="text-input" placeholder="Descrizione" />
+      </div>
+
+      <button type="button" class="btn-primary" id="sendBtn" disabled>Invia a Primanota di cassa</button>
+
+      <div class="result-wrap hidden" id="resultWrap">
+        <div class="receipt" id="receipt">
+          <pre id="receiptText"></pre>
+        </div>
+        <div class="panels">
+          <details class="panel" id="reqPanel">
+            <summary>Chiamata inviata <span class="chev">&#9656;</span></summary>
+            <pre id="reqPanelText"><span class="empty">Nessuna chiamata effettuata.</span></pre>
+          </details>
+          <details class="panel" id="respPanel">
+            <summary>Risposta ricevuta <span class="chev">&#9656;</span></summary>
+            <pre id="respPanelText"><span class="empty">Nessuna risposta ricevuta.</span></pre>
+          </details>
+        </div>
+        <div class="downloads">
+          <button type="button" class="btn-ghost" id="downloadReq" disabled>Scarica richiesta (.txt)</button>
+          <button type="button" class="btn-ghost" id="downloadResp" disabled>Scarica risposta (.txt)</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <details class="install-card">
+    <summary>Installa l'app sul telefono <span class="chev">&#9656;</span></summary>
+    <div class="install-body">
+      <div class="install-os">
+        <h3>Android (Chrome)</h3>
+        <ol>
+          <li>Apri questa pagina con Chrome.</li>
+          <li>Tocca il menu <strong>&#8942;</strong> (i tre puntini) in alto a destra.</li>
+          <li>Tocca <strong>"Aggiungi a schermata Home"</strong> (o <strong>"Installa app"</strong>, a seconda della versione di Chrome).</li>
+          <li>Conferma toccando <strong>"Aggiungi"</strong> o <strong>"Installa"</strong>.</li>
+        </ol>
+      </div>
+      <div class="install-os">
+        <h3>iPhone (Safari)</h3>
+        <ol>
+          <li>Apri questa pagina con <strong>Safari</strong> (su iPhone la funzione è disponibile solo da Safari, non da Chrome o altri browser).</li>
+          <li>Tocca l'icona di condivisione <strong>&#8593;&#9634;</strong> in basso al centro (o in alto, secondo il modello).</li>
+          <li>Scorri l'elenco e tocca <strong>"Aggiungi alla schermata Home"</strong>.</li>
+          <li>Tocca <strong>"Aggiungi"</strong> in alto a destra.</li>
+        </ol>
+      </div>
+    </div>
+  </details>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  const WS_LOGIN_URL = "https://www.lucchi.com:448/wigest617/servlet/bgla_chkpwd_ai_ws";
+  const WS_URL = "https://www.lucchi.com:448/wigest617/servlet/bapp_cassa_ws";
+
+  // ---- shared helpers ----------------------------------------------------
+
+  function escapeXml(str){
+    return String(str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  function decodeEntitiesOnce(str){
+    const ta = document.createElement("textarea");
+    ta.innerHTML = str;
+    return ta.value;
+  }
+
+  function deepDecode(str){
+    if (!str) return str;
+    let prev = str;
+    for (let i = 0; i < 5; i++){
+      const next = decodeEntitiesOnce(prev);
+      if (next === prev) break;
+      prev = next;
+    }
+    return prev;
+  }
+
+  function findByLocalName(root, name){
+    if (!root) return null;
+    const all = root.getElementsByTagName("*");
+    const target = name.toLowerCase();
+    for (let i = 0; i < all.length; i++){
+      const ln = all[i].localName || all[i].nodeName;
+      if (ln && ln.toLowerCase() === target) return all[i];
+    }
+    return null;
+  }
+
+  function findAllByLocalName(root, name){
+    if (!root) return [];
+    const all = root.getElementsByTagName("*");
+    const target = name.toLowerCase();
+    const results = [];
+    for (let i = 0; i < all.length; i++){
+      const ln = all[i].localName || all[i].nodeName;
+      if (ln && ln.toLowerCase() === target) results.push(all[i]);
+    }
+    return results;
+  }
+
+  function textOf(el){
+    return el ? el.textContent.trim() : "";
+  }
+
+  function downloadText(filename, content){
+    const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  function networkErrorHint(err){
+    const isLikelyCors = err instanceof TypeError;
+    return isLikelyCors
+      ? "Il browser ha bloccato la chiamata prima di ricevere una risposta: quasi sempre è un problema di CORS (il server non restituisce l'header Access-Control-Allow-Origin per questa pagina) oppure di certificato/rete sulla porta 448. Apri la console del browser (F12 -> Console/Network) per il dettaglio esatto."
+      : "Errore imprevisto durante l'invio.";
+  }
+
+  // ---- LOGIN --------------------------------------------------------------
+
+  const loginView = document.getElementById("loginView");
+  const menuView = document.getElementById("menuView");
+  const appView = document.getElementById("appView");
+  const userInput = document.getElementById("userInput");
+  const passInput = document.getElementById("passInput");
+  const loginBtn = document.getElementById("loginBtn");
+  const loginError = document.getElementById("loginError");
+  const toggleLoginReqBtn = document.getElementById("toggleLoginReqBtn");
+  const toggleLoginRespBtn = document.getElementById("toggleLoginRespBtn");
+  const loginReqPanel = document.getElementById("loginReqPanel");
+  const loginRespPanel = document.getElementById("loginRespPanel");
+  const loginReqPanelText = document.getElementById("loginReqPanelText");
+  const loginRespPanelText = document.getElementById("loginRespPanelText");
+  const loggedUserLabel = document.getElementById("loggedUserLabel");
+  const logoutBtn = document.getElementById("logoutBtn");
+  const menuUserLabel = document.getElementById("menuUserLabel");
+  const menuLogoutBtn = document.getElementById("menuLogoutBtn");
+  const backToMenuBtn = document.getElementById("backToMenuBtn");
+  const btnScontrini = document.getElementById("btnScontrini");
+  const btnCliforupdate = document.getElementById("btnCliforupdate");
+  const menuEmpty = document.getElementById("menuEmpty");
+
+  let currentUserCode = null; // nrute restituito dal login, usato come p_usercassa
+  let sessionInfo = {}; // altri campi restituiti dal login (bra, sub, site, codazi, ecc.)
+
+  // listapp può arrivare come array JSON o come stringa con nomi separati
+  // da virgola/punto e virgola/pipe: normalizziamo sempre in un array di
+  // codici maiuscoli.
+  function parseListApp(value){
+    if (Array.isArray(value)){
+      return value.map((v) => String(v).trim().toUpperCase()).filter(Boolean);
+    }
+    if (value === null || value === undefined) return [];
+    return String(value)
+      .split(/[,;|]/)
+      .map((v) => v.trim().toUpperCase())
+      .filter(Boolean);
+  }
+
+  function showMenu(user, data){
+    sessionInfo = data;
+    menuUserLabel.textContent = user;
+    loggedUserLabel.textContent = user;
+
+    const apps = parseListApp(data.listapp);
+    const hasScontrini = apps.includes("SCONTRINI");
+    const hasCliforupdate = apps.includes("CLIFORUPDATE");
+
+    btnScontrini.classList.toggle("hidden", !hasScontrini);
+    btnCliforupdate.classList.toggle("hidden", !hasCliforupdate);
+    menuEmpty.classList.toggle("hidden", hasScontrini || hasCliforupdate);
+
+    loginView.classList.add("hidden");
+    appView.classList.add("hidden");
+    menuView.classList.remove("hidden");
+  }
+
+  function buildLoginEnvelope(user, pass){
+    return `<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:bgla="http://bgla_chkpwd_ai_ws.ws.localhost/">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <bgla:bgla_chkpwd_ai_ws_Run>
+         <bgla:m_UserName>ws</bgla:m_UserName>
+         <bgla:m_Password>ws_1234!</bgla:m_Password>
+         <bgla:m_Company>701</bgla:m_Company>
+         <bgla:m_Instance>SERVLET_WIGEST_AMICIGIGI_1105</bgla:m_Instance>
+         <bgla:p_Nomeutente>${escapeXml(user)}</bgla:p_Nomeutente>
+         <bgla:p_Password>${escapeXml(pass)}</bgla:p_Password>
+         <bgla:p_Site>009701</bgla:p_Site>
+      </bgla:bgla_chkpwd_ai_ws_Run>
+   </soapenv:Body>
+</soapenv:Envelope>`;
+  }
+
+  // La risposta dichiarata dal servizio è un JSON con i campi pwdok/nrute.
+  // Per sicurezza proviamo il parse diretto e, se il testo arriva
+  // "sporco" (spazi, BOM, avvolto in altro markup), estraiamo la prima
+  // sottostringa {...} e riproviamo.
+  function parseLoginResponse(rawText){
+    const cleaned = deepDecode(rawText).trim();
+    try {
+      return JSON.parse(cleaned);
+    } catch (e){
+      const match = cleaned.match(/\{[\s\S]*\}/);
+      if (match){
+        try { return JSON.parse(match[0]); } catch (e2) { /* fall through */ }
+      }
+    }
+    throw new Error("Risposta del servizio non riconosciuta come JSON.");
+  }
+
+  function isTrueValue(v){
+    return v === true || v === "true" || v === 1 || v === "1";
+  }
+
+  function setLoginBusy(busy){
+    loginBtn.disabled = busy;
+    loginBtn.innerHTML = busy ? '<span class="spinner"></span>Verifica in corso&hellip;' : "Accedi";
+  }
+
+  function showLoginError(message){
+    loginError.textContent = message;
+    loginError.classList.remove("hidden");
+  }
+
+  function hideLoginError(){
+    loginError.classList.add("hidden");
+  }
+
+  function setLoginReqPanel(text){
+    loginReqPanelText.textContent = text;
+    toggleLoginReqBtn.disabled = false;
+  }
+
+  function setLoginRespPanel(text){
+    loginRespPanelText.textContent = text || "(risposta vuota)";
+    toggleLoginRespBtn.disabled = false;
+  }
+
+  toggleLoginReqBtn.addEventListener("click", () => {
+    loginReqPanel.classList.toggle("hidden");
+  });
+  toggleLoginRespBtn.addEventListener("click", () => {
+    loginRespPanel.classList.toggle("hidden");
+  });
+
+  async function doLogin(){
+    const user = userInput.value.trim();
+    const pass = passInput.value;
+
+    if (!user || !pass){
+      showLoginError("Inserisci utente e password.");
+      return;
+    }
+
+    hideLoginError();
+    setLoginBusy(true);
+
+    try {
+      const requestXML = buildLoginEnvelope(user, pass);
+      setLoginReqPanel(requestXML);
+
+      const response = await fetch(WS_LOGIN_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/xml; charset=utf-8" },
+        body: requestXML
+      });
+
+      const responseText = await response.text();
+      setLoginRespPanel(deepDecode(responseText));
+
+      if (!response.ok){
+        const bodyPreview = deepDecode(responseText).trim();
+        showLoginError(`Errore HTTP ${response.status} ${response.statusText}.` + (bodyPreview ? `\n\n${bodyPreview}` : ""));
+        return;
+      }
+
+      const data = parseLoginResponse(responseText);
+
+      if (!isTrueValue(data.pwdok)){
+        showLoginError("Credenziali errate");
+        passInput.value = "";
+        passInput.focus();
+        return;
+      }
+
+      currentUserCode = data.nrute;
+      showMenu(user, data);
+      passInput.value = "";
+    } catch (err){
+      showLoginError("Chiamata al servizio non riuscita. " + (err && err.message ? err.message : String(err)) + " " + networkErrorHint(err));
+      setLoginRespPanel("Nessuna risposta ricevuta (chiamata fallita).\n\n" + (err && err.message ? err.message : String(err)));
+    } finally {
+      setLoginBusy(false);
+    }
+  }
+
+  loginBtn.addEventListener("click", doLogin);
+  passInput.addEventListener("keydown", (e) => { if (e.key === "Enter") doLogin(); });
+  userInput.addEventListener("keydown", (e) => { if (e.key === "Enter") passInput.focus(); });
+
+  function resetToLogin(){
+    currentUserCode = null;
+    sessionInfo = {};
+    menuView.classList.add("hidden");
+    appView.classList.add("hidden");
+    loginView.classList.remove("hidden");
+    userInput.value = "";
+    passInput.value = "";
+    hideLoginError();
+    handleFileSelected(null);
+    descrizioneInput.value = "";
+    resultWrap.classList.add("hidden");
+    userInput.focus();
+  }
+
+  logoutBtn.addEventListener("click", resetToLogin);
+  menuLogoutBtn.addEventListener("click", resetToLogin);
+
+  backToMenuBtn.addEventListener("click", () => {
+    appView.classList.add("hidden");
+    menuView.classList.remove("hidden");
+  });
+
+  btnScontrini.addEventListener("click", () => {
+    menuView.classList.add("hidden");
+    appView.classList.remove("hidden");
+  });
+
+  // CLIFORUPDATE: per ora non chiama nulla, il bottone è solo un segnaposto.
+  btnCliforupdate.addEventListener("click", () => {});
+
+  // ---- PRIMANOTA CASSA (dopo login) ---------------------------------------
+
+  const fileInput = document.getElementById("fileInput");
+  const chooseBtn = document.getElementById("chooseBtn");
+  const cameraInput = document.getElementById("cameraInput");
+  const cameraBtn = document.getElementById("cameraBtn");
+  const viewFileBtn = document.getElementById("viewFileBtn");
+  const descrizioneInput = document.getElementById("descrizioneInput");
+  const fileNameBox = document.getElementById("fileNameBox");
+  const fileNameText = document.getElementById("fileNameText");
+  const sendBtn = document.getElementById("sendBtn");
+  const resultWrap = document.getElementById("resultWrap");
+  const receipt = document.getElementById("receipt");
+  const receiptText = document.getElementById("receiptText");
+  const downloadReqBtn = document.getElementById("downloadReq");
+  const downloadRespBtn = document.getElementById("downloadResp");
+  const reqPanelText = document.getElementById("reqPanelText");
+  const respPanelText = document.getElementById("respPanelText");
+
+  let selectedFile = null;
+  let selectedFileUrl = null;
+  let lastRequestXML = "";
+  let lastResponseXML = "";
+
+  function handleFileSelected(file){
+    if (selectedFileUrl){
+      URL.revokeObjectURL(selectedFileUrl);
+      selectedFileUrl = null;
+    }
+    selectedFile = file || null;
+    if (selectedFile) {
+      fileNameText.textContent = selectedFile.name;
+      fileNameBox.classList.add("filled");
+      sendBtn.disabled = false;
+      selectedFileUrl = URL.createObjectURL(selectedFile);
+      viewFileBtn.disabled = false;
+    } else {
+      fileNameText.textContent = "Nessun file selezionato";
+      fileNameBox.classList.remove("filled");
+      sendBtn.disabled = true;
+      viewFileBtn.disabled = true;
+    }
+    fileInput.value = "";
+    cameraInput.value = "";
+  }
+
+  chooseBtn.addEventListener("click", () => fileInput.click());
+  cameraBtn.addEventListener("click", () => cameraInput.click());
+
+  fileInput.addEventListener("change", () => {
+    handleFileSelected(fileInput.files[0]);
+  });
+
+  cameraInput.addEventListener("change", () => {
+    handleFileSelected(cameraInput.files[0]);
+  });
+
+  viewFileBtn.addEventListener("click", () => {
+    if (selectedFileUrl) window.open(selectedFileUrl, "_blank");
+  });
+
+  function readFileAsBase64(file){
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const commaIndex = reader.result.indexOf(",");
+        resolve(reader.result.substring(commaIndex + 1));
+      };
+      reader.onerror = () => reject(reader.error);
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function buildEnvelope(nomeFile, fileBase64, descrizione){
+    return `<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:bapp="http://bapp_cassa_ws.ws.localhost/">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <bapp:bapp_cassa_ws_Run>
+         <bapp:m_UserName>ws</bapp:m_UserName>
+         <bapp:m_Password>ws_1234!</bapp:m_Password>
+         <bapp:m_Company>701</bapp:m_Company>
+         <bapp:m_Instance>SERVLET_WIGEST_AMICIGIGI_1105</bapp:m_Instance>
+         <bapp:p_user>5</bapp:p_user>
+         <bapp:p_ws_call>Y</bapp:p_ws_call>
+         <bapp:p_Subs>09701</bapp:p_Subs>
+         <bapp:p_Branc>9701</bapp:p_Branc>
+         <bapp:p_Sect>01</bapp:p_Sect>
+         <bapp:p_Curr>EUR</bapp:p_Curr>
+         <bapp:p_PhiSite>009701</bapp:p_PhiSite>
+         <bapp:p_PaySite></bapp:p_PaySite>
+         <bapp:p_PaySubs></bapp:p_PaySubs>
+         <bapp:p_Wareh></bapp:p_Wareh>
+         <bapp:p_DefaYearS></bapp:p_DefaYearS>
+         <bapp:p_DefaSess></bapp:p_DefaSess>
+         <bapp:p_UL></bapp:p_UL>
+         <bapp:p_fileName>${escapeXml(nomeFile)}</bapp:p_fileName>
+         <bapp:p_fileBase64>${fileBase64}</bapp:p_fileBase64>
+         <bapp:p_usercassa>${escapeXml(currentUserCode)}</bapp:p_usercassa>
+         <bapp:p_descrizione>${escapeXml(descrizione)}</bapp:p_descrizione>
+      </bapp:bapp_cassa_ws_Run>
+   </soapenv:Body>
+</soapenv:Envelope>`;
+  }
+
+  function showResult(kind, text, code){
+    resultWrap.classList.remove("hidden");
+    receiptText.textContent = text;
+    receipt.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }
+
+  function setPanelText(el, content){
+    if (content){
+      el.textContent = content;
+    } else {
+      el.innerHTML = '<span class="empty">Nessun contenuto disponibile.</span>';
+    }
+  }
+
+  downloadReqBtn.addEventListener("click", () => {
+    if (lastRequestXML) downloadText("richiesta_bapp_cassa_ws.txt", lastRequestXML);
+  });
+  downloadRespBtn.addEventListener("click", () => {
+    if (lastResponseXML) downloadText("risposta_bapp_cassa_ws.txt", lastResponseXML);
+  });
+
+  sendBtn.addEventListener("click", async () => {
+    if (!selectedFile) return;
+
+    sendBtn.disabled = true;
+    sendBtn.innerHTML = '<span class="spinner"></span>Invio in corso&hellip;';
+    downloadReqBtn.disabled = true;
+    downloadRespBtn.disabled = true;
+
+    try {
+      const base64 = await readFileAsBase64(selectedFile);
+      const requestXML = buildEnvelope(selectedFile.name, base64, descrizioneInput.value);
+      lastRequestXML = requestXML;
+      setPanelText(reqPanelText, requestXML);
+
+      const response = await fetch(WS_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "text/xml; charset=utf-8"
+        },
+        body: requestXML
+      });
+
+      const responseText = await response.text();
+      const cleanedResponseText = deepDecode(responseText);
+      lastResponseXML = cleanedResponseText;
+      setPanelText(respPanelText, cleanedResponseText);
+      downloadReqBtn.disabled = false;
+      downloadRespBtn.disabled = false;
+
+      if (!response.ok){
+        showResult("err", `Errore HTTP ${response.status} ${response.statusText}.\n\nDettagli nel pannello "Risposta ricevuta" qui sotto o nel file scaricabile.`, "?");
+        return;
+      }
+
+      const parser = new DOMParser();
+      const xmlDoc = parser.parseFromString(cleanedResponseText, "text/xml");
+
+      const parserError = xmlDoc.getElementsByTagName("parsererror")[0];
+      if (parserError){
+        showResult("err", "La risposta ricevuta non è un XML valido.\n\nDettagli nel pannello \"Risposta ricevuta\" qui sotto o nel file scaricabile.", "?");
+        return;
+      }
+
+      const trangwsEl = findByLocalName(xmlDoc, "Trangws");
+      if (!trangwsEl){
+        showResult("unknown", "Impossibile trovare il tag <Trangws> nella risposta.\n\nDettagli nel pannello \"Risposta ricevuta\" qui sotto o nel file scaricabile.", "?");
+        return;
+      }
+
+      const wscode = deepDecode(textOf(findByLocalName(trangwsEl, "WSCODE")));
+      const descr = deepDecode(textOf(findByLocalName(trangwsEl, "WSDESCR")));
+      const wserr = deepDecode(textOf(findByLocalName(trangwsEl, "WSERR")));
+      const wswar = deepDecode(textOf(findByLocalName(trangwsEl, "WSWAR")));
+
+      const wsretEl = findByLocalName(trangwsEl, "WSRET");
+      const rowEls = findAllByLocalName(wsretEl, "row");
+      const rowsText = rowEls.map((rowEl) => {
+        const filename = deepDecode(textOf(findByLocalName(rowEl, "FILENAME")));
+        const messaggio = deepDecode(textOf(findByLocalName(rowEl, "MESSAGGIO")));
+        return `Filename: ${filename}\nmessaggio: ${messaggio}`;
+      }).join("\n\n");
+
+      if (wscode === "0"){
+        let descrDisplay = descr || "(WSDESCR vuoto)";
+        descrDisplay = descrDisplay.replace(/(Creata\s*\/\s*Aggiornata)\s+/i, "$1\n");
+        showResult("ok", [descrDisplay, rowsText].filter(Boolean).join("\n\n"), wscode);
+      } else if (wscode === "1"){
+        const lines = [wserr || descr || "(nessun messaggio d'errore)"];
+        if (wswar) lines.push("Avviso: " + wswar);
+        if (rowsText) lines.push("", rowsText);
+        showResult("err", lines.join("\n"), wscode);
+      } else {
+        const lines = [`WSCODE ricevuto: ${wscode || "assente"}`];
+        if (descr) lines.push(`WSDESCR: ${descr}`);
+        if (wserr) lines.push(`WSERR: ${wserr}`);
+        if (wswar) lines.push(`WSWAR: ${wswar}`);
+        if (rowsText) lines.push("", rowsText);
+        showResult("unknown", lines.join("\n"), wscode || "?");
+      }
+
+    } catch (err){
+      showResult("network", "Chiamata al web service non riuscita.\n\n" + (err && err.message ? err.message : String(err)) + "\n\n" + networkErrorHint(err));
+      setPanelText(respPanelText, "");
+      downloadReqBtn.disabled = !lastRequestXML;
+      downloadRespBtn.disabled = !lastResponseXML;
+    } finally {
+      sendBtn.disabled = false;
+      sendBtn.textContent = "Invia a Primanota di cassa";
+    }
+  });
+
+  if ("serviceWorker" in navigator){
+    let swRegistration = null;
+
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("sw.js").then((reg) => {
+        swRegistration = reg;
+        // Forza subito un controllo aggiornamenti, invece di aspettare
+        // il ciclo automatico (più lento) del browser.
+        reg.update().catch(() => {});
+      }).catch(() => {});
+    });
+
+    // Ricontrolla gli aggiornamenti anche quando la app torna in primo
+    // piano (es. l'utente la riapre dal multitasking senza chiuderla del
+    // tutto), non solo al primo avvio.
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "visible" && swRegistration){
+        swRegistration.update().catch(() => {});
+      }
+    });
+
+    // Quando una nuova versione del service worker prende il controllo
+    // della pagina, ricarica automaticamente una sola volta per mostrare
+    // subito i file aggiornati (altrimenti servirebbe riaprire la app
+    // due volte prima di vedere l'aggiornamento).
+    let swRefreshing = false;
+    navigator.serviceWorker.addEventListener("controllerchange", () => {
+      if (swRefreshing) return;
+      swRefreshing = true;
+      window.location.reload();
+    });
+  }
+})();
+</script>
+</body>
+</html>
