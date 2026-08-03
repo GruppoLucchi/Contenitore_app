@@ -11,6 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
   :root{
     --ink:#1c2b39;
@@ -28,6 +29,11 @@
     --radius:10px;
     --sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     --mono: 'IBM Plex Mono', 'SFMono-Regular', Consolas, monospace;
+    --port-blue:#1a3a5c;
+    --port-blue-dark:#0f2640;
+    --port-grey-border:#d8dee4;
+    --port-text-secondary:#5a6b7a;
+    --port-accent:#c0392b;
   }
 
   *{box-sizing:border-box;}
@@ -254,10 +260,17 @@
     align-items:center;
     gap:14px;
   }
-  .menu-buttons{
+  .menu-head{
     display:flex;
-    flex-direction:column;
-    gap:12px;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:16px;
+    padding:0 4px;
+  }
+  .menu-head h2{
+    margin:0;
+    font-size:15px;
+    color:#f7f5ef;
   }
   .btn-link{
     background:transparent;
@@ -269,6 +282,72 @@
     padding:0;
   }
   .btn-link:hover{ color:var(--brass-dark); }
+  .btn-link-light{ color:#cdd8e3; }
+  .btn-link-light:hover{ color:#fff; }
+
+  .app-grid{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:14px;
+    margin-bottom:16px;
+  }
+  .app-card{
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+    text-align:left;
+    width:100%;
+    background:#fff;
+    border:1px solid var(--port-grey-border);
+    border-left:5px solid var(--port-blue);
+    border-radius:6px;
+    padding:18px 20px;
+    font-family:var(--sans);
+    cursor:pointer;
+    transition:box-shadow .15s ease, transform .15s ease, border-color .15s ease;
+  }
+  .app-card:hover, .app-card:focus-visible{
+    box-shadow:0 4px 14px rgba(15,38,64,.18);
+    transform:translateY(-2px);
+    border-left-color:var(--port-accent);
+  }
+  .app-card:focus-visible{
+    outline:3px solid var(--port-accent);
+    outline-offset:2px;
+  }
+  .app-card .eyebrow{
+    font-size:.7rem;
+    text-transform:uppercase;
+    letter-spacing:.5px;
+    color:var(--port-text-secondary);
+    margin-bottom:.35rem;
+  }
+  .app-card-title{
+    display:block;
+    font-size:1.05rem;
+    font-weight:700;
+    color:var(--port-blue-dark);
+    margin-bottom:.4rem;
+  }
+  .app-card-desc{
+    display:block;
+    font-size:.85rem;
+    color:var(--port-text-secondary);
+    margin-bottom:.8rem;
+  }
+  .app-card .vai{
+    font-size:.82rem;
+    font-weight:600;
+    color:var(--port-blue);
+  }
+  .app-card.placeholder{
+    border-left-color:var(--port-grey-border);
+    opacity:.75;
+    cursor:default;
+  }
+  .app-card.placeholder .vai{
+    color:var(--port-text-secondary);
+  }
 
   .result-wrap{
     margin-top:22px;
@@ -433,6 +512,136 @@
   .install-os li{
     margin-bottom:4px;
   }
+
+  /* ===== RISCEXCEL (app "Riscossione", stili isolati sotto #riscexcelView) ===== */
+  #riscexcelView{
+    --blu: #1A3A5C;
+    --blu-chiaro: #2C5F8A;
+    --accento: #E8A020;
+    --accento-chiaro: #FFF3DC;
+    --verde: #1E7A4A;
+    --verde-chiaro: #E8F7EE;
+    --rosso: #C0392B;
+    --grigio-bg: #F2F4F7;
+    --grigio-bordo: #D8DCE4;
+    --testo: #1C2B3A;
+    --testo-secondario: #5A6A7A;
+    --bianco: #FFFFFF;
+    --raggio: 12px;
+    --raggio-sm: 8px;
+    --ombra: 0 2px 12px rgba(26,58,92,0.10);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--grigio-bg);
+    color: var(--testo);
+    min-height: 100vh;
+  }
+  #riscexcelView *{ box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  #riscexcelView .top-bar{ display:flex; align-items:center; justify-content:flex-end; gap:14px; padding:12px 16px; background:var(--ink); }
+
+  #riscexcelView .schermo { display: none; flex-direction: column; min-height: 100vh; }
+  #riscexcelView .schermo.attivo { display: flex; }
+
+  #riscexcelView .header { background: var(--blu); color: white; padding: 16px 20px; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 10; }
+  #riscexcelView .header-back { background: none; border: none; color: white; font-size: 22px; cursor: pointer; padding: 4px 8px 4px 0; line-height: 1; }
+  #riscexcelView .header h1 { font-size: 18px; font-weight: 600; flex: 1; }
+  #riscexcelView .header-sub { font-size: 12px; color: rgba(255,255,255,0.7); margin-top: 2px; }
+  #riscexcelView .badge-header { background: var(--accento); color: var(--blu); font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 20px; }
+
+  #riscexcelView #s-carica { justify-content: center; align-items: center; padding: 32px 24px; }
+  #riscexcelView .logo-area { text-align: center; margin-bottom: 48px; }
+  #riscexcelView .logo-icon { width: 80px; height: 80px; background: var(--blu); border-radius: 20px; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; box-shadow: var(--ombra); }
+  #riscexcelView .logo-icon svg { width: 44px; height: 44px; }
+  #riscexcelView .logo-area h1 { font-size: 26px; font-weight: 700; color: var(--blu); letter-spacing: -0.5px; }
+  #riscexcelView .logo-area p { color: var(--testo-secondario); margin-top: 6px; font-size: 15px; }
+  #riscexcelView .card-carica { background: var(--bianco); border-radius: var(--raggio); padding: 28px 24px; width: 100%; max-width: 380px; box-shadow: var(--ombra); text-align: center; }
+  #riscexcelView .card-carica p { color: var(--testo-secondario); font-size: 14px; margin-bottom: 20px; line-height: 1.5; }
+  #riscexcelView .btn-primario { background: var(--blu); color: white; border: none; border-radius: var(--raggio-sm); padding: 16px 28px; font-size: 16px; font-weight: 600; cursor: pointer; width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; transition: background 0.15s; }
+  #riscexcelView .btn-primario:active { background: var(--blu-chiaro); }
+  #riscexcelView .btn-secondario { background: var(--bianco); color: var(--blu); border: 2px solid var(--blu); border-radius: var(--raggio-sm); padding: 13px 28px; font-size: 15px; font-weight: 600; cursor: pointer; width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; transition: all 0.15s; margin-top: 10px; }
+  #riscexcelView .btn-secondario:active { background: var(--grigio-bg); }
+  #riscexcelView #input-file { display: none; }
+  #riscexcelView .sessione-info { background: var(--accento-chiaro); border: 1px solid var(--accento); border-radius: var(--raggio-sm); padding: 14px 16px; margin-top: 20px; text-align: left; }
+  #riscexcelView .sessione-info strong { color: var(--blu); font-size: 13px; display: block; margin-bottom: 4px; }
+  #riscexcelView .sessione-info span { color: var(--testo-secondario); font-size: 12px; }
+
+  #riscexcelView .lista-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 14px 16px; background: var(--blu); }
+  #riscexcelView .stat-box { background: rgba(255,255,255,0.12); border-radius: var(--raggio-sm); padding: 10px 14px; }
+  #riscexcelView .stat-box .num { font-size: 22px; font-weight: 700; color: white; }
+  #riscexcelView .stat-box .lab { font-size: 11px; color: rgba(255,255,255,0.7); margin-top: 2px; }
+  #riscexcelView .lista-scroll { flex: 1; overflow-y: auto; padding: 12px 16px; }
+  #riscexcelView .cliente-card { background: var(--bianco); border-radius: var(--raggio); padding: 16px; margin-bottom: 10px; box-shadow: var(--ombra); display: flex; align-items: center; gap: 14px; cursor: pointer; transition: transform 0.1s; border-left: 4px solid transparent; }
+  #riscexcelView .cliente-card:active { transform: scale(0.98); }
+  #riscexcelView .cliente-card.completato { border-left-color: var(--verde); }
+  #riscexcelView .cliente-card.parziale { border-left-color: var(--accento); }
+  #riscexcelView .cliente-avatar { width: 44px; height: 44px; border-radius: 50%; background: var(--grigio-bg); display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; color: var(--blu-chiaro); flex-shrink: 0; }
+  #riscexcelView .cliente-info { flex: 1; min-width: 0; }
+  #riscexcelView .cliente-nome { font-size: 14px; font-weight: 600; color: var(--testo); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #riscexcelView .cliente-codice { font-size: 11px; color: var(--testo-secondario); margin-top: 2px; }
+  #riscexcelView .cliente-right { text-align: right; flex-shrink: 0; }
+  #riscexcelView .cliente-importo { font-size: 15px; font-weight: 700; color: var(--blu); }
+  #riscexcelView .cliente-fatture { font-size: 11px; color: var(--testo-secondario); margin-top: 2px; }
+  #riscexcelView .badge-ok { background: var(--verde-chiaro); color: var(--verde); font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 10px; margin-top: 4px; display: inline-block; }
+  #riscexcelView .fab { position: fixed; bottom: 24px; right: 20px; background: var(--accento); color: var(--blu); border: none; border-radius: 28px; padding: 16px 22px; font-size: 15px; font-weight: 700; box-shadow: 0 4px 16px rgba(232,160,32,0.5); cursor: pointer; display: flex; align-items: center; gap: 8px; z-index: 20; }
+  #riscexcelView .fab:active { opacity: 0.85; }
+
+  #riscexcelView .cliente-header-info { background: var(--blu); padding: 12px 20px 16px; color: white; }
+  #riscexcelView .cliente-header-nome { font-size: 17px; font-weight: 700; }
+  #riscexcelView .cliente-header-dettagli { font-size: 12px; color: rgba(255,255,255,0.7); margin-top: 4px; }
+  #riscexcelView .fatture-scroll { flex: 1; overflow-y: auto; padding: 12px 16px 100px; }
+  #riscexcelView .fattura-card { background: var(--bianco); border-radius: var(--raggio); padding: 16px; margin-bottom: 10px; box-shadow: var(--ombra); overflow: hidden; }
+  #riscexcelView .fattura-card.pagata { border-left: 4px solid var(--verde); }
+  #riscexcelView .fattura-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+  #riscexcelView .fattura-doc { font-size: 13px; font-weight: 700; color: var(--blu); }
+  #riscexcelView .fattura-importo { font-size: 18px; font-weight: 700; color: var(--testo); flex-shrink: 0; }
+  #riscexcelView .fattura-meta { display: flex; gap: 10px; margin-top: 6px; flex-wrap: wrap; }
+  #riscexcelView .fattura-meta span { font-size: 12px; color: var(--testo-secondario); }
+  #riscexcelView .fattura-desc { font-size: 12px; color: var(--testo-secondario); margin-top: 6px; line-height: 1.5; white-space: normal; word-break: break-word; }
+  #riscexcelView .fattura-azione { margin-top: 14px; display: flex; gap: 10px; align-items: center; }
+  #riscexcelView .btn-paga { flex: 1; background: var(--verde); color: white; border: none; border-radius: var(--raggio-sm); padding: 12px; font-size: 14px; font-weight: 600; cursor: pointer; }
+  #riscexcelView .btn-paga:active { opacity: 0.85; }
+  #riscexcelView .btn-annulla { background: none; border: 1px solid var(--grigio-bordo); color: var(--testo-secondario); border-radius: var(--raggio-sm); padding: 12px 16px; font-size: 13px; cursor: pointer; }
+  #riscexcelView .pagata-info { background: var(--verde-chiaro); border-radius: var(--raggio-sm); padding: 10px 14px; margin-top: 12px; display: flex; align-items: center; gap: 8px; }
+  #riscexcelView .pagata-info span { font-size: 13px; color: var(--verde); font-weight: 600; }
+  #riscexcelView .pagata-data { font-size: 11px; color: var(--verde); font-weight: 400; }
+  #riscexcelView .btn-modifica-data { background: none; border: none; color: var(--verde); text-decoration: underline; font-size: 11px; cursor: pointer; margin-left: auto; }
+
+  #riscexcelView .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100; align-items: flex-end; justify-content: center; }
+  #riscexcelView .modal-overlay.aperto { display: flex; }
+  #riscexcelView .modal { background: var(--bianco); border-radius: 20px 20px 0 0; padding: 24px 20px 36px; width: 100%; max-width: 480px; }
+  #riscexcelView .modal h3 { font-size: 17px; font-weight: 700; color: var(--testo); margin-bottom: 6px; }
+  #riscexcelView .modal p { font-size: 13px; color: var(--testo-secondario); margin-bottom: 20px; }
+  #riscexcelView .campo-data { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+  #riscexcelView .campo { display: flex; flex-direction: column; gap: 6px; }
+  #riscexcelView .campo label { font-size: 12px; font-weight: 600; color: var(--testo-secondario); text-transform: uppercase; letter-spacing: 0.5px; }
+  #riscexcelView .campo input { border: 2px solid var(--grigio-bordo); border-radius: var(--raggio-sm); padding: 12px 14px; font-size: 16px; color: var(--testo); background: var(--bianco); outline: none; width: 100%; }
+  #riscexcelView .campo input:focus { border-color: var(--blu); }
+  #riscexcelView .modal-azioni { display: flex; gap: 10px; }
+  #riscexcelView .btn-conferma { flex: 1; background: var(--verde); color: white; border: none; border-radius: var(--raggio-sm); padding: 15px; font-size: 16px; font-weight: 700; cursor: pointer; }
+  #riscexcelView .btn-cancella { background: var(--grigio-bg); color: var(--testo-secondario); border: none; border-radius: var(--raggio-sm); padding: 15px 20px; font-size: 15px; cursor: pointer; }
+
+  #riscexcelView .report-body { flex: 1; padding: 20px 16px; }
+  #riscexcelView .report-riepilogo { background: var(--bianco); border-radius: var(--raggio); padding: 20px; box-shadow: var(--ombra); margin-bottom: 16px; }
+  #riscexcelView .report-riepilogo h3 { font-size: 14px; font-weight: 600; color: var(--testo-secondario); margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.5px; }
+  #riscexcelView .report-riga { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--grigio-bg); }
+  #riscexcelView .report-riga:last-child { border-bottom: none; }
+  #riscexcelView .report-riga .lab { font-size: 14px; color: var(--testo-secondario); }
+  #riscexcelView .report-riga .val { font-size: 15px; font-weight: 700; color: var(--testo); }
+  #riscexcelView .report-riga .val.verde { color: var(--verde); }
+  #riscexcelView .report-riga .val.accento { color: var(--accento); }
+  #riscexcelView .card-invio { background: var(--bianco); border-radius: var(--raggio); padding: 20px; box-shadow: var(--ombra); }
+  #riscexcelView .card-invio p { font-size: 14px; color: var(--testo-secondario); margin-bottom: 20px; line-height: 1.5; }
+  #riscexcelView .btn-grande { background: var(--blu); color: white; border: none; border-radius: var(--raggio-sm); padding: 18px 24px; font-size: 16px; font-weight: 700; cursor: pointer; width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 10px; }
+  #riscexcelView .btn-grande.verde { background: var(--verde); }
+  #riscexcelView .btn-grande:active { opacity: 0.85; }
+  #riscexcelView .avviso { background: var(--accento-chiaro); border: 1px solid var(--accento); border-radius: var(--raggio-sm); padding: 12px 14px; font-size: 13px; color: var(--testo); margin-bottom: 16px; line-height: 1.4; }
+
+  #riscexcelView .toast { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); background: #1C2B3A; color: white; padding: 12px 20px; border-radius: 24px; font-size: 14px; font-weight: 500; z-index: 200; opacity: 0; transition: opacity 0.3s; white-space: nowrap; }
+  #riscexcelView .toast.visibile { opacity: 1; }
+
+  #riscexcelView .empty-state { text-align: center; padding: 48px 24px; color: var(--testo-secondario); }
+  #riscexcelView .empty-state svg { margin-bottom: 16px; opacity: 0.4; }
+  #riscexcelView .empty-state p { font-size: 15px; }
 </style>
 </head>
 <body>
@@ -477,17 +686,31 @@
 
   <!-- MENU VIEW (visible dopo il login, prima di scegliere un'applicazione) -->
   <div id="menuView" class="hidden">
-    <div class="card">
-      <div class="login-head">
-        <h2 id="menuUserLabel">Utente</h2>
-        <button type="button" class="btn-link" id="menuLogoutBtn">Cambia utente</button>
-      </div>
-      <div class="menu-buttons">
-        <button type="button" class="btn-primary hidden" id="btnScontrini">Inserimento Scontrini</button>
-        <button type="button" class="btn-primary hidden" id="btnCliforupdate">Aggiornamento clienti/fornitori</button>
-      </div>
-      <div id="menuEmpty" class="login-error hidden">Nessuna applicazione disponibile per questo utente.</div>
+    <div class="menu-head">
+      <h2 id="menuUserLabel">Utente</h2>
+      <button type="button" class="btn-link btn-link-light" id="menuLogoutBtn">Cambia utente</button>
     </div>
+    <div class="app-grid">
+      <button type="button" class="app-card hidden" id="btnScontrini">
+        <span class="eyebrow">SCONTRINI</span>
+        <span class="app-card-title">Inserimento Scontrini</span>
+        <span class="app-card-desc">Carica gli scontrini e invia i dati alla Primanota di cassa.</span>
+        <span class="vai">Apri applicazione &rarr;</span>
+      </button>
+      <button type="button" class="app-card hidden" id="btnRiscexcel">
+        <span class="eyebrow">RISCEXCEL</span>
+        <span class="app-card-title">Riscossione</span>
+        <span class="app-card-desc">Gestione incassi giornalieri da file Excel.</span>
+        <span class="vai">Apri applicazione &rarr;</span>
+      </button>
+      <button type="button" class="app-card placeholder hidden" id="btnCliforupdate">
+        <span class="eyebrow">CLIFORUPDATE</span>
+        <span class="app-card-title">Aggiornamento clienti/fornitori</span>
+        <span class="app-card-desc">Aggiornamento anagrafiche clienti e fornitori.</span>
+        <span class="vai">Non ancora disponibile</span>
+      </button>
+    </div>
+    <div id="menuEmpty" class="login-error hidden">Nessuna applicazione disponibile per questo utente.</div>
   </div>
 
   <!-- APP VIEW (visible only after successful login) -->
@@ -542,6 +765,145 @@
         </div>
       </div>
     </div>
+  </div>
+
+  <!-- RISCEXCEL VIEW (app Riscossione, integrata) -->
+  <div id="riscexcelView" class="hidden">
+    <div class="top-bar">
+      <button type="button" class="btn-link btn-link-light" id="riscexcelBackBtn">&larr; Menu</button>
+      <button type="button" class="btn-link btn-link-light" id="riscexcelLogoutBtn">Cambia utente</button>
+    </div>
+
+    <!-- SCHERMO 1: CARICA FILE -->
+    <div class="schermo attivo" id="s-carica">
+      <div class="logo-area">
+        <div class="logo-icon">
+          <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="8" y="4" width="20" height="26" rx="3" fill="white" opacity="0.2"/>
+            <rect x="10" y="6" width="16" height="22" rx="2" fill="white" opacity="0.9"/>
+            <line x1="13" y1="11" x2="23" y2="11" stroke="#1A3A5C" stroke-width="1.5" stroke-linecap="round"/>
+            <line x1="13" y1="15" x2="23" y2="15" stroke="#1A3A5C" stroke-width="1.5" stroke-linecap="round"/>
+            <line x1="13" y1="19" x2="19" y2="19" stroke="#1A3A5C" stroke-width="1.5" stroke-linecap="round"/>
+            <circle cx="32" cy="30" r="8" fill="#E8A020"/>
+            <path d="M32 26v8M28 30l4 4 4-4" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h1>Riscossione</h1>
+        <p>Gestione incassi giornalieri</p>
+      </div>
+      <div class="card-carica">
+        <p>Carica il file Excel ricevuto via mail per iniziare la giornata di riscossione.</p>
+        <button class="btn-primario" onclick="document.getElementById('input-file').click()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          Carica file Excel
+        </button>
+        <input type="file" id="input-file" accept=".xlsx,.xls" onchange="caricaFile(this)">
+        <div class="sessione-info" id="sessione-info" style="display:none">
+          <strong id="sessione-nome"></strong>
+          <span id="sessione-stato"></span>
+          <button class="btn-secondario" style="margin-top:10px" onclick="riprendiSessione()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg>
+            Riprendi sessione
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCHERMO 2: LISTA CLIENTI -->
+    <div class="schermo" id="s-lista">
+      <div class="header">
+        <div style="flex:1">
+          <h1>Clienti</h1>
+          <div class="header-sub" id="lista-sub"></div>
+        </div>
+        <button class="badge-header" onclick="vaiReport()" style="cursor:pointer;border:none">Report &rarr;</button>
+      </div>
+      <div class="lista-stats">
+        <div class="stat-box">
+          <div class="num" id="stat-incassato">&euro; 0</div>
+          <div class="lab">Incassato oggi</div>
+        </div>
+        <div class="stat-box">
+          <div class="num" id="stat-fatture">0/0</div>
+          <div class="lab">Fatture pagate</div>
+        </div>
+      </div>
+      <div class="lista-scroll" id="lista-clienti"></div>
+      <button class="fab" onclick="vaiReport()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.14 1.22 2 2 0 012.11 0h3a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0122 14.92z"/></svg>
+        Invia Report
+      </button>
+    </div>
+
+    <!-- SCHERMO 3: DETTAGLIO CLIENTE -->
+    <div class="schermo" id="s-cliente">
+      <div class="header">
+        <button class="header-back" onclick="vaiLista()">&lsaquo;</button>
+        <div style="flex:1">
+          <h1 id="cliente-header-nome">Cliente</h1>
+        </div>
+      </div>
+      <div class="cliente-header-info">
+        <div class="cliente-header-nome" id="cliente-header-ragione"></div>
+        <div class="cliente-header-dettagli" id="cliente-header-dettagli"></div>
+      </div>
+      <div class="fatture-scroll" id="lista-fatture"></div>
+    </div>
+
+    <!-- SCHERMO 4: REPORT -->
+    <div class="schermo" id="s-report">
+      <div class="header">
+        <button class="header-back" onclick="vaiLista()">&lsaquo;</button>
+        <h1>Report giornaliero</h1>
+      </div>
+      <div class="report-body">
+        <div class="report-riepilogo">
+          <h3>Riepilogo</h3>
+          <div class="report-riga"><span class="lab">Totale incassato</span><span class="val verde" id="rep-totale">&euro; 0,00</span></div>
+          <div class="report-riga"><span class="lab">Fatture pagate</span><span class="val" id="rep-pagate">0</span></div>
+          <div class="report-riga"><span class="lab">Fatture in sospeso</span><span class="val accento" id="rep-sospese">0</span></div>
+          <div class="report-riga"><span class="lab">Clienti visitati</span><span class="val" id="rep-clienti">0</span></div>
+        </div>
+        <div class="card-invio">
+          <p>Il file Excel verr&agrave; generato con tutte le fatture originali. Le righe pagate avranno le colonne <strong>Incassata SI/No</strong> e <strong>Data/ora Incasso</strong> compilate.</p>
+          <div class="avviso" id="avviso-zero" style="display:none">
+            &#9888;&#65039; Nessuna fattura &egrave; stata ancora marcata come pagata.
+          </div>
+          <button class="btn-grande verde" onclick="scaricaExcel()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Scarica Excel
+          </button>
+          <button class="btn-grande" onclick="inviaEmail()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.14 1.22 2 2 0 012.11 0h3a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0122 14.92z"/></svg>
+            Apri mail
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL DATA/ORA PAGAMENTO -->
+    <div class="modal-overlay" id="modal-data">
+      <div class="modal">
+        <h3>Conferma pagamento</h3>
+        <p id="modal-fattura-info">Fattura</p>
+        <div class="campo-data">
+          <div class="campo">
+            <label>Data</label>
+            <input type="date" id="modal-data-input">
+          </div>
+          <div class="campo">
+            <label>Ora</label>
+            <input type="time" id="modal-ora-input">
+          </div>
+        </div>
+        <div class="modal-azioni">
+          <button class="btn-cancella" onclick="chiudiModal()">Annulla</button>
+          <button class="btn-conferma" onclick="confermaPagamento()">&check; Conferma pagato</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
   </div>
 
   <details class="install-card">
@@ -670,8 +1032,12 @@
   const menuLogoutBtn = document.getElementById("menuLogoutBtn");
   const backToMenuBtn = document.getElementById("backToMenuBtn");
   const btnScontrini = document.getElementById("btnScontrini");
+  const btnRiscexcel = document.getElementById("btnRiscexcel");
   const btnCliforupdate = document.getElementById("btnCliforupdate");
   const menuEmpty = document.getElementById("menuEmpty");
+  const riscexcelView = document.getElementById("riscexcelView");
+  const riscexcelBackBtn = document.getElementById("riscexcelBackBtn");
+  const riscexcelLogoutBtn = document.getElementById("riscexcelLogoutBtn");
 
   let currentUserCode = null; // nrute restituito dal login, usato come p_usercassa
   let sessionInfo = {}; // altri campi restituiti dal login (bra, sub, site, codazi, ecc.)
@@ -697,14 +1063,17 @@
 
     const apps = parseListApp(data.listapp);
     const hasScontrini = apps.includes("SCONTRINI");
+    const hasRiscexcel = apps.includes("RISCEXCEL");
     const hasCliforupdate = apps.includes("CLIFORUPDATE");
 
     btnScontrini.classList.toggle("hidden", !hasScontrini);
+    btnRiscexcel.classList.toggle("hidden", !hasRiscexcel);
     btnCliforupdate.classList.toggle("hidden", !hasCliforupdate);
-    menuEmpty.classList.toggle("hidden", hasScontrini || hasCliforupdate);
+    menuEmpty.classList.toggle("hidden", hasScontrini || hasRiscexcel || hasCliforupdate);
 
     loginView.classList.add("hidden");
     appView.classList.add("hidden");
+    riscexcelView.classList.add("hidden");
     menuView.classList.remove("hidden");
   }
 
@@ -838,6 +1207,7 @@
     sessionInfo = {};
     menuView.classList.add("hidden");
     appView.classList.add("hidden");
+    riscexcelView.classList.add("hidden");
     loginView.classList.remove("hidden");
     userInput.value = "";
     passInput.value = "";
@@ -850,15 +1220,26 @@
 
   logoutBtn.addEventListener("click", resetToLogin);
   menuLogoutBtn.addEventListener("click", resetToLogin);
+  riscexcelLogoutBtn.addEventListener("click", resetToLogin);
 
   backToMenuBtn.addEventListener("click", () => {
     appView.classList.add("hidden");
     menuView.classList.remove("hidden");
   });
 
+  riscexcelBackBtn.addEventListener("click", () => {
+    riscexcelView.classList.add("hidden");
+    menuView.classList.remove("hidden");
+  });
+
   btnScontrini.addEventListener("click", () => {
     menuView.classList.add("hidden");
     appView.classList.remove("hidden");
+  });
+
+  btnRiscexcel.addEventListener("click", () => {
+    menuView.classList.add("hidden");
+    riscexcelView.classList.remove("hidden");
   });
 
   // CLIFORUPDATE: per ora non chiama nulla, il bottone è solo un segnaposto.
@@ -1114,6 +1495,353 @@
     });
   }
 })();
+</script>
+
+<!-- ==== RISCEXCEL: script dell'app Riscossione (integrata) ==== -->
+<script>
+let dati = { righe: [], clienti: {}, pagamenti: {}, nomeFile: '', dataCaricamento: null };
+let clienteAttuale = null;
+let fatturaAttuale = null;
+let workbookOriginale = null;
+
+// ---- AVVIO ----
+window.addEventListener('load', () => {
+  const salvato = localStorage.getItem('riscossione_sessione');
+  if (salvato) {
+    try {
+      const s = JSON.parse(salvato);
+      if (s.nomeFile) {
+        document.getElementById('sessione-info').style.display = 'block';
+        document.getElementById('sessione-nome').textContent = s.nomeFile;
+        const d = new Date(s.dataCaricamento);
+        const oggi = new Date();
+        const isOggi = d.toDateString() === oggi.toDateString();
+        const pagate = Object.keys(s.pagamenti || {}).length;
+        document.getElementById('sessione-stato').textContent =
+          (isOggi ? 'Sessione di oggi' : `Sessione del ${d.toLocaleDateString('it-IT')}`) +
+          ` · ${pagate} pagament${pagate === 1 ? 'o' : 'i'} registrat${pagate === 1 ? 'o' : 'i'}`;
+      }
+    } catch(e) {}
+  }
+});
+
+function riprendiSessione() {
+  const salvato = localStorage.getItem('riscossione_sessione');
+  if (!salvato) return;
+  const s = JSON.parse(salvato);
+  if (!s.righe || s.righe.length === 0) { mostraToast('Sessione non valida'); return; }
+  dati = s;
+  costruisciClienti();
+  vaiLista();
+}
+
+// ---- CARICA FILE ----
+function caricaFile(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const wb = XLSX.read(e.target.result, { type: 'array', cellDates: true });
+      workbookOriginale = wb;
+      const ws = wb.Sheets[wb.SheetNames[0]];
+      const json = XLSX.utils.sheet_to_json(ws, { header: 1, raw: false, dateNF: 'yyyy-mm-dd' });
+      if (json.length < 2) { alert('File non valido o vuoto.'); return; }
+      const headers = json[0];
+      const righe = json.slice(1).map((r, i) => {
+        const obj = {};
+        headers.forEach((h, j) => obj[h] = r[j] !== undefined ? r[j] : '');
+        obj._indice = i;
+        return obj;
+      }).filter(r => r['Codice Cliente']);
+      dati = { righe, clienti: {}, pagamenti: {}, nomeFile: file.name, dataCaricamento: new Date().toISOString() };
+      costruisciClienti();
+      salvaSessione();
+      vaiLista();
+    } catch(ex) {
+      alert('Errore nella lettura del file. Assicurati che sia un file Excel .xlsx');
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+function costruisciClienti() {
+  dati.clienti = {};
+  dati.righe.forEach((r, i) => {
+    const codice = r['Codice Cliente'];
+    if (!dati.clienti[codice]) {
+      dati.clienti[codice] = {
+        codice,
+        ragione: r['Ragione Sociale'] || codice,
+        citta: r["Citta'"] || '',
+        provincia: r['Provincia'] || '',
+        fatture: []
+      };
+    }
+    dati.clienti[codice].fatture.push(i);
+  });
+}
+
+// ---- NAVIGAZIONE ----
+function mostraSchermo(id) {
+  document.querySelectorAll('#riscexcelView .schermo').forEach(s => s.classList.remove('attivo'));
+  document.getElementById(id).classList.add('attivo');
+  window.scrollTo(0, 0);
+}
+
+function vaiLista() {
+  aggiornaLista();
+  mostraSchermo('s-lista');
+}
+
+function vaiReport() {
+  aggiornaReport();
+  mostraSchermo('s-report');
+}
+
+// ---- LISTA CLIENTI ----
+function aggiornaLista() {
+  const clientiList = Object.values(dati.clienti);
+  document.getElementById('lista-sub').textContent =
+    `${clientiList.length} client${clientiList.length === 1 ? 'e' : 'i'} · ${dati.nomeFile}`;
+
+  let totalePagato = 0, fatturePagate = 0, fattureTot = dati.righe.length;
+  Object.keys(dati.pagamenti).forEach(k => {
+    const r = dati.righe[parseInt(k)];
+    if (r) { totalePagato += parseFloat(r['Importo']) || 0; fatturePagate++; }
+  });
+
+  document.getElementById('stat-incassato').textContent = '€ ' + totalePagato.toLocaleString('it-IT', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+  document.getElementById('stat-fatture').textContent = `${fatturePagate}/${fattureTot}`;
+
+  const container = document.getElementById('lista-clienti');
+  container.innerHTML = '';
+  clientiList.forEach(c => {
+    const fatture = c.fatture.map(i => dati.righe[i]);
+    const pagate = c.fatture.filter(i => dati.pagamenti[i]).length;
+    const importoTot = fatture.reduce((s, r) => s + (parseFloat(r['Importo']) || 0), 0);
+    const completato = pagate === fatture.length;
+    const parziale = pagate > 0 && !completato;
+    const iniziali = c.ragione.split(' ').slice(0,2).map(w => w[0]).join('').toUpperCase();
+
+    const div = document.createElement('div');
+    div.className = `cliente-card${completato ? ' completato' : parziale ? ' parziale' : ''}`;
+    div.innerHTML = `
+      <div class="cliente-info">
+        <div class="cliente-nome">${c.ragione}</div>
+        <div class="cliente-codice">${c.codice} · ${c.citta} ${c.provincia}</div>
+        ${pagate > 0 ? `<span class="badge-ok">✓ ${pagate}/${fatture.length} pagate</span>` : ''}
+      </div>
+      <div class="cliente-right">
+        <div class="cliente-importo">€ ${importoTot.toLocaleString('it-IT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</div>
+        <div class="cliente-fatture">${fatture.length} fattur${fatture.length === 1 ? 'a' : 'e'}</div>
+      </div>`;
+    div.onclick = () => vaiCliente(c.codice);
+    container.appendChild(div);
+  });
+}
+
+// ---- DETTAGLIO CLIENTE ----
+function vaiCliente(codice) {
+  clienteAttuale = dati.clienti[codice];
+  document.getElementById('cliente-header-nome').textContent = clienteAttuale.codice;
+  document.getElementById('cliente-header-ragione').textContent = clienteAttuale.ragione;
+  document.getElementById('cliente-header-dettagli').textContent =
+    `${clienteAttuale.citta} (${clienteAttuale.provincia}) · ${clienteAttuale.fatture.length} fatture`;
+  renderFatture();
+  mostraSchermo('s-cliente');
+}
+
+function renderFatture() {
+  const container = document.getElementById('lista-fatture');
+  container.innerHTML = '';
+  clienteAttuale.fatture.forEach(i => {
+    const r = dati.righe[i];
+    const pag = dati.pagamenti[i];
+    const importo = parseFloat(r['Importo']) || 0;
+    const div = document.createElement('div');
+    div.className = `fattura-card${pag ? ' pagata' : ''}`;
+    div.innerHTML = `
+      <div class="fattura-top">
+        <div>
+          <div class="fattura-doc">Partita ${r['Sigla Doc'] || ''}</div>
+          <div class="fattura-meta">
+            <span>Data Reg: ${formatData(r['Data Reg'])}</span>
+            <span>Data Doc: ${formatData(r['Data Doc'])}</span>
+            <span>Data Scad: ${formatData(r['Data Scad'])}</span>
+          </div>
+          ${r['Descrizione'] ? `<div class="fattura-desc"><strong>Descrizione</strong> ${r['Descrizione']}</div>` : ''}
+        </div>
+        <div class="fattura-importo">€ ${importo.toLocaleString('it-IT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</div>
+      </div>
+      ${pag ? `
+        <div class="pagata-info">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          <span>Pagata</span>
+          <span class="pagata-data">${pag.dataOra}</span>
+          <button class="btn-modifica-data" onclick="apriModal(${i}, true)">Modifica</button>
+        </div>
+        <div class="fattura-azione">
+          <button class="btn-annulla" onclick="annullaPagamento(${i})">Annulla pagamento</button>
+        </div>` : `
+        <div class="fattura-azione">
+          <button class="btn-paga" onclick="apriModal(${i}, false)">✓ Segna come pagata</button>
+        </div>`}
+    `;
+    container.appendChild(div);
+  });
+}
+
+function formatData(val) {
+  if (!val) return '—';
+  const str = String(val).split(' ')[0].split('T')[0];
+  if (str.includes('-')) {
+    const p = str.split('-');
+    if (p.length === 3) return `${p[2]}/${p[1]}/${p[0]}`;
+  }
+  return str;
+}
+
+// ---- MODAL PAGAMENTO ----
+function apriModal(indice, modifica) {
+  fatturaAttuale = indice;
+  const r = dati.righe[indice];
+  document.getElementById('modal-fattura-info').textContent =
+    `${r['Ragione Sociale']} · ${r['Sigla Doc']} N. ${r['Num Doc']} · € ${parseFloat(r['Importo']).toLocaleString('it-IT', {minimumFractionDigits:2})}`;
+
+  const ora = new Date();
+  const esistente = dati.pagamenti[indice];
+  let dataVal, oraVal;
+  if (esistente && modifica) {
+    const parts = esistente.dataOra.split(' ');
+    const dp = parts[0].split('/');
+    dataVal = `${dp[2]}-${dp[1]}-${dp[0]}`;
+    oraVal = parts[1] || pad(ora.getHours()) + ':' + pad(ora.getMinutes());
+  } else {
+    dataVal = ora.toISOString().split('T')[0];
+    oraVal = pad(ora.getHours()) + ':' + pad(ora.getMinutes());
+  }
+  document.getElementById('modal-data-input').value = dataVal;
+  document.getElementById('modal-ora-input').value = oraVal;
+  document.getElementById('modal-data').classList.add('aperto');
+}
+
+function chiudiModal() {
+  document.getElementById('modal-data').classList.remove('aperto');
+  fatturaAttuale = null;
+}
+
+function confermaPagamento() {
+  if (fatturaAttuale === null) return;
+  const dataRaw = document.getElementById('modal-data-input').value;
+  const ora = document.getElementById('modal-ora-input').value;
+  if (!dataRaw || !ora) { mostraToast('Inserisci data e ora'); return; }
+  const dp = dataRaw.split('-');
+  const dataOra = `${dp[2]}/${dp[1]}/${dp[0]} ${ora}`;
+  dati.pagamenti[fatturaAttuale] = { dataOra };
+  salvaSessione();
+  chiudiModal();
+  renderFatture();
+  mostraToast('✓ Fattura segnata come pagata');
+}
+
+function annullaPagamento(indice) {
+  if (!confirm('Annullare il pagamento di questa fattura?')) return;
+  delete dati.pagamenti[indice];
+  salvaSessione();
+  renderFatture();
+  mostraToast('Pagamento annullato');
+}
+
+function pad(n) { return n.toString().padStart(2, '0'); }
+
+// ---- REPORT ----
+function aggiornaReport() {
+  let totalePagato = 0, fatturePagate = 0, clientiConPagamenti = new Set();
+  const fattureTot = dati.righe.length;
+  Object.keys(dati.pagamenti).forEach(k => {
+    const r = dati.righe[parseInt(k)];
+    if (r) {
+      totalePagato += parseFloat(r['Importo']) || 0;
+      fatturePagate++;
+      clientiConPagamenti.add(r['Codice Cliente']);
+    }
+  });
+  document.getElementById('rep-totale').textContent = '€ ' + totalePagato.toLocaleString('it-IT', {minimumFractionDigits:2, maximumFractionDigits:2});
+  document.getElementById('rep-pagate').textContent = fatturePagate;
+  document.getElementById('rep-sospese').textContent = fattureTot - fatturePagate;
+  document.getElementById('rep-clienti').textContent = clientiConPagamenti.size;
+  document.getElementById('avviso-zero').style.display = fatturePagate === 0 ? 'block' : 'none';
+}
+
+// ---- EXCEL EXPORT ----
+function scaricaExcel() {
+  const wb = generaWorkbook();
+  const oggi = new Date().toISOString().split('T')[0];
+  XLSX.writeFile(wb, `report_incassi_${oggi}.xlsx`);
+  mostraToast('File scaricato!');
+}
+
+function generaWorkbook() {
+  const ora = new Date();
+  const dataOraInvio = `${pad(ora.getDate())}/${pad(ora.getMonth()+1)}/${ora.getFullYear()} ${pad(ora.getHours())}:${pad(ora.getMinutes())}`;
+  const headers = Object.keys(dati.righe[0]).filter(k => k !== '_indice');
+  const righeOut = dati.righe.map((r, i) => {
+    const out = { ...r };
+    delete out._indice;
+    const pag = dati.pagamenti[i];
+    if (pag) {
+      out['Incassata SI/No'] = 'SI';
+      out['Data/ora Incasso'] = pag.dataOra;
+    } else {
+      out['Incassata SI/No'] = '';
+      out['Data/ora Incasso'] = '';
+    }
+    out['Inviato SI/No'] = 'SI';
+    out['Data/ora Invio'] = dataOraInvio;
+    return out;
+  });
+  const ws = XLSX.utils.json_to_sheet(righeOut);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Partite');
+  return wb;
+}
+
+function inviaEmail() {
+  const ora = new Date();
+  const dataFormattata = `${pad(ora.getDate())}/${pad(ora.getMonth()+1)}/${ora.getFullYear()}`;
+  const pagate = Object.keys(dati.pagamenti).length;
+  const subject = encodeURIComponent(`Report incassi ${dataFormattata}`);
+  const body = encodeURIComponent(
+    `In allegato il report degli incassi del ${dataFormattata}.\n\nFatture pagate: ${pagate}/${dati.righe.length}\n\nFile: report_incassi_${dataFormattata.replace(/\//g,'-')}.xlsx`
+  );
+  scaricaExcel();
+  setTimeout(() => {
+    window.location.href = `mailto:?subject=${subject}&body=${body}`;
+  }, 800);
+}
+
+// ---- STORAGE ----
+function salvaSessione() {
+  try {
+    localStorage.setItem('riscossione_sessione', JSON.stringify(dati));
+  } catch(e) {
+    mostraToast('Attenzione: impossibile salvare sul telefono');
+  }
+}
+
+// ---- TOAST ----
+function mostraToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('visibile');
+  setTimeout(() => t.classList.remove('visibile'), 2500);
+}
+
+// Chiudi modal se si tocca fuori
+document.getElementById('modal-data').addEventListener('click', function(e) {
+  if (e.target === this) chiudiModal();
+});
 </script>
 </body>
 </html>

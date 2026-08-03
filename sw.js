@@ -3,7 +3,7 @@
 // service (POST verso lucchi.com) vanno sempre in rete e non sono mai
 // gestite dalla cache.
 
-const CACHE_NAME = "primanota-cassa-v8";
+const CACHE_NAME = "primanota-cassa-v10";
 const APP_SHELL = [
   "./",
   "./index.html",
