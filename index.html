@@ -700,8 +700,14 @@
       <button type="button" class="app-card hidden" id="btnRiscexcel">
         <span class="eyebrow">RISCEXCEL</span>
         <span class="app-card-title">Riscossione</span>
-        <span class="app-card-desc">Gestione incassi giornalieri da file Excel.</span>
+        <span class="app-card-desc">Servizio riscossione con file Excel</span>
         <span class="vai">Apri applicazione &rarr;</span>
+      </button>
+      <button type="button" class="app-card placeholder hidden" id="btnRiscTabelle">
+        <span class="eyebrow">RISCTABELLE</span>
+        <span class="app-card-title">Tabelle Riscossione</span>
+        <span class="app-card-desc">Servizio Riscossione con estrazione partite aperte</span>
+        <span class="vai">Non ancora disponibile</span>
       </button>
       <button type="button" class="app-card placeholder hidden" id="btnCliforupdate">
         <span class="eyebrow">CLIFORUPDATE</span>
@@ -1033,6 +1039,7 @@
   const backToMenuBtn = document.getElementById("backToMenuBtn");
   const btnScontrini = document.getElementById("btnScontrini");
   const btnRiscexcel = document.getElementById("btnRiscexcel");
+  const btnRiscTabelle = document.getElementById("btnRiscTabelle");
   const btnCliforupdate = document.getElementById("btnCliforupdate");
   const menuEmpty = document.getElementById("menuEmpty");
   const riscexcelView = document.getElementById("riscexcelView");
@@ -1064,12 +1071,14 @@
     const apps = parseListApp(data.listapp);
     const hasScontrini = apps.includes("SCONTRINI");
     const hasRiscexcel = apps.includes("RISCEXCEL");
+    const hasRiscTabelle = apps.includes("RISCTABELLE");
     const hasCliforupdate = apps.includes("CLIFORUPDATE");
 
     btnScontrini.classList.toggle("hidden", !hasScontrini);
     btnRiscexcel.classList.toggle("hidden", !hasRiscexcel);
+    btnRiscTabelle.classList.toggle("hidden", !hasRiscTabelle);
     btnCliforupdate.classList.toggle("hidden", !hasCliforupdate);
-    menuEmpty.classList.toggle("hidden", hasScontrini || hasRiscexcel || hasCliforupdate);
+    menuEmpty.classList.toggle("hidden", hasScontrini || hasRiscexcel || hasRiscTabelle || hasCliforupdate);
 
     loginView.classList.add("hidden");
     appView.classList.add("hidden");
@@ -1241,6 +1250,9 @@
     menuView.classList.add("hidden");
     riscexcelView.classList.remove("hidden");
   });
+
+  // RISCTABELLE: per ora non chiama nulla, il bottone è solo un segnaposto.
+  btnRiscTabelle.addEventListener("click", () => {});
 
   // CLIFORUPDATE: per ora non chiama nulla, il bottone è solo un segnaposto.
   btnCliforupdate.addEventListener("click", () => {});
