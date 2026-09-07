@@ -1,0 +1,53 @@
+{
+  "profili": [
+    {
+      "id": 1,
+      "nome": "WIGEST Amici di GIGI",
+      "aziende": [
+        {
+          "nome": "WIGEST Amici di GIGI",
+          "url": "https://www.lucchi.com:448/wigest617/servlet/",
+          "istanze": ["SERVLET_WIGEST_AMICIGIGI_1105"]
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "nome": "WIGEST ANAFIBJ",
+      "aziende": [
+        {
+          "nome": "WIGEST ANAFIBJ",
+          "url": "https://www.lucchi.com:448/wigest617/servlet/",
+          "istanze": ["SERVLET_WIGEST_MDB_07082026"]
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "nome": "WIGEST ANAFIBJ New DB",
+      "aziende": [
+        {
+          "nome": "WIGEST ANAFIBJ New DB",
+          "url": "https://www.lucchi.com:448/wigest617/servlet/",
+          "istanze": ["SERVLET_WIGEST_ANAFIBJ"]
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "nome": "Multicliente",
+      "aziende_ref": [1, 2]
+    },
+    {
+      "id": 5,
+      "nome": "WIGEST Amici di Gigi multi istanza",
+      "aziende": [
+        {
+          "nome": "WIGEST Amici di Gigi multi istanza",
+          "url": "https://www.lucchi.com:448/wigest617/servlet/",
+          "istanze": ["SERVLET_WIGEST_AMICIGIGI_1105", "WIGEST_AMICIGIGI_1009"]
+        }
+      ]
+    }
+  ]
+}

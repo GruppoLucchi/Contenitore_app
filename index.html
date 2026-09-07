@@ -179,6 +179,36 @@
     border-color:var(--brass);
   }
 
+  select.text-input{
+    -webkit-appearance:none;
+    appearance:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%233c4c5c' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;
+    background-position:right 12px center;
+    padding-right:34px;
+  }
+
+  .login-config-foot{
+    margin-top:14px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    font-size:12px;
+    color:var(--muted);
+  }
+  .login-config-foot span{
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  }
+  .login-config-foot a{
+    color:var(--brass-dark);
+    text-decoration:none;
+    font-weight:600;
+    white-space:nowrap;
+    flex-shrink:0;
+  }
+  .login-config-foot a:hover{ text-decoration:underline; }
+
   input[type="file"]{ display:none; }
 
   button{
@@ -660,6 +690,14 @@
     <div class="card">
       <div class="login-head"><h2>Accedi</h2></div>
       <div id="loginError" class="login-error hidden">Credenziali errate</div>
+      <div class="field hidden" id="campoCliente">
+        <label for="selCliente">Cliente</label>
+        <select id="selCliente" class="text-input"></select>
+      </div>
+      <div class="field hidden" id="campoIstanza">
+        <label for="selIstanza">Istanza</label>
+        <select id="selIstanza" class="text-input"></select>
+      </div>
       <div class="field">
         <label for="userInput">Utente</label>
         <input type="text" id="userInput" class="text-input" placeholder="Nome utente" autocomplete="username" autocapitalize="off" autocorrect="off" spellcheck="false" />
@@ -680,6 +718,10 @@
         <div class="panel hidden" id="loginRespPanel">
           <pre id="loginRespPanelText"></pre>
         </div>
+      </div>
+      <div class="login-config-foot">
+        <span id="clienteCorrenteLabel"></span>
+        <a href="#" id="cambiaConfigLink" class="hidden">Cambia configurazione</a>
       </div>
     </div>
   </div>
@@ -941,8 +983,30 @@
 (function(){
   "use strict";
 
-  const WS_LOGIN_URL = "https://www.lucchi.com:448/wigest617/servlet/bgla_chkpwd_ai_ws";
-  const WS_URL = "https://www.lucchi.com:448/wigest617/servlet/bapp_cassa_ws";
+  let WS_LOGIN_URL = "https://www.lucchi.com:448/wigest617/servlet/bgla_chkpwd_ai_ws";
+  let WS_URL = "https://www.lucchi.com:448/wigest617/servlet/bapp_cassa_ws";
+
+  // ---- Configurazione multi-cliente (config.json) -------------------------
+  // Ogni "profilo" del config porta una o più aziende (nome/url/istanze).
+  // La scelta di cliente+istanza avviene PRIMA del login e alimenta gli
+  // envelope SOAP al posto dei valori un tempo cablati.
+  let CONFIG = null;
+  let AZIENDE = [];
+  const selezione = {
+    nomeCliente: null,
+    url: null,
+    istanza: null,
+    // Ancora fissi: verranno da bgla_site_list_ws (per ora default legacy)
+    mCompany: "701",
+    pSite: "009701"
+  };
+
+  function setBaseUrl(baseUrl){
+    // baseUrl es. "https://www.lucchi.com:448/wigest617/servlet/"
+    const base = baseUrl.endsWith("/") ? baseUrl : baseUrl + "/";
+    WS_LOGIN_URL = base + "bgla_chkpwd_ai_ws";
+    WS_URL = base + "bapp_cassa_ws";
+  }
 
   // ---- shared helpers ----------------------------------------------------
 
@@ -1045,6 +1109,12 @@
   const riscexcelView = document.getElementById("riscexcelView");
   const riscexcelBackBtn = document.getElementById("riscexcelBackBtn");
   const riscexcelLogoutBtn = document.getElementById("riscexcelLogoutBtn");
+  const campoCliente = document.getElementById("campoCliente");
+  const selCliente = document.getElementById("selCliente");
+  const campoIstanza = document.getElementById("campoIstanza");
+  const selIstanza = document.getElementById("selIstanza");
+  const clienteCorrenteLabel = document.getElementById("clienteCorrenteLabel");
+  const cambiaConfigLink = document.getElementById("cambiaConfigLink");
 
   let currentUserCode = null; // nrute restituito dal login, usato come p_usercassa
   let sessionInfo = {}; // altri campi restituiti dal login (bra, sub, site, codazi, ecc.)
@@ -1086,6 +1156,131 @@
     menuView.classList.remove("hidden");
   }
 
+  // ---- Risoluzione config e costruzione della scelta cliente/istanza ------
+
+  function trovaProfilo(id){
+    if (!CONFIG || !CONFIG.profili) return null;
+    return CONFIG.profili.find((p) => String(p.id) === String(id)) || null;
+  }
+
+  // Restituisce sempre una lista piatta di aziende, risolvendo aziende_ref (ricorsiva).
+  function risolviAziende(profilo){
+    if (!profilo) return [];
+    if (profilo.aziende) return profilo.aziende;
+    if (profilo.aziende_ref){
+      return profilo.aziende_ref.reduce(
+        (acc, refId) => acc.concat(risolviAziende(trovaProfilo(refId))), []
+      );
+    }
+    return [];
+  }
+
+  function popolaIstanze(azienda){
+    selIstanza.innerHTML = "";
+    const istanze = (azienda && azienda.istanze) || [];
+    istanze.forEach((ist) => {
+      const opt = document.createElement("option");
+      opt.value = ist;
+      opt.textContent = ist;
+      selIstanza.appendChild(opt);
+    });
+    // La combo istanza appare solo se c'è più di un'istanza
+    campoIstanza.classList.toggle("hidden", istanze.length <= 1);
+    selezione.istanza = istanze.length ? istanze[0] : null;
+  }
+
+  function applicaAzienda(azienda){
+    selezione.nomeCliente = azienda ? azienda.nome : null;
+    selezione.url = azienda ? azienda.url : null;
+    if (azienda && azienda.url) setBaseUrl(azienda.url);
+    clienteCorrenteLabel.textContent = azienda ? azienda.nome : "";
+    popolaIstanze(azienda);
+  }
+
+  function costruisciSelezione(cfgId){
+    const profilo = cfgId ? trovaProfilo(cfgId) : null;
+    if (profilo && profilo.nome) document.title = profilo.nome;
+
+    if (cfgId){
+      AZIENDE = risolviAziende(profilo);
+    } else {
+      // Nessun cfg: tutti i clienti reali (esclusi i contenitori con aziende_ref)
+      AZIENDE = CONFIG.profili
+        .filter((p) => !p.aziende_ref)
+        .reduce((acc, p) => acc.concat(risolviAziende(p)), []);
+    }
+
+    if (AZIENDE.length === 0){
+      showLoginError("Configurazione non valida: nessuna azienda disponibile.");
+      loginBtn.disabled = true;
+      return;
+    }
+
+    // Combo cliente: appare solo se c'è più di un'azienda
+    if (AZIENDE.length > 1){
+      selCliente.innerHTML = "";
+      AZIENDE.forEach((a, i) => {
+        const opt = document.createElement("option");
+        opt.value = String(i);
+        opt.textContent = a.nome;
+        selCliente.appendChild(opt);
+      });
+      campoCliente.classList.remove("hidden");
+      applicaAzienda(AZIENDE[0]);
+      selCliente.addEventListener("change", () => {
+        applicaAzienda(AZIENDE[Number(selCliente.value)]);
+      });
+    } else {
+      campoCliente.classList.add("hidden");
+      applicaAzienda(AZIENDE[0]);
+    }
+  }
+
+  function risolviCfg(){
+    const params = new URLSearchParams(window.location.search);
+    const cfgUrl = params.get("cfg");
+    if (cfgUrl){
+      // Link dedicato: uso e memorizzo (l'icona installata riaprirà questo cliente)
+      try { localStorage.setItem("cfg", cfgUrl); } catch (e) {}
+      return cfgUrl;
+    }
+    // Nessun cfg nell'URL: recupero l'eventuale valore salvato
+    let salvato = null;
+    try { salvato = localStorage.getItem("cfg"); } catch (e) {}
+    return salvato;
+  }
+
+  function initConfig(){
+    // "Cambia configurazione": azzera il cfg salvato e torna all'ingresso generico
+    cambiaConfigLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      try { localStorage.removeItem("cfg"); } catch (err) {}
+      window.location.href = window.location.pathname;
+    });
+    selIstanza.addEventListener("change", () => { selezione.istanza = selIstanza.value; });
+
+    fetch("./config.json", { cache: "no-cache" })
+      .then((r) => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+      .then((cfg) => {
+        CONFIG = cfg;
+        let cfgId = risolviCfg();
+        // Se l'id salvato/passato non esiste più nel config, ripiega su "tutti"
+        if (cfgId && !trovaProfilo(cfgId)){
+          try { localStorage.removeItem("cfg"); } catch (e) {}
+          cfgId = null;
+        }
+        // Il link "Cambia configurazione" ha senso solo se c'è un cfg attivo
+        cambiaConfigLink.classList.toggle("hidden", !cfgId);
+        costruisciSelezione(cfgId);
+      })
+      .catch((err) => {
+        showLoginError("Impossibile caricare config.json. Va servito via http/https "
+          + "(GitHub Pages o un server locale), non aprendo il file col doppio clic. "
+          + (err && err.message ? err.message : String(err)));
+        loginBtn.disabled = true;
+      });
+  }
+
   function buildLoginEnvelope(user, pass){
     return `<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:bgla="http://bgla_chkpwd_ai_ws.ws.localhost/">
@@ -1094,11 +1289,11 @@
       <bgla:bgla_chkpwd_ai_ws_Run>
          <bgla:m_UserName>ws</bgla:m_UserName>
          <bgla:m_Password>ws_1234!</bgla:m_Password>
-         <bgla:m_Company>701</bgla:m_Company>
-         <bgla:m_Instance>SERVLET_WIGEST_AMICIGIGI_1105</bgla:m_Instance>
+         <bgla:m_Company>${escapeXml(selezione.mCompany)}</bgla:m_Company>
+         <bgla:m_Instance>${escapeXml(selezione.istanza)}</bgla:m_Instance>
          <bgla:p_Nomeutente>${escapeXml(user)}</bgla:p_Nomeutente>
          <bgla:p_Password>${escapeXml(pass)}</bgla:p_Password>
-         <bgla:p_Site>009701</bgla:p_Site>
+         <bgla:p_Site>${escapeXml(selezione.pSite)}</bgla:p_Site>
       </bgla:bgla_chkpwd_ai_ws_Run>
    </soapenv:Body>
 </soapenv:Envelope>`;
@@ -1162,6 +1357,15 @@
 
     if (!user || !pass){
       showLoginError("Inserisci utente e password.");
+      return;
+    }
+
+    // Istanza corrente dalla combo (se visibile), poi controllo di presenza
+    if (!campoIstanza.classList.contains("hidden")){
+      selezione.istanza = selIstanza.value;
+    }
+    if (!selezione.istanza){
+      showLoginError("Seleziona cliente e istanza.");
       return;
     }
 
@@ -1230,6 +1434,9 @@
   logoutBtn.addEventListener("click", resetToLogin);
   menuLogoutBtn.addEventListener("click", resetToLogin);
   riscexcelLogoutBtn.addEventListener("click", resetToLogin);
+
+  // Avvio: carica config.json e costruisce la scelta cliente/istanza nel login
+  initConfig();
 
   backToMenuBtn.addEventListener("click", () => {
     appView.classList.add("hidden");
@@ -1338,15 +1545,16 @@
       <bapp:bapp_cassa_ws_Run>
          <bapp:m_UserName>ws</bapp:m_UserName>
          <bapp:m_Password>ws_1234!</bapp:m_Password>
-         <bapp:m_Company>701</bapp:m_Company>
-         <bapp:m_Instance>SERVLET_WIGEST_AMICIGIGI_1105</bapp:m_Instance>
+         <bapp:m_Company>${escapeXml(selezione.mCompany)}</bapp:m_Company>
+         <bapp:m_Instance>${escapeXml(selezione.istanza)}</bapp:m_Instance>
+         <!-- TODO: p_user, p_Subs, p_Branc, p_Sect, p_Curr arriveranno da bgla_site_list_ws (per ora default legacy) -->
          <bapp:p_user>5</bapp:p_user>
          <bapp:p_ws_call>Y</bapp:p_ws_call>
          <bapp:p_Subs>09701</bapp:p_Subs>
          <bapp:p_Branc>9701</bapp:p_Branc>
          <bapp:p_Sect>01</bapp:p_Sect>
          <bapp:p_Curr>EUR</bapp:p_Curr>
-         <bapp:p_PhiSite>009701</bapp:p_PhiSite>
+         <bapp:p_PhiSite>${escapeXml(selezione.pSite)}</bapp:p_PhiSite>
          <bapp:p_PaySite></bapp:p_PaySite>
          <bapp:p_PaySubs></bapp:p_PaySubs>
          <bapp:p_Wareh></bapp:p_Wareh>
