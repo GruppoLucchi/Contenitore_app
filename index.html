@@ -1001,8 +1001,9 @@
 
   let WS_LOGIN_URL = "https://www.lucchi.com:448/wigest617/servlet/bgla_chkpwd_ai_ws";
   let WS_URL = "https://www.lucchi.com:448/wigest617/servlet/bapp_cassa_ws";
-  // Nome del servlet della query aziende/utente (da confermare lato server)
-  const WS_COMPANIES_NAME = "start_login_companies_user_app_TabularQuery";
+  // Endpoint della query aziende/utente: deve combaciare con la url-pattern
+  // mappata nel CorsFilter (/servlet/SQLDataProviderServer/start_login_companies_user_app)
+  const WS_COMPANIES_NAME = "SQLDataProviderServer/start_login_companies_user_app";
   let WS_COMPANIES_URL = "https://www.lucchi.com:448/wigest617/servlet/" + WS_COMPANIES_NAME;
 
   // ---- Configurazione multi-cliente (config.json) -------------------------
