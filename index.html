@@ -1469,6 +1469,72 @@
     queryRespPanel.classList.toggle("hidden");
   });
 
+  // Esegue la query aziende/utente. Idempotente: se è già in corso restituisce
+  // la stessa promise, così blur del campo password e click su Accedi non la
+  // lanciano due volte. Ritorna { ok, multiple }.
+  let caricamentoAziende = null;
+
+  function caricaAziende(){
+    if (caricamentoAziende) return caricamentoAziende;
+    caricamentoAziende = eseguiCaricaAziende().finally(() => { caricamentoAziende = null; });
+    return caricamentoAziende;
+  }
+
+  async function eseguiCaricaAziende(){
+    if (!campoIstanza.classList.contains("hidden")){
+      selezione.istanza = selIstanza.value;
+    }
+    const user = userInput.value.trim();
+    if (!selezione.istanza || !user){
+      return { ok: false };
+    }
+
+    setLoginBusy(true);
+    try {
+      const queryXML = buildCompaniesEnvelope(selezione.istanza, user);
+      setQueryReqPanel(queryXML);
+
+      const resp = await fetch(WS_COMPANIES_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/xml; charset=utf-8" },
+        body: queryXML
+      });
+
+      const respText = await resp.text();
+      setQueryRespPanel(deepDecode(respText));
+
+      if (!resp.ok){
+        const bodyPreview = deepDecode(respText).trim();
+        showLoginError(`Errore HTTP ${resp.status} ${resp.statusText} (query aziende).` + (bodyPreview ? `\n\n${bodyPreview}` : ""));
+        return { ok: false };
+      }
+
+      companiesItems = parseCompanies(respText);
+
+      if (companiesItems.length === 0){
+        showLoginError("Nessuna azienda disponibile per questo utente.");
+        return { ok: false };
+      }
+
+      if (companiesItems.length === 1){
+        // Un solo item: assegno i parametri in silenzio (nessuna combo)
+        assegnaParametri(companiesItems[0]);
+        return { ok: true, multiple: false };
+      }
+
+      // Più item: propongo la combo con le descrizioni azienda (DESAZI)
+      popolaAziende(companiesItems);
+      campoAzienda.classList.remove("hidden");
+      return { ok: true, multiple: true };
+    } catch (err){
+      showLoginError("Chiamata alla query aziende non riuscita. " + (err && err.message ? err.message : String(err)) + " " + networkErrorHint(err));
+      setQueryRespPanel("Nessuna risposta ricevuta (chiamata fallita).\n\n" + (err && err.message ? err.message : String(err)));
+      return { ok: false };
+    } finally {
+      setLoginBusy(false);
+    }
+  }
+
   async function doLogin(){
     const user = userInput.value.trim();
     const pass = passInput.value;
@@ -1497,50 +1563,15 @@
       return;
     }
 
-    // Altrimenti: prima la query aziende/utente
-    setLoginBusy(true);
-    try {
-      const queryXML = buildCompaniesEnvelope(selezione.istanza, user);
-      setQueryReqPanel(queryXML);
-
-      const resp = await fetch(WS_COMPANIES_URL, {
-        method: "POST",
-        headers: { "Content-Type": "text/xml; charset=utf-8" },
-        body: queryXML
-      });
-
-      const respText = await resp.text();
-      setQueryRespPanel(deepDecode(respText));
-
-      if (!resp.ok){
-        const bodyPreview = deepDecode(respText).trim();
-        showLoginError(`Errore HTTP ${resp.status} ${resp.statusText} (query aziende).` + (bodyPreview ? `\n\n${bodyPreview}` : ""));
-        return;
-      }
-
-      companiesItems = parseCompanies(respText);
-
-      if (companiesItems.length === 0){
-        showLoginError("Nessuna azienda disponibile per questo utente.");
-        return;
-      }
-
-      if (companiesItems.length === 1){
-        // Un solo item: assegno i parametri e procedo con l'autenticazione
-        assegnaParametri(companiesItems[0]);
-        await eseguiChkpwd(user, pass);
-      } else {
-        // Più item: propongo la combo con le descrizioni azienda (DESAZI)
-        popolaAziende(companiesItems);
-        campoAzienda.classList.remove("hidden");
-        showLoginError("Più aziende disponibili: seleziona l'azienda e premi di nuovo Accedi.");
-      }
-    } catch (err){
-      showLoginError("Chiamata alla query aziende non riuscita. " + (err && err.message ? err.message : String(err)) + " " + networkErrorHint(err));
-      setQueryRespPanel("Nessuna risposta ricevuta (chiamata fallita).\n\n" + (err && err.message ? err.message : String(err)));
-    } finally {
-      setLoginBusy(false);
+    // Se la query non è ancora stata eseguita (o è in corso), eseguila/attendila
+    if (!companiesItems){
+      const esito = await caricaAziende();
+      if (!esito || !esito.ok) return;   // errore o nessuna azienda
+      if (esito.multiple) return;        // combo mostrata: scegli e premi Accedi
     }
+
+    // Query già risolta con una sola azienda -> autentico
+    await eseguiChkpwd(user, pass);
   }
 
   // Autenticazione vera e propria su bgla_chkpwd_ai_ws, con i parametri già assegnati
@@ -1590,6 +1621,20 @@
   loginBtn.addEventListener("click", doLogin);
   passInput.addEventListener("keydown", (e) => { if (e.key === "Enter") doLogin(); });
   userInput.addEventListener("keydown", (e) => { if (e.key === "Enter") passInput.focus(); });
+
+  // La query parte all'uscita dal campo password, se istanza/utente/password
+  // sono tutti pieni e la query non è già stata eseguita.
+  passInput.addEventListener("blur", () => {
+    if (!campoIstanza.classList.contains("hidden")){
+      selezione.istanza = selIstanza.value;
+    }
+    const user = userInput.value.trim();
+    const pass = passInput.value;
+    if (selezione.istanza && user && pass && !companiesItems){
+      hideLoginError();
+      caricaAziende();
+    }
+  });
 
   function resetToLogin(){
     currentUserCode = null;
