@@ -712,8 +712,20 @@
       </div>
       <button type="button" class="btn-primary" id="loginBtn">Accedi</button>
       <div class="downloads">
-        <button type="button" class="btn-ghost" id="toggleLoginReqBtn" disabled>Visualizza chiamata</button>
-        <button type="button" class="btn-ghost" id="toggleLoginRespBtn" disabled>Visualizza risposta</button>
+        <button type="button" class="btn-ghost" id="toggleQueryReqBtn" disabled>Visualizza chiamata query</button>
+        <button type="button" class="btn-ghost" id="toggleQueryRespBtn" disabled>Visualizza risposta query</button>
+      </div>
+      <div class="panels">
+        <div class="panel hidden" id="queryReqPanel">
+          <pre id="queryReqPanelText"></pre>
+        </div>
+        <div class="panel hidden" id="queryRespPanel">
+          <pre id="queryRespPanelText"></pre>
+        </div>
+      </div>
+      <div class="downloads">
+        <button type="button" class="btn-ghost" id="toggleLoginReqBtn" disabled>Visualizza chiamata login</button>
+        <button type="button" class="btn-ghost" id="toggleLoginRespBtn" disabled>Visualizza risposta login</button>
       </div>
       <div class="panels">
         <div class="panel hidden" id="loginReqPanel">
@@ -1111,6 +1123,12 @@
   const loginRespPanel = document.getElementById("loginRespPanel");
   const loginReqPanelText = document.getElementById("loginReqPanelText");
   const loginRespPanelText = document.getElementById("loginRespPanelText");
+  const toggleQueryReqBtn = document.getElementById("toggleQueryReqBtn");
+  const toggleQueryRespBtn = document.getElementById("toggleQueryRespBtn");
+  const queryReqPanel = document.getElementById("queryReqPanel");
+  const queryRespPanel = document.getElementById("queryRespPanel");
+  const queryReqPanelText = document.getElementById("queryReqPanelText");
+  const queryRespPanelText = document.getElementById("queryRespPanelText");
   const loggedUserLabel = document.getElementById("loggedUserLabel");
   const logoutBtn = document.getElementById("logoutBtn");
   const menuUserLabel = document.getElementById("menuUserLabel");
@@ -1427,11 +1445,27 @@
     toggleLoginRespBtn.disabled = false;
   }
 
+  function setQueryReqPanel(text){
+    queryReqPanelText.textContent = text;
+    toggleQueryReqBtn.disabled = false;
+  }
+
+  function setQueryRespPanel(text){
+    queryRespPanelText.textContent = text || "(risposta vuota)";
+    toggleQueryRespBtn.disabled = false;
+  }
+
   toggleLoginReqBtn.addEventListener("click", () => {
     loginReqPanel.classList.toggle("hidden");
   });
   toggleLoginRespBtn.addEventListener("click", () => {
     loginRespPanel.classList.toggle("hidden");
+  });
+  toggleQueryReqBtn.addEventListener("click", () => {
+    queryReqPanel.classList.toggle("hidden");
+  });
+  toggleQueryRespBtn.addEventListener("click", () => {
+    queryRespPanel.classList.toggle("hidden");
   });
 
   async function doLogin(){
@@ -1466,7 +1500,7 @@
     setLoginBusy(true);
     try {
       const queryXML = buildCompaniesEnvelope(selezione.istanza, user);
-      setLoginReqPanel(queryXML);
+      setQueryReqPanel(queryXML);
 
       const resp = await fetch(WS_COMPANIES_URL, {
         method: "POST",
@@ -1475,7 +1509,7 @@
       });
 
       const respText = await resp.text();
-      setLoginRespPanel(deepDecode(respText));
+      setQueryRespPanel(deepDecode(respText));
 
       if (!resp.ok){
         const bodyPreview = deepDecode(respText).trim();
@@ -1502,7 +1536,7 @@
       }
     } catch (err){
       showLoginError("Chiamata alla query aziende non riuscita. " + (err && err.message ? err.message : String(err)) + " " + networkErrorHint(err));
-      setLoginRespPanel("Nessuna risposta ricevuta (chiamata fallita).\n\n" + (err && err.message ? err.message : String(err)));
+      setQueryRespPanel("Nessuna risposta ricevuta (chiamata fallita).\n\n" + (err && err.message ? err.message : String(err)));
     } finally {
       setLoginBusy(false);
     }

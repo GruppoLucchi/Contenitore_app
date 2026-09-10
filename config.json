@@ -13,10 +13,10 @@
     },
     {
       "id": 2,
-      "nome": "WIGEST ANAFIBJ",
+      "nome": "WIGEST MDB 7 Agosto",
       "aziende": [
         {
-          "nome": "WIGEST ANAFIBJ",
+          "nome": "WIGEST MDB 7 Agosto",
           "url": "https://www.lucchi.com:448/wigest617/servlet/",
           "istanze": ["SERVLET_WIGEST_MDB_07082026"]
         }
@@ -45,7 +45,7 @@
         {
           "nome": "WIGEST Amici di Gigi multi istanza",
           "url": "https://www.lucchi.com:448/wigest617/servlet/",
-          "istanze": ["SERVLET_WIGEST_AMICIGIGI_1105", "WIGEST_AMICIGIGI_1009"]
+          "istanze": ["SERVLET_WIGEST_AMICIGIGI_1105", "SERVLET_WIGEST_AMICIGIGI_1009"]
         }
       ]
     }
