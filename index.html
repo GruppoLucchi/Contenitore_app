@@ -302,6 +302,16 @@
     font-size:15px;
     color:#f7f5ef;
   }
+  .menu-head-info{ min-width:0; }
+  .menu-sub{
+    margin:3px 0 0;
+    font-size:12px;
+    color:#9fb0be;
+    line-height:1.45;
+    word-break:break-word;
+  }
+  .menu-sub .etichetta{ color:#c9d4dd; font-weight:600; }
+  .menu-sub .sep{ margin:0 8px; opacity:.5; }
   .btn-link{
     background:transparent;
     border:none;
@@ -698,10 +708,6 @@
         <label for="selIstanza">Istanza</label>
         <select id="selIstanza" class="text-input"></select>
       </div>
-      <div class="field hidden" id="campoAzienda">
-        <label for="selAzienda">Azienda</label>
-        <select id="selAzienda" class="text-input"></select>
-      </div>
       <div class="field">
         <label for="userInput">Utente</label>
         <input type="text" id="userInput" class="text-input" placeholder="Nome utente" autocomplete="username" autocapitalize="off" autocorrect="off" spellcheck="false" />
@@ -709,6 +715,10 @@
       <div class="field">
         <label for="passInput">Password</label>
         <input type="password" id="passInput" class="text-input" placeholder="Password" autocomplete="current-password" />
+      </div>
+      <div class="field hidden" id="campoAzienda">
+        <label for="selAzienda">Azienda</label>
+        <select id="selAzienda" class="text-input"></select>
       </div>
       <button type="button" class="btn-primary" id="loginBtn">Accedi</button>
       <div class="downloads">
@@ -745,7 +755,10 @@
   <!-- MENU VIEW (visible dopo il login, prima di scegliere un'applicazione) -->
   <div id="menuView" class="hidden">
     <div class="menu-head">
-      <h2 id="menuUserLabel">Utente</h2>
+      <div class="menu-head-info">
+        <h2 id="menuUserLabel">Benvenuto</h2>
+        <p class="menu-sub" id="menuContextLabel"></p>
+      </div>
       <button type="button" class="btn-link btn-link-light" id="menuLogoutBtn">Cambia utente</button>
     </div>
     <div class="app-grid">
@@ -1133,6 +1146,7 @@
   const loggedUserLabel = document.getElementById("loggedUserLabel");
   const logoutBtn = document.getElementById("logoutBtn");
   const menuUserLabel = document.getElementById("menuUserLabel");
+  const menuContextLabel = document.getElementById("menuContextLabel");
   const menuLogoutBtn = document.getElementById("menuLogoutBtn");
   const backToMenuBtn = document.getElementById("backToMenuBtn");
   const btnScontrini = document.getElementById("btnScontrini");
@@ -1171,8 +1185,14 @@
 
   function showMenu(user, data){
     sessionInfo = data;
-    menuUserLabel.textContent = user;
+    menuUserLabel.textContent = "Benvenuto, " + user;
     loggedUserLabel.textContent = user;
+
+    // Riga di contesto: Istanza (nome istanza) e Azienda (descrizione)
+    menuContextLabel.innerHTML =
+      '<span class="etichetta">Istanza</span> ' + escapeXml(selezione.istanza || "") +
+      '<span class="sep">·</span>' +
+      '<span class="etichetta">Azienda</span> ' + escapeXml(selezione.desAzienda || "");
 
     const apps = parseListApp(data.listapp);
     const hasScontrini = apps.includes("SCONTRINI");
@@ -1364,6 +1384,7 @@
     selezione.pBranc   = item.P801B;
     selezione.pCurr    = "EUR";
     selezione.mCompany = item.CODAZI;
+    selezione.desAzienda = item.DESAZI; // descrizione azienda (per il menu)
   }
 
   function popolaAziende(items){
