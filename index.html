@@ -698,6 +698,10 @@
         <label for="selIstanza">Istanza</label>
         <select id="selIstanza" class="text-input"></select>
       </div>
+      <div class="field hidden" id="campoAzienda">
+        <label for="selAzienda">Azienda</label>
+        <select id="selAzienda" class="text-input"></select>
+      </div>
       <div class="field">
         <label for="userInput">Utente</label>
         <input type="text" id="userInput" class="text-input" placeholder="Nome utente" autocomplete="username" autocapitalize="off" autocorrect="off" spellcheck="false" />
@@ -985,6 +989,9 @@
 
   let WS_LOGIN_URL = "https://www.lucchi.com:448/wigest617/servlet/bgla_chkpwd_ai_ws";
   let WS_URL = "https://www.lucchi.com:448/wigest617/servlet/bapp_cassa_ws";
+  // Nome del servlet della query aziende/utente (da confermare lato server)
+  const WS_COMPANIES_NAME = "start_login_companies_user_app_TabularQuery";
+  let WS_COMPANIES_URL = "https://www.lucchi.com:448/wigest617/servlet/" + WS_COMPANIES_NAME;
 
   // ---- Configurazione multi-cliente (config.json) -------------------------
   // Ogni "profilo" del config porta una o più aziende (nome/url/istanze).
@@ -996,9 +1003,16 @@
     nomeCliente: null,
     url: null,
     istanza: null,
-    // Ancora fissi: verranno da bgla_site_list_ws (per ora default legacy)
+    // Valori ricavati dalla query start_login_companies_user_app.
+    // Default legacy come fallback prima della query.
     mCompany: "701",
-    pSite: "009701"
+    pSite: "009701",
+    pPhiSite: "009701",
+    pSubs: "09701",
+    pBranc: "9701",
+    pSect: "01",
+    pCurr: "EUR",
+    pUser: "5"   // TODO: da confermare (era numerico; l'utente digitato è testuale)
   };
 
   function setBaseUrl(baseUrl){
@@ -1006,6 +1020,7 @@
     const base = baseUrl.endsWith("/") ? baseUrl : baseUrl + "/";
     WS_LOGIN_URL = base + "bgla_chkpwd_ai_ws";
     WS_URL = base + "bapp_cassa_ws";
+    WS_COMPANIES_URL = base + WS_COMPANIES_NAME;
   }
 
   // ---- shared helpers ----------------------------------------------------
@@ -1113,6 +1128,8 @@
   const selCliente = document.getElementById("selCliente");
   const campoIstanza = document.getElementById("campoIstanza");
   const selIstanza = document.getElementById("selIstanza");
+  const campoAzienda = document.getElementById("campoAzienda");
+  const selAzienda = document.getElementById("selAzienda");
   const clienteCorrenteLabel = document.getElementById("clienteCorrenteLabel");
   const cambiaConfigLink = document.getElementById("cambiaConfigLink");
 
@@ -1187,6 +1204,7 @@
     // La combo istanza appare solo se c'è più di un'istanza
     campoIstanza.classList.toggle("hidden", istanze.length <= 1);
     selezione.istanza = istanze.length ? istanze[0] : null;
+    if (typeof resetCompanies === "function") resetCompanies();
   }
 
   function applicaAzienda(azienda){
@@ -1257,7 +1275,8 @@
       try { localStorage.removeItem("cfg"); } catch (err) {}
       window.location.href = window.location.pathname;
     });
-    selIstanza.addEventListener("change", () => { selezione.istanza = selIstanza.value; });
+    selIstanza.addEventListener("change", () => { selezione.istanza = selIstanza.value; resetCompanies(); });
+    userInput.addEventListener("input", () => { resetCompanies(); });
 
     fetch("./config.json", { cache: "no-cache" })
       .then((r) => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
@@ -1279,6 +1298,70 @@
           + (err && err.message ? err.message : String(err)));
         loginBtn.disabled = true;
       });
+  }
+
+  // ---- Query aziende/utente (start_login_companies_user_app) --------------
+  // Sostituisce il vecchio bgla_site_list_ws. Va chiamata PRIMA del login:
+  // dai suoi risultati si ricavano i parametri usati in tutte le chiamate WS.
+
+  let companiesItems = null; // ultimi item restituiti dalla query
+
+  function buildCompaniesEnvelope(istanza, userSSO){
+    // L'istanza va iniettata anche nel namespace del tag di operazione
+    const ns = "http://start_login_companies_user_app." + istanza + ".ws.localhost/";
+    return `<?xml version="1.0" encoding="utf-8"?>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+  <soap:Body>
+    <tns:start_login_companies_user_app_TabularQuery xmlns:tns="${ns}">
+      <tns:m_UserName>ws</tns:m_UserName>
+      <tns:m_Password>ws_1234!</tns:m_Password>
+      <tns:m_Company></tns:m_Company>
+      <tns:m_Instance>${escapeXml(istanza)}</tns:m_Instance>
+      <tns:w_UserSSO>${escapeXml(userSSO)}</tns:w_UserSSO>
+    </tns:start_login_companies_user_app_TabularQuery>
+  </soap:Body>
+</soap:Envelope>`;
+  }
+
+  function parseCompanies(xmlText){
+    const doc = new DOMParser().parseFromString(deepDecode(xmlText), "text/xml");
+    return findAllByLocalName(doc, "item").map((it) => ({
+      P801CODE: textOf(findByLocalName(it, "P801CODE")),
+      P801DESC: textOf(findByLocalName(it, "P801DESC")),
+      P801S:    textOf(findByLocalName(it, "P801S")),
+      P801B:    textOf(findByLocalName(it, "P801B")),
+      P801E:    textOf(findByLocalName(it, "P801E")),
+      CODAZI:   textOf(findByLocalName(it, "CODAZI")),
+      DESAZI:   textOf(findByLocalName(it, "DESAZI"))
+    }));
+  }
+
+  // Assegna i parametri usati da tutte le chiamate WS a partire da un item
+  function assegnaParametri(item){
+    selezione.pSite    = item.P801CODE;
+    selezione.pPhiSite = item.P801CODE;
+    selezione.pSubs    = item.P801S;
+    selezione.pSect    = item.P801E;
+    selezione.pBranc   = item.P801B;
+    selezione.pCurr    = "EUR";
+    selezione.mCompany = item.CODAZI;
+  }
+
+  function popolaAziende(items){
+    selAzienda.innerHTML = "";
+    items.forEach((it, i) => {
+      const opt = document.createElement("option");
+      opt.value = String(i);
+      opt.textContent = it.DESAZI || it.CODAZI || ("Azienda " + (i + 1));
+      selAzienda.appendChild(opt);
+    });
+  }
+
+  // Azzera lo stato aziende (dopo un cambio di cliente/istanza/utente o login)
+  function resetCompanies(){
+    companiesItems = null;
+    campoAzienda.classList.add("hidden");
+    selAzienda.innerHTML = "";
   }
 
   function buildLoginEnvelope(user, pass){
@@ -1370,8 +1453,64 @@
     }
 
     hideLoginError();
-    setLoginBusy(true);
 
+    // Caso: aziende multiple già proposte -> completa con quella scelta
+    if (!campoAzienda.classList.contains("hidden") && companiesItems && companiesItems.length){
+      const item = companiesItems[Number(selAzienda.value)] || companiesItems[0];
+      assegnaParametri(item);
+      await eseguiChkpwd(user, pass);
+      return;
+    }
+
+    // Altrimenti: prima la query aziende/utente
+    setLoginBusy(true);
+    try {
+      const queryXML = buildCompaniesEnvelope(selezione.istanza, user);
+      setLoginReqPanel(queryXML);
+
+      const resp = await fetch(WS_COMPANIES_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/xml; charset=utf-8" },
+        body: queryXML
+      });
+
+      const respText = await resp.text();
+      setLoginRespPanel(deepDecode(respText));
+
+      if (!resp.ok){
+        const bodyPreview = deepDecode(respText).trim();
+        showLoginError(`Errore HTTP ${resp.status} ${resp.statusText} (query aziende).` + (bodyPreview ? `\n\n${bodyPreview}` : ""));
+        return;
+      }
+
+      companiesItems = parseCompanies(respText);
+
+      if (companiesItems.length === 0){
+        showLoginError("Nessuna azienda disponibile per questo utente.");
+        return;
+      }
+
+      if (companiesItems.length === 1){
+        // Un solo item: assegno i parametri e procedo con l'autenticazione
+        assegnaParametri(companiesItems[0]);
+        await eseguiChkpwd(user, pass);
+      } else {
+        // Più item: propongo la combo con le descrizioni azienda (DESAZI)
+        popolaAziende(companiesItems);
+        campoAzienda.classList.remove("hidden");
+        showLoginError("Più aziende disponibili: seleziona l'azienda e premi di nuovo Accedi.");
+      }
+    } catch (err){
+      showLoginError("Chiamata alla query aziende non riuscita. " + (err && err.message ? err.message : String(err)) + " " + networkErrorHint(err));
+      setLoginRespPanel("Nessuna risposta ricevuta (chiamata fallita).\n\n" + (err && err.message ? err.message : String(err)));
+    } finally {
+      setLoginBusy(false);
+    }
+  }
+
+  // Autenticazione vera e propria su bgla_chkpwd_ai_ws, con i parametri già assegnati
+  async function eseguiChkpwd(user, pass){
+    setLoginBusy(true);
     try {
       const requestXML = buildLoginEnvelope(user, pass);
       setLoginReqPanel(requestXML);
@@ -1401,6 +1540,8 @@
       }
 
       currentUserCode = data.nrute;
+      selezione.pUser = user; // utente digitato (TODO: confermare mappatura p_user)
+      resetCompanies();
       showMenu(user, data);
       passInput.value = "";
     } catch (err){
@@ -1547,14 +1688,13 @@
          <bapp:m_Password>ws_1234!</bapp:m_Password>
          <bapp:m_Company>${escapeXml(selezione.mCompany)}</bapp:m_Company>
          <bapp:m_Instance>${escapeXml(selezione.istanza)}</bapp:m_Instance>
-         <!-- TODO: p_user, p_Subs, p_Branc, p_Sect, p_Curr arriveranno da bgla_site_list_ws (per ora default legacy) -->
-         <bapp:p_user>5</bapp:p_user>
+         <bapp:p_user>${escapeXml(selezione.pUser)}</bapp:p_user>
          <bapp:p_ws_call>Y</bapp:p_ws_call>
-         <bapp:p_Subs>09701</bapp:p_Subs>
-         <bapp:p_Branc>9701</bapp:p_Branc>
-         <bapp:p_Sect>01</bapp:p_Sect>
-         <bapp:p_Curr>EUR</bapp:p_Curr>
-         <bapp:p_PhiSite>${escapeXml(selezione.pSite)}</bapp:p_PhiSite>
+         <bapp:p_Subs>${escapeXml(selezione.pSubs)}</bapp:p_Subs>
+         <bapp:p_Branc>${escapeXml(selezione.pBranc)}</bapp:p_Branc>
+         <bapp:p_Sect>${escapeXml(selezione.pSect)}</bapp:p_Sect>
+         <bapp:p_Curr>${escapeXml(selezione.pCurr)}</bapp:p_Curr>
+         <bapp:p_PhiSite>${escapeXml(selezione.pPhiSite)}</bapp:p_PhiSite>
          <bapp:p_PaySite></bapp:p_PaySite>
          <bapp:p_PaySubs></bapp:p_PaySubs>
          <bapp:p_Wareh></bapp:p_Wareh>
