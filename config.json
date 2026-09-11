@@ -24,12 +24,12 @@
     },
     {
       "id": 3,
-      "nome": "WIGEST ANAFIBJ New DB",
+      "nome": "ANARB",
       "aziende": [
         {
-          "nome": "WIGEST ANAFIBJ New DB",
+          "nome": "ANARB",
           "url": "https://www.lucchi.com:448/wigest617/servlet/",
-          "istanze": ["SERVLET_WIGEST_ANAFIBJ"]
+          "istanze": ["SERVLET_WIGEST_ANARB_15062026"]
         }
       ]
     },
