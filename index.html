@@ -1396,7 +1396,7 @@
     items.forEach((it, i) => {
       const opt = document.createElement("option");
       opt.value = String(i);
-      opt.textContent = it.DESAZI || it.CODAZI || ("Azienda " + (i + 1));
+      opt.textContent = it.P801DESC || it.DESAZI || it.CODAZI || ("Azienda " + (i + 1));
       selAzienda.appendChild(opt);
     });
   }
