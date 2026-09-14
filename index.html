@@ -8,6 +8,10 @@
 <link rel="manifest" href="manifest.json" />
 <link rel="icon" href="gla_logo_color.jpg" />
 <link rel="apple-touch-icon" href="gla_logo_color.jpg" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Contenitore" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -1038,7 +1042,7 @@
     pBranc: "9701",
     pSect: "01",
     pCurr: "EUR",
-    pUser: "5"   // TODO: da confermare (era numerico; l'utente digitato è testuale)
+    pUser: "5"   // default legacy; dopo il login vale nrute (vedi eseguiChkpwd)
   };
 
   function setBaseUrl(baseUrl){
@@ -1627,7 +1631,7 @@
       }
 
       currentUserCode = data.nrute;
-      selezione.pUser = user; // utente digitato (TODO: confermare mappatura p_user)
+      selezione.pUser = currentUserCode; // nrute dal login (stesso valore di p_usercassa)
       resetCompanies();
       showMenu(user, data);
       passInput.value = "";
