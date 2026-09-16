@@ -8,7 +8,7 @@
 // controllerchange nell'index - l'app si aggiorna DA SOLA alla riapertura,
 // senza reinstallare e senza manovre da parte dell'utente.
 
-const CACHE_NAME = "primanota-cassa-v15";
+const CACHE_NAME = "primanota-cassa-v16";
 const APP_SHELL = [
   "./",
   "./index.html",
