@@ -2267,10 +2267,18 @@ function aggiornaReport() {
 }
 
 // ---- EXCEL EXPORT ----
+// Nome file: report_incassi_<codice cliente Cli-For>_<data-ora>.xlsx
+function nomeFileReport() {
+  const r0 = dati.righe && dati.righe[0];
+  const codice = (r0 && r0['Cli-For']) ? String(r0['Cli-For']) : 'ND';
+  const o = new Date();
+  const dataora = `${o.getFullYear()}-${pad(o.getMonth()+1)}-${pad(o.getDate())}_${pad(o.getHours())}-${pad(o.getMinutes())}-${pad(o.getSeconds())}`;
+  return `report_incassi_${codice}_${dataora}.xlsx`;
+}
+
 function scaricaExcel() {
   const wb = generaWorkbook();
-  const oggi = new Date().toISOString().split('T')[0];
-  XLSX.writeFile(wb, `report_incassi_${oggi}.xlsx`);
+  XLSX.writeFile(wb, nomeFileReport());
   mostraToast('File scaricato!');
 }
 
@@ -2305,7 +2313,7 @@ function inviaEmail() {
   const pagate = Object.keys(dati.pagamenti).length;
   const subject = encodeURIComponent(`Report incassi ${dataFormattata}`);
   const body = encodeURIComponent(
-    `In allegato il report degli incassi del ${dataFormattata}.\n\nFatture pagate: ${pagate}/${dati.righe.length}\n\nFile: report_incassi_${dataFormattata.replace(/\//g,'-')}.xlsx`
+    `In allegato il report degli incassi del ${dataFormattata}.\n\nFatture pagate: ${pagate}/${dati.righe.length}\n\nFile: ${nomeFileReport()}`
   );
   scaricaExcel();
   setTimeout(() => {
