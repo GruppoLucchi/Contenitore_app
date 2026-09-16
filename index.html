@@ -1702,6 +1702,8 @@
   btnRiscexcel.addEventListener("click", () => {
     menuView.classList.add("hidden");
     riscexcelView.classList.remove("hidden");
+    // Riparte sempre dalla scelta file, proponendo l'eventuale ripresa sessione
+    if (typeof vaiCarica === "function") vaiCarica();
   });
 
   // RISCTABELLE: per ora non chiama nulla, il bottone è solo un segnaposto.
@@ -1970,28 +1972,41 @@ let fatturaAttuale = null;
 let workbookOriginale = null;
 
 // ---- AVVIO ----
-window.addEventListener('load', () => {
+window.addEventListener('load', () => { mostraBannerSessione(); });
+
+// Mostra/aggiorna il banner "riprendi sessione" sullo schermo di caricamento,
+// leggendo la sessione salvata. Va richiamata anche a ogni ingresso nell'app.
+function mostraBannerSessione(){
+  const info = document.getElementById('sessione-info');
+  if (!info) return;
   const salvato = localStorage.getItem('riscossione_sessione');
-  if (salvato) {
-    try {
-      const s = JSON.parse(salvato);
-      // Propongo la ripresa solo se la sessione è del formato attuale del file.
-      // Una sessione salvata da un tracciato precedente (senza Saldo/Cli-For)
-      // darebbe importi a zero: meglio non riprenderla e reimportare il file.
-      if (s.nomeFile && sessioneCompatibile(s)) {
-        document.getElementById('sessione-info').style.display = 'block';
-        document.getElementById('sessione-nome').textContent = s.nomeFile;
-        const d = new Date(s.dataCaricamento);
-        const oggi = new Date();
-        const isOggi = d.toDateString() === oggi.toDateString();
-        const pagate = Object.keys(s.pagamenti || {}).length;
-        document.getElementById('sessione-stato').textContent =
-          (isOggi ? 'Sessione di oggi' : `Sessione del ${d.toLocaleDateString('it-IT')}`) +
-          ` · ${pagate} pagament${pagate === 1 ? 'o' : 'i'} registrat${pagate === 1 ? 'o' : 'i'}`;
-      }
-    } catch(e) {}
-  }
-});
+  if (!salvato) { info.style.display = 'none'; return; }
+  try {
+    const s = JSON.parse(salvato);
+    // Propongo la ripresa solo se la sessione è del formato attuale del file.
+    // Una sessione salvata da un tracciato precedente (senza Saldo/Cli-For)
+    // darebbe importi a zero: meglio non riprenderla e reimportare il file.
+    if (s.nomeFile && sessioneCompatibile(s)) {
+      info.style.display = 'block';
+      document.getElementById('sessione-nome').textContent = s.nomeFile;
+      const d = new Date(s.dataCaricamento);
+      const oggi = new Date();
+      const isOggi = d.toDateString() === oggi.toDateString();
+      const pagate = Object.keys(s.pagamenti || {}).length;
+      document.getElementById('sessione-stato').textContent =
+        (isOggi ? 'Sessione di oggi' : `Sessione del ${d.toLocaleDateString('it-IT')}`) +
+        ` · ${pagate} pagament${pagate === 1 ? 'o' : 'i'} registrat${pagate === 1 ? 'o' : 'i'}`;
+    } else {
+      info.style.display = 'none';
+    }
+  } catch(e) { info.style.display = 'none'; }
+}
+
+// Riporta l'app allo schermo iniziale di scelta file (con l'eventuale ripresa).
+function vaiCarica(){
+  mostraBannerSessione();
+  mostraSchermo('s-carica');
+}
 
 // Una sessione è compatibile col tracciato attuale se le sue righe hanno le
 // chiavi del nuovo file (Saldo e Cli-For).
