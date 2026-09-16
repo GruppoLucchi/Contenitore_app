@@ -1975,7 +1975,10 @@ window.addEventListener('load', () => {
   if (salvato) {
     try {
       const s = JSON.parse(salvato);
-      if (s.nomeFile) {
+      // Propongo la ripresa solo se la sessione è del formato attuale del file.
+      // Una sessione salvata da un tracciato precedente (senza Saldo/Cli-For)
+      // darebbe importi a zero: meglio non riprenderla e reimportare il file.
+      if (s.nomeFile && sessioneCompatibile(s)) {
         document.getElementById('sessione-info').style.display = 'block';
         document.getElementById('sessione-nome').textContent = s.nomeFile;
         const d = new Date(s.dataCaricamento);
@@ -1990,11 +1993,22 @@ window.addEventListener('load', () => {
   }
 });
 
+// Una sessione è compatibile col tracciato attuale se le sue righe hanno le
+// chiavi del nuovo file (Saldo e Cli-For).
+function sessioneCompatibile(s){
+  return s && Array.isArray(s.righe) && s.righe.length > 0 && s.righe[0]
+    && ('Saldo' in s.righe[0]) && ('Cli-For' in s.righe[0]);
+}
+
 function riprendiSessione() {
   const salvato = localStorage.getItem('riscossione_sessione');
   if (!salvato) return;
   const s = JSON.parse(salvato);
   if (!s.righe || s.righe.length === 0) { mostraToast('Sessione non valida'); return; }
+  if (!sessioneCompatibile(s)) {
+    mostraToast('Sessione di un formato precedente: reimporta il file');
+    return;
+  }
   dati = s;
   costruisciClienti();
   vaiLista();
