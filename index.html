@@ -686,6 +686,42 @@
   #riscexcelView .empty-state { text-align: center; padding: 48px 24px; color: var(--testo-secondario); }
   #riscexcelView .empty-state svg { margin-bottom: 16px; opacity: 0.4; }
   #riscexcelView .empty-state p { font-size: 15px; }
+  /* ===== RISCTABELLE (stessa grafica di riscexcel) ===== */
+  #risctabelleView{
+    --blu:#1A3A5C; --blu-chiaro:#2C5F8A; --accento:#E8A020; --accento-chiaro:#FFF3DC;
+    --verde:#1E7A4A; --grigio-bg:#F2F4F7; --grigio-bordo:#D8DCE4;
+    --testo:#1C2B3A; --testo-secondario:#5A6A7A; --bianco:#FFFFFF;
+    --raggio:12px; --raggio-sm:8px; --ombra:0 2px 12px rgba(26,58,92,0.10);
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    background:var(--grigio-bg); color:var(--testo); min-height:100vh;
+    display:flex; flex-direction:column;
+  }
+  #risctabelleView *{ box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+  #risctabelleView .top-bar{ display:flex; align-items:center; justify-content:flex-end; gap:14px; padding:12px 16px; background:var(--ink); }
+  #risctabelleView .header{ background:var(--blu); color:#fff; padding:16px 20px; position:sticky; top:0; z-index:10; }
+  #risctabelleView .header h1{ font-size:18px; font-weight:600; }
+  #risctabelleView .header-sub{ font-size:12px; color:rgba(255,255,255,0.7); margin-top:2px; font-weight:400; }
+  #risctabelleView .rt-toolbar{ padding:12px 16px; background:var(--bianco); border-bottom:1px solid var(--grigio-bordo); }
+  #risctabelleView .rt-search{ width:100%; padding:12px 14px; border:1px solid var(--grigio-bordo); border-radius:var(--raggio-sm); font-size:15px; color:var(--testo); background:var(--bianco); font-family:inherit; }
+  #risctabelleView .rt-search:focus{ outline:none; border-color:var(--blu-chiaro); }
+  #risctabelleView .rt-head{ display:grid; grid-template-columns:1fr 1fr 1.6fr; gap:10px; padding:10px 16px; font-size:11px; font-weight:700; color:var(--testo-secondario); text-transform:uppercase; letter-spacing:.03em; background:var(--grigio-bg); border-bottom:1px solid var(--grigio-bordo); }
+  #risctabelleView .rt-scroll{ flex:1; overflow-y:auto; padding-bottom:8px; }
+  #risctabelleView .rt-row{ display:grid; grid-template-columns:1fr 1fr 1.6fr; gap:10px; padding:14px 16px; border-bottom:1px solid var(--grigio-bordo); cursor:pointer; background:var(--bianco); font-size:13px; align-items:center; }
+  #risctabelleView .rt-row:active{ background:var(--grigio-bg); }
+  #risctabelleView .rt-row.sel{ background:var(--accento-chiaro); border-left:4px solid var(--accento); padding-left:12px; }
+  #risctabelleView .rt-row .conto{ font-weight:700; color:var(--blu); }
+  #risctabelleView .rt-row .rag{ color:var(--testo); word-break:break-word; }
+  #risctabelleView .rt-vuoto{ padding:30px 16px; text-align:center; color:var(--testo-secondario); font-size:14px; }
+  #risctabelleView .rt-footer{ background:var(--bianco); border-top:1px solid var(--grigio-bordo); padding:14px 16px calc(14px + env(safe-area-inset-bottom)); }
+  #risctabelleView .btn-primario{ background:var(--blu); color:#fff; border:none; border-radius:var(--raggio-sm); padding:15px; font-size:16px; font-weight:600; width:100%; cursor:pointer; font-family:inherit; }
+  #risctabelleView .btn-primario:disabled{ opacity:.5; cursor:default; }
+  #risctabelleView .rt-debug-row{ display:flex; gap:8px; margin-top:8px; }
+  #risctabelleView .rt-dbg{ flex:1; background:var(--grigio-bg); color:var(--blu); border:1px solid var(--grigio-bordo); border-radius:var(--raggio-sm); padding:9px; font-size:12px; font-weight:600; cursor:pointer; font-family:inherit; }
+  #risctabelleView .rt-dbg:active{ background:var(--grigio-bordo); }
+  #risctabelleView .rt-panel{ display:none; margin-top:8px; background:#0f1b26; color:#d7e2ec; border-radius:var(--raggio-sm); padding:10px 12px; font-size:11px; white-space:pre-wrap; word-break:break-word; max-height:40vh; overflow:auto; font-family:ui-monospace,Menlo,Consolas,monospace; line-height:1.4; }
+  #risctabelleView .rt-panel.show{ display:block; }
+  #risctabelleView .rt-toast{ position:fixed; left:50%; bottom:84px; transform:translateX(-50%) translateY(10px); background:var(--testo); color:#fff; padding:11px 18px; border-radius:20px; font-size:13px; opacity:0; pointer-events:none; transition:opacity .2s, transform .2s; z-index:30; max-width:90%; text-align:center; }
+  #risctabelleView .rt-toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
 </style>
 </head>
 <body>
@@ -778,11 +814,11 @@
         <span class="app-card-desc">Servizio riscossione con file Excel</span>
         <span class="vai">Apri applicazione &rarr;</span>
       </button>
-      <button type="button" class="app-card placeholder hidden" id="btnRiscTabelle">
+      <button type="button" class="app-card hidden" id="btnRiscTabelle">
         <span class="eyebrow">RISCTABELLE</span>
         <span class="app-card-title">Tabelle Riscossione</span>
         <span class="app-card-desc">Servizio Riscossione con estrazione partite aperte</span>
-        <span class="vai">Non ancora disponibile</span>
+        <span class="vai">Apri applicazione &rarr;</span>
       </button>
       <button type="button" class="app-card placeholder hidden" id="btnCliforupdate">
         <span class="eyebrow">CLIFORUPDATE</span>
@@ -987,6 +1023,44 @@
     <div class="toast" id="toast"></div>
   </div>
 
+  <!-- RISCTABELLE VIEW -->
+  <div id="risctabelleView" class="hidden">
+    <div class="top-bar">
+      <button type="button" class="btn-link btn-link-light" id="risctabelleBackBtn">&larr; Menu</button>
+      <button type="button" class="btn-link btn-link-light" id="risctabelleLogoutBtn">Cambia utente</button>
+    </div>
+    <div class="header">
+      <h1>Tabelle Riscossione</h1>
+      <div class="header-sub">Seleziona un cliente per estrarre le partite aperte</div>
+    </div>
+    <div class="rt-toolbar">
+      <input type="text" id="rt-cerca" class="rt-search" placeholder="Cerca per cliente o ragione sociale&hellip;" autocomplete="off">
+    </div>
+    <div class="rt-head">
+      <span>Conto</span>
+      <span>Cliente</span>
+      <span>Ragione sociale</span>
+    </div>
+    <div class="rt-scroll" id="rt-lista">
+      <div class="rt-vuoto">Caricamento&hellip;</div>
+    </div>
+    <div class="rt-footer">
+      <button type="button" class="btn-primario" id="rt-estrai" disabled>Estrai partite aperte</button>
+      <div class="rt-debug-row">
+        <button type="button" class="rt-dbg" id="rt-btn-qreq">Chiamata query</button>
+        <button type="button" class="rt-dbg" id="rt-btn-qresp">Risposta query</button>
+      </div>
+      <div class="rt-debug-row">
+        <button type="button" class="rt-dbg" id="rt-btn-wsreq">Chiamata WS</button>
+        <button type="button" class="rt-dbg" id="rt-btn-wsresp">Risposta WS</button>
+      </div>
+      <pre class="rt-panel" id="rt-pan-qreq"></pre>
+      <pre class="rt-panel" id="rt-pan-qresp"></pre>
+      <pre class="rt-panel" id="rt-pan-wsreq"></pre>
+      <pre class="rt-panel" id="rt-pan-wsresp"></pre>
+    </div>
+  </div>
+
   <details class="install-card">
     <summary>Installa l'app sul telefono <span class="chev">&#9656;</span></summary>
     <div class="install-body">
@@ -1022,6 +1096,9 @@
   // mappata nel CorsFilter (/servlet/SQLDataProviderServer/start_login_companies_user_app)
   const WS_COMPANIES_NAME = "SQLDataProviderServer/start_login_companies_user_app";
   let WS_COMPANIES_URL = "https://www.lucchi.com:448/wigest617/servlet/" + WS_COMPANIES_NAME;
+  // Query RISCTABELLE (qapp_risc_ws): stesso schema SQLDataProviderServer
+  const WS_RISC_QUERY_NAME = "SQLDataProviderServer/qapp_risc_ws";
+  let WS_RISC_QUERY_URL = "https://www.lucchi.com:448/wigest617/servlet/" + WS_RISC_QUERY_NAME;
 
   // ---- Configurazione multi-cliente (config.json) -------------------------
   // Ogni "profilo" del config porta una o più aziende (nome/url/istanze).
@@ -1051,6 +1128,7 @@
     WS_LOGIN_URL = base + "bgla_chkpwd_ai_ws";
     WS_URL = base + "bapp_cassa_ws";
     WS_COMPANIES_URL = base + WS_COMPANIES_NAME;
+    WS_RISC_QUERY_URL = base + WS_RISC_QUERY_NAME;
   }
 
   // ---- shared helpers ----------------------------------------------------
@@ -1161,6 +1239,20 @@
   const riscexcelView = document.getElementById("riscexcelView");
   const riscexcelBackBtn = document.getElementById("riscexcelBackBtn");
   const riscexcelLogoutBtn = document.getElementById("riscexcelLogoutBtn");
+  const risctabelleView = document.getElementById("risctabelleView");
+  const risctabelleBackBtn = document.getElementById("risctabelleBackBtn");
+  const risctabelleLogoutBtn = document.getElementById("risctabelleLogoutBtn");
+  const rtCerca = document.getElementById("rt-cerca");
+  const rtLista = document.getElementById("rt-lista");
+  const rtEstrai = document.getElementById("rt-estrai");
+  const rtBtnQReq = document.getElementById("rt-btn-qreq");
+  const rtBtnQResp = document.getElementById("rt-btn-qresp");
+  const rtBtnWsReq = document.getElementById("rt-btn-wsreq");
+  const rtBtnWsResp = document.getElementById("rt-btn-wsresp");
+  const rtPanQReq = document.getElementById("rt-pan-qreq");
+  const rtPanQResp = document.getElementById("rt-pan-qresp");
+  const rtPanWsReq = document.getElementById("rt-pan-wsreq");
+  const rtPanWsResp = document.getElementById("rt-pan-wsresp");
   const campoCliente = document.getElementById("campoCliente");
   const selCliente = document.getElementById("selCliente");
   const campoIstanza = document.getElementById("campoIstanza");
@@ -1213,6 +1305,7 @@
     loginView.classList.add("hidden");
     appView.classList.add("hidden");
     riscexcelView.classList.add("hidden");
+    risctabelleView.classList.add("hidden");
     menuView.classList.remove("hidden");
   }
 
@@ -1661,12 +1754,136 @@
     }
   });
 
+  // ---- RISCTABELLE: query qapp_risc_ws + selezione cliente ----------------
+  let riscItems = [];
+  let riscSelIndex = -1;
+
+  function buildRiscQueryEnvelope(){
+    const ns = "http://qapp_risc_ws." + selezione.istanza + ".ws.localhost/";
+    return `<?xml version="1.0" encoding="utf-8"?>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+  <soap:Body>
+    <tns:qapp_risc_ws_TabularQuery xmlns:tns="${ns}">
+      <tns:m_UserName>ws</tns:m_UserName>
+      <tns:m_Password>ws_1234!</tns:m_Password>
+      <tns:m_Company>${escapeXml(selezione.mCompany)}</tns:m_Company>
+      <tns:m_Instance>${escapeXml(selezione.istanza)}</tns:m_Instance>
+      <tns:p_user>${escapeXml(selezione.pUser)}</tns:p_user>
+    </tns:qapp_risc_ws_TabularQuery>
+  </soap:Body>
+</soap:Envelope>`;
+  }
+
+  function parseRiscTabelle(xmlText){
+    const doc = new DOMParser().parseFromString(deepDecode(xmlText), "text/xml");
+    return findAllByLocalName(doc, "item").map((it) => ({
+      A19CODE:  textOf(findByLocalName(it, "A19CODE")),
+      G20GEACC: textOf(findByLocalName(it, "G20GEACC")),
+      A19CLIEN: textOf(findByLocalName(it, "A19CLIEN")),
+      G19DESC:  textOf(findByLocalName(it, "G19DESC"))
+    }));
+  }
+
+  function renderRiscTabelle(){
+    const q = (rtCerca.value || "").trim().toLowerCase();
+    const filtrati = riscItems.filter((it) =>
+      !q ||
+      String(it.A19CLIEN || "").toLowerCase().includes(q) ||
+      String(it.G19DESC || "").toLowerCase().includes(q)
+    );
+    if (!filtrati.length){
+      rtLista.innerHTML = '<div class="rt-vuoto">Nessun risultato.</div>';
+      return;
+    }
+    rtLista.innerHTML = filtrati.map((it) => {
+      const idx = riscItems.indexOf(it);
+      const sel = idx === riscSelIndex ? " sel" : "";
+      return `<div class="rt-row${sel}" data-idx="${idx}">` +
+        `<span class="conto">${escapeXml(it.G20GEACC)}</span>` +
+        `<span>${escapeXml(it.A19CLIEN)}</span>` +
+        `<span class="rag">${escapeXml(it.G19DESC)}</span>` +
+      `</div>`;
+    }).join("");
+    rtLista.querySelectorAll(".rt-row").forEach((el) => {
+      el.addEventListener("click", () => {
+        riscSelIndex = Number(el.getAttribute("data-idx"));
+        rtEstrai.disabled = false;
+        renderRiscTabelle();
+      });
+    });
+  }
+
+  async function caricaRiscTabelle(){
+    riscItems = [];
+    riscSelIndex = -1;
+    rtEstrai.disabled = true;
+    rtCerca.value = "";
+    rtLista.innerHTML = '<div class="rt-vuoto">Caricamento&hellip;</div>';
+    // Reset pannelli debug
+    [rtPanQReq, rtPanQResp, rtPanWsReq, rtPanWsResp].forEach((p) => p.classList.remove("show"));
+    rtPanWsReq.textContent = "(nessuna chiamata al web service effettuata)";
+    rtPanWsResp.textContent = "(nessuna risposta dal web service)";
+    if (!selezione.istanza){
+      rtLista.innerHTML = '<div class="rt-vuoto">Sessione non valida: rientra dal login.</div>';
+      return;
+    }
+    try {
+      const xml = buildRiscQueryEnvelope();
+      rtPanQReq.textContent = xml;
+      const resp = await fetch(WS_RISC_QUERY_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/xml; charset=utf-8" },
+        body: xml
+      });
+      const txt = await resp.text();
+      rtPanQResp.textContent = deepDecode(txt);
+      if (!resp.ok){
+        rtLista.innerHTML = '<div class="rt-vuoto">Errore HTTP ' + resp.status + ' ' + resp.statusText + '.</div>';
+        return;
+      }
+      riscItems = parseRiscTabelle(txt);
+      if (!riscItems.length){
+        rtLista.innerHTML = '<div class="rt-vuoto">Nessun cliente disponibile.</div>';
+        return;
+      }
+      renderRiscTabelle();
+    } catch (err){
+      const msg = err && err.message ? err.message : String(err);
+      rtPanQResp.textContent = "Chiamata non riuscita.\n\n" + msg;
+      rtLista.innerHTML = '<div class="rt-vuoto">Chiamata non riuscita. ' + escapeXml(msg) + '</div>';
+    }
+  }
+
+  function rtToast(msg){
+    let t = document.getElementById("rt-toast");
+    if (!t){ t = document.createElement("div"); t.id = "rt-toast"; t.className = "rt-toast"; risctabelleView.appendChild(t); }
+    t.textContent = msg;
+    t.classList.add("show");
+    clearTimeout(rtToast._h);
+    rtToast._h = setTimeout(() => t.classList.remove("show"), 2600);
+  }
+
+  rtCerca.addEventListener("input", renderRiscTabelle);
+  rtEstrai.addEventListener("click", () => {
+    if (riscSelIndex < 0) return;
+    const it = riscItems[riscSelIndex];
+    // TODO: chiamare bapp_risc_ws con la riga selezionata (specifiche in arrivo)
+    rtToast("Selezionato: " + (it.A19CLIEN || "") + " — estrazione partite in arrivo");
+  });
+
+  // Toggle dei pannelli di debug (chiamata/risposta query e WS)
+  rtBtnQReq.addEventListener("click", () => rtPanQReq.classList.toggle("show"));
+  rtBtnQResp.addEventListener("click", () => rtPanQResp.classList.toggle("show"));
+  rtBtnWsReq.addEventListener("click", () => rtPanWsReq.classList.toggle("show"));
+  rtBtnWsResp.addEventListener("click", () => rtPanWsResp.classList.toggle("show"));
+
   function resetToLogin(){
     currentUserCode = null;
     sessionInfo = {};
     menuView.classList.add("hidden");
     appView.classList.add("hidden");
     riscexcelView.classList.add("hidden");
+    risctabelleView.classList.add("hidden");
     loginView.classList.remove("hidden");
     userInput.value = "";
     passInput.value = "";
@@ -1680,6 +1897,7 @@
   logoutBtn.addEventListener("click", resetToLogin);
   menuLogoutBtn.addEventListener("click", resetToLogin);
   riscexcelLogoutBtn.addEventListener("click", resetToLogin);
+  risctabelleLogoutBtn.addEventListener("click", resetToLogin);
 
   // Avvio: carica config.json e costruisce la scelta cliente/istanza nel login
   initConfig();
@@ -1691,6 +1909,11 @@
 
   riscexcelBackBtn.addEventListener("click", () => {
     riscexcelView.classList.add("hidden");
+    menuView.classList.remove("hidden");
+  });
+
+  risctabelleBackBtn.addEventListener("click", () => {
+    risctabelleView.classList.add("hidden");
     menuView.classList.remove("hidden");
   });
 
@@ -1706,8 +1929,11 @@
     if (typeof vaiCarica === "function") vaiCarica();
   });
 
-  // RISCTABELLE: per ora non chiama nulla, il bottone è solo un segnaposto.
-  btnRiscTabelle.addEventListener("click", () => {});
+  btnRiscTabelle.addEventListener("click", () => {
+    menuView.classList.add("hidden");
+    risctabelleView.classList.remove("hidden");
+    caricaRiscTabelle();
+  });
 
   // CLIFORUPDATE: per ora non chiama nulla, il bottone è solo un segnaposto.
   btnCliforupdate.addEventListener("click", () => {});
