@@ -1099,6 +1099,8 @@
   // Query RISCTABELLE (qapp_risc_ws): stesso schema SQLDataProviderServer
   const WS_RISC_QUERY_NAME = "SQLDataProviderServer/qapp_risc_ws";
   let WS_RISC_QUERY_URL = "https://www.lucchi.com:448/wigest617/servlet/" + WS_RISC_QUERY_NAME;
+  // Web service RISCTABELLE (bapp_risc_ws): come bapp_cassa_ws (senza SQLDataProviderServer)
+  let WS_RISC_URL = "https://www.lucchi.com:448/wigest617/servlet/bapp_risc_ws";
 
   // ---- Configurazione multi-cliente (config.json) -------------------------
   // Ogni "profilo" del config porta una o più aziende (nome/url/istanze).
@@ -1129,6 +1131,7 @@
     WS_URL = base + "bapp_cassa_ws";
     WS_COMPANIES_URL = base + WS_COMPANIES_NAME;
     WS_RISC_QUERY_URL = base + WS_RISC_QUERY_NAME;
+    WS_RISC_URL = base + "bapp_risc_ws";
   }
 
   // ---- shared helpers ----------------------------------------------------
@@ -1864,12 +1867,111 @@
   }
 
   rtCerca.addEventListener("input", renderRiscTabelle);
-  rtEstrai.addEventListener("click", () => {
+  rtEstrai.addEventListener("click", estraiPartiteAperte);
+
+  function buildRiscWsEnvelope(item){
+    return `<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:bapp="http://bapp_risc_ws.ws.localhost/">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <bapp:bapp_risc_ws_Run>
+         <bapp:m_UserName>ws</bapp:m_UserName>
+         <bapp:m_Password>ws_1234!</bapp:m_Password>
+         <bapp:m_Company>${escapeXml(selezione.mCompany)}</bapp:m_Company>
+         <bapp:m_Instance>${escapeXml(selezione.istanza)}</bapp:m_Instance>
+         <bapp:p_user>${escapeXml(selezione.pUser)}</bapp:p_user>
+         <bapp:p_ws_call>Y</bapp:p_ws_call>
+         <bapp:p_Subs>${escapeXml(selezione.pSubs)}</bapp:p_Subs>
+         <bapp:p_Branc>${escapeXml(selezione.pBranc)}</bapp:p_Branc>
+         <bapp:p_Sect>${escapeXml(selezione.pSect)}</bapp:p_Sect>
+         <bapp:p_Curr>${escapeXml(selezione.pCurr)}</bapp:p_Curr>
+         <bapp:p_PhiSite>${escapeXml(selezione.pPhiSite)}</bapp:p_PhiSite>
+         <bapp:p_PaySite></bapp:p_PaySite>
+         <bapp:p_PaySubs></bapp:p_PaySubs>
+         <bapp:p_Wareh></bapp:p_Wareh>
+         <bapp:p_DefaYearS></bapp:p_DefaYearS>
+         <bapp:p_DefaSess></bapp:p_DefaSess>
+         <bapp:p_UL></bapp:p_UL>
+         <bapp:p_conto>${escapeXml(item.G20GEACC)}</bapp:p_conto>
+         <bapp:p_cliente>${escapeXml(item.A19CLIEN)}</bapp:p_cliente>
+      </bapp:bapp_risc_ws_Run>
+   </soapenv:Body>
+</soapenv:Envelope>`;
+  }
+
+  // Trasforma il contenuto di 'dati' (array di record oppure Excel base64) in
+  // righe con le colonne del tracciato RiscEXCEL.
+  function datiInRighe(dati){
+    if (Array.isArray(dati)) return dati;
+    if (typeof dati === "string" && dati.trim()){
+      // Potrebbe essere un file Excel codificato in base64
+      try {
+        const wb = XLSX.read(dati, { type: "base64", cellDates: true });
+        const ws = wb.Sheets[wb.SheetNames[0]];
+        const json = XLSX.utils.sheet_to_json(ws, { header: 1, raw: false, dateNF: "yyyy-mm-dd" });
+        const headers = json[0] || [];
+        return json.slice(1).map((r) => {
+          const o = {};
+          headers.forEach((h, j) => { o[h] = r[j] !== undefined ? r[j] : ""; });
+          return o;
+        });
+      } catch (e) { return []; }
+    }
+    return [];
+  }
+
+  async function estraiPartiteAperte(){
     if (riscSelIndex < 0) return;
-    const it = riscItems[riscSelIndex];
-    // TODO: chiamare bapp_risc_ws con la riga selezionata (specifiche in arrivo)
-    rtToast("Selezionato: " + (it.A19CLIEN || "") + " — estrazione partite in arrivo");
-  });
+    const item = riscItems[riscSelIndex];
+    const testoBtn = rtEstrai.textContent;
+    rtEstrai.disabled = true;
+    rtEstrai.textContent = "Estrazione in corso\u2026";
+    rtPanWsReq.textContent = "";
+    rtPanWsResp.textContent = "";
+    try {
+      const xml = buildRiscWsEnvelope(item);
+      rtPanWsReq.textContent = xml;
+      const resp = await fetch(WS_RISC_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/xml; charset=utf-8" },
+        body: xml
+      });
+      const txt = await resp.text();
+      rtPanWsResp.textContent = deepDecode(txt);
+      if (!resp.ok){ rtToast("Errore HTTP " + resp.status + " " + resp.statusText); return; }
+
+      let data;
+      try { data = parseLoginResponse(txt); }
+      catch(e){ rtToast("Risposta del web service non riconosciuta come JSON"); return; }
+
+      const ok = String(data.okexp == null ? "" : data.okexp).trim().toUpperCase() === "Y";
+      if (!ok){
+        // okexp = N -> mostro il messaggio
+        rtToast(data.messaggio || "Nessuna partita da estrarre.");
+        return;
+      }
+
+      // okexp = Y -> trasformo 'dati' e proseguo come RiscEXCEL
+      const righe = datiInRighe(data.dati);
+      const n = (typeof importaPartiteAperte === "function")
+        ? importaPartiteAperte(righe, "Partite aperte " + (item.A19CLIEN || ""))
+        : 0;
+      if (!n){
+        rtToast("Dati estratti ma in un formato non atteso: vedi 'Risposta WS'");
+        return;
+      }
+      // Passo alla vista RiscEXCEL con le partite estratte
+      risctabelleView.classList.add("hidden");
+      riscexcelView.classList.remove("hidden");
+    } catch(err){
+      const msg = err && err.message ? err.message : String(err);
+      rtPanWsResp.textContent = "Chiamata non riuscita.\n\n" + msg;
+      rtToast("Chiamata non riuscita: " + msg);
+    } finally {
+      rtEstrai.textContent = testoBtn;
+      rtEstrai.disabled = (riscSelIndex < 0);
+    }
+  }
 
   // Toggle dei pannelli di debug (chiamata/risposta query e WS)
   rtBtnQReq.addEventListener("click", () => rtPanQReq.classList.toggle("show"));
@@ -2283,6 +2385,20 @@ function caricaFile(input) {
     }
   };
   reader.readAsArrayBuffer(file);
+}
+
+// Alimenta il flusso RiscEXCEL con righe già pronte (es. dalle partite aperte
+// estratte da bapp_risc_ws). Restituisce il numero di righe valide importate.
+function importaPartiteAperte(righe, nomeFile) {
+  const valide = (righe || [])
+    .map((r, i) => { r._indice = i; return r; })
+    .filter(r => r['Cli-For']);
+  if (!valide.length) return 0;
+  dati = { righe: valide, clienti: {}, pagamenti: {}, nomeFile: nomeFile || 'Partite aperte', dataCaricamento: new Date().toISOString() };
+  costruisciClienti();
+  salvaSessione();
+  vaiLista();
+  return valide.length;
 }
 
 function costruisciClienti() {
