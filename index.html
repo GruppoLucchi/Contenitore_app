@@ -694,7 +694,6 @@
     --raggio:12px; --raggio-sm:8px; --ombra:0 2px 12px rgba(26,58,92,0.10);
     font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
     background:var(--grigio-bg); color:var(--testo); min-height:100vh;
-    display:flex; flex-direction:column;
   }
   #risctabelleView *{ box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
   #risctabelleView .top-bar{ display:flex; align-items:center; justify-content:flex-end; gap:14px; padding:12px 16px; background:var(--ink); }
@@ -705,21 +704,25 @@
   #risctabelleView .rt-search{ width:100%; padding:12px 14px; border:1px solid var(--grigio-bordo); border-radius:var(--raggio-sm); font-size:15px; color:var(--testo); background:var(--bianco); font-family:inherit; }
   #risctabelleView .rt-search:focus{ outline:none; border-color:var(--blu-chiaro); }
   #risctabelleView .rt-head{ display:grid; grid-template-columns:1fr 1fr 1.6fr; gap:10px; padding:10px 16px; font-size:11px; font-weight:700; color:var(--testo-secondario); text-transform:uppercase; letter-spacing:.03em; background:var(--grigio-bg); border-bottom:1px solid var(--grigio-bordo); }
-  #risctabelleView .rt-scroll{ flex:1; overflow-y:auto; padding-bottom:8px; }
+  #risctabelleView .rt-scroll{ max-height:min(460px,62vh); overflow-y:auto; }
   #risctabelleView .rt-row{ display:grid; grid-template-columns:1fr 1fr 1.6fr; gap:10px; padding:14px 16px; border-bottom:1px solid var(--grigio-bordo); cursor:pointer; background:var(--bianco); font-size:13px; align-items:center; }
+  #risctabelleView .rt-row span{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; min-width:0; }
   #risctabelleView .rt-row:active{ background:var(--grigio-bg); }
   #risctabelleView .rt-row.sel{ background:var(--accento-chiaro); border-left:4px solid var(--accento); padding-left:12px; }
   #risctabelleView .rt-row .conto{ font-weight:700; color:var(--blu); }
-  #risctabelleView .rt-row .rag{ color:var(--testo); word-break:break-word; }
+  #risctabelleView .rt-row .rag{ color:var(--testo); }
   #risctabelleView .rt-vuoto{ padding:30px 16px; text-align:center; color:var(--testo-secondario); font-size:14px; }
   #risctabelleView .rt-footer{ background:var(--bianco); border-top:1px solid var(--grigio-bordo); padding:14px 16px calc(14px + env(safe-area-inset-bottom)); }
   #risctabelleView .btn-primario{ background:var(--blu); color:#fff; border:none; border-radius:var(--raggio-sm); padding:15px; font-size:16px; font-weight:600; width:100%; cursor:pointer; font-family:inherit; }
   #risctabelleView .btn-primario:disabled{ opacity:.5; cursor:default; }
-  #risctabelleView .rt-debug-row{ display:flex; gap:8px; margin-top:8px; }
-  #risctabelleView .rt-dbg{ flex:1; background:var(--grigio-bg); color:var(--blu); border:1px solid var(--grigio-bordo); border-radius:var(--raggio-sm); padding:9px; font-size:12px; font-weight:600; cursor:pointer; font-family:inherit; }
-  #risctabelleView .rt-dbg:active{ background:var(--grigio-bordo); }
-  #risctabelleView .rt-panel{ display:none; margin-top:8px; background:#0f1b26; color:#d7e2ec; border-radius:var(--raggio-sm); padding:10px 12px; font-size:11px; white-space:pre-wrap; word-break:break-word; max-height:40vh; overflow:auto; font-family:ui-monospace,Menlo,Consolas,monospace; line-height:1.4; }
-  #risctabelleView .rt-panel.show{ display:block; }
+  /* Debug box (chiamata/risposta query e WS) dentro la vista RiscEXCEL */
+  .rt-debug-box{ padding:12px 16px; background:var(--bianco); border-bottom:1px solid var(--grigio-bordo); }
+  .rt-debug-box .rt-debug-row{ display:flex; gap:8px; margin-top:8px; }
+  .rt-debug-box .rt-debug-row:first-child{ margin-top:0; }
+  .rt-debug-box .rt-dbg{ flex:1; background:var(--grigio-bg); color:var(--blu); border:1px solid var(--grigio-bordo); border-radius:var(--raggio-sm); padding:9px; font-size:12px; font-weight:600; cursor:pointer; font-family:inherit; }
+  .rt-debug-box .rt-dbg:active{ background:var(--grigio-bordo); }
+  .rt-debug-box .rt-panel{ display:none; margin-top:8px; background:#0f1b26; color:#d7e2ec; border-radius:var(--raggio-sm); padding:10px 12px; font-size:11px; white-space:pre-wrap; word-break:break-word; max-height:40vh; overflow:auto; font-family:ui-monospace,Menlo,Consolas,monospace; line-height:1.4; }
+  .rt-debug-box .rt-panel.show{ display:block; }
   #risctabelleView .rt-toast{ position:fixed; left:50%; bottom:84px; transform:translateX(-50%) translateY(10px); background:var(--testo); color:#fff; padding:11px 18px; border-radius:20px; font-size:13px; opacity:0; pointer-events:none; transition:opacity .2s, transform .2s; z-index:30; max-width:90%; text-align:center; }
   #risctabelleView .rt-toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
 </style>
@@ -945,6 +948,20 @@
           <div class="lab">Fatture pagate</div>
         </div>
       </div>
+      <div class="rt-debug-box hidden" id="rt-debug-box">
+        <div class="rt-debug-row">
+          <button type="button" class="rt-dbg" id="rt-btn-qreq">Chiamata query</button>
+          <button type="button" class="rt-dbg" id="rt-btn-qresp">Risposta query</button>
+        </div>
+        <div class="rt-debug-row">
+          <button type="button" class="rt-dbg" id="rt-btn-wsreq">Chiamata WS</button>
+          <button type="button" class="rt-dbg" id="rt-btn-wsresp">Risposta WS</button>
+        </div>
+        <pre class="rt-panel" id="rt-pan-qreq"></pre>
+        <pre class="rt-panel" id="rt-pan-qresp"></pre>
+        <pre class="rt-panel" id="rt-pan-wsreq"></pre>
+        <pre class="rt-panel" id="rt-pan-wsresp"></pre>
+      </div>
       <div class="lista-scroll" id="lista-clienti"></div>
       <button class="fab" onclick="vaiReport()">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.14 1.22 2 2 0 012.11 0h3a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0122 14.92z"/></svg>
@@ -1046,18 +1063,6 @@
     </div>
     <div class="rt-footer">
       <button type="button" class="btn-primario" id="rt-estrai" disabled>Estrai partite aperte</button>
-      <div class="rt-debug-row">
-        <button type="button" class="rt-dbg" id="rt-btn-qreq">Chiamata query</button>
-        <button type="button" class="rt-dbg" id="rt-btn-qresp">Risposta query</button>
-      </div>
-      <div class="rt-debug-row">
-        <button type="button" class="rt-dbg" id="rt-btn-wsreq">Chiamata WS</button>
-        <button type="button" class="rt-dbg" id="rt-btn-wsresp">Risposta WS</button>
-      </div>
-      <pre class="rt-panel" id="rt-pan-qreq"></pre>
-      <pre class="rt-panel" id="rt-pan-qresp"></pre>
-      <pre class="rt-panel" id="rt-pan-wsreq"></pre>
-      <pre class="rt-panel" id="rt-pan-wsresp"></pre>
     </div>
   </div>
 
@@ -1963,6 +1968,8 @@
       // Passo alla vista RiscEXCEL con le partite estratte
       risctabelleView.classList.add("hidden");
       riscexcelView.classList.remove("hidden");
+      const box = document.getElementById("rt-debug-box");
+      if (box) box.classList.remove("hidden");
     } catch(err){
       const msg = err && err.message ? err.message : String(err);
       rtPanWsResp.textContent = "Chiamata non riuscita.\n\n" + msg;
@@ -2377,6 +2384,8 @@ function caricaFile(input) {
         return obj;
       }).filter(r => r['Cli-For']);
       dati = { righe, clienti: {}, pagamenti: {}, nomeFile: file.name, dataCaricamento: new Date().toISOString() };
+      const dbgBox = document.getElementById('rt-debug-box');
+      if (dbgBox) dbgBox.classList.add('hidden');
       costruisciClienti();
       salvaSessione();
       vaiLista();
