@@ -717,6 +717,7 @@
   #risctabelleView .rt-row .conto{ font-weight:700; color:var(--blu); }
   #risctabelleView .rt-row .rag{ color:var(--testo); }
   #risctabelleView .rt-vuoto{ padding:30px 16px; text-align:center; color:var(--testo-secondario); font-size:14px; }
+  #risctabelleView .rt-fault{ margin-top:12px; text-align:left; white-space:pre-wrap; word-break:break-word; font-size:11px; font-family:ui-monospace,Menlo,Consolas,monospace; line-height:1.4; background:#0f1b26; color:#d7e2ec; padding:10px 12px; border-radius:var(--raggio-sm); max-height:40vh; overflow:auto; }
   #risctabelleView .rt-footer{ background:var(--bianco); border-top:1px solid var(--grigio-bordo); padding:14px 16px calc(14px + env(safe-area-inset-bottom)); }
   #risctabelleView .btn-primario{ background:var(--blu); color:#fff; border:none; border-radius:var(--raggio-sm); padding:15px; font-size:16px; font-weight:600; width:100%; cursor:pointer; font-family:inherit; }
   #risctabelleView .btn-primario:disabled{ opacity:.5; cursor:default; }
@@ -1855,7 +1856,10 @@
       const txt = await resp.text();
       rtPanQResp.textContent = deepDecode(txt);
       if (!resp.ok){
-        rtLista.innerHTML = '<div class="rt-vuoto">Errore HTTP ' + resp.status + ' ' + resp.statusText + '.</div>';
+        const body = deepDecode(txt).trim();
+        rtLista.innerHTML =
+          '<div class="rt-vuoto">Errore HTTP ' + resp.status + ' ' + resp.statusText + '.' +
+          (body ? '<div class="rt-fault">' + escapeXml(body) + '</div>' : '') + '</div>';
         return;
       }
       riscItems = parseRiscTabelle(txt);
@@ -1905,8 +1909,17 @@
     recog.addEventListener("end", () => rtMic.classList.remove("rec"));
     recog.addEventListener("error", (e) => {
       rtMic.classList.remove("rec");
-      if (e && e.error === "not-allowed") rtToast("Microfono non autorizzato");
-      else if (e && e.error !== "aborted") rtToast("Riconoscimento vocale non riuscito");
+      const err = (e && e.error) || "sconosciuto";
+      if (err === "aborted") return;
+      const mappa = {
+        "no-speech": "Non ho sentito nulla, riprova",
+        "audio-capture": "Nessun microfono disponibile",
+        "not-allowed": "Microfono non autorizzato",
+        "service-not-allowed": "Riconoscimento vocale non consentito dal browser/sistema",
+        "network": "Servizio vocale online non raggiungibile",
+        "language-not-supported": "Lingua non supportata dal riconoscimento"
+      };
+      rtToast(mappa[err] || ("Riconoscimento vocale non riuscito (" + err + ")"));
     });
     rtMic.addEventListener("click", () => {
       if (rtMic.classList.contains("rec")){ try { recog.stop(); } catch(e){} return; }
