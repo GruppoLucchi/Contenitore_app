@@ -1968,8 +1968,6 @@
       // Passo alla vista RiscEXCEL con le partite estratte
       risctabelleView.classList.add("hidden");
       riscexcelView.classList.remove("hidden");
-      const box = document.getElementById("rt-debug-box");
-      if (box) box.classList.remove("hidden");
     } catch(err){
       const msg = err && err.message ? err.message : String(err);
       rtPanWsResp.textContent = "Chiamata non riuscita.\n\n" + msg;
