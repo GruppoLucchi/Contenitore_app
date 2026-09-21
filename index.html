@@ -2633,26 +2633,36 @@ function scaricaExcel() {
   mostraToast('File scaricato!');
 }
 
+// Ordine colonne desiderato per l'Excel generato (come da file di riferimento).
+// Le colonne presenti nei dati vengono messe prima in quest'ordine; eventuali
+// altre colonne seguono nel loro ordine originale; le colonne di stato in fondo.
+const ORDINE_COLONNE = ['Conto','Cli-For','Ragione Sociale','Città','Provincia','Anno','Prefisso','No','Data_Doc','Scadenza','Saldo'];
+const STATUS_COLONNE = ['Incassata SI/No','Data/ora Incasso','Inviato SI/No','Data/ora Invio'];
+
 function generaWorkbook() {
   const ora = new Date();
   const dataOraInvio = `${pad(ora.getDate())}/${pad(ora.getMonth()+1)}/${ora.getFullYear()} ${pad(ora.getHours())}:${pad(ora.getMinutes())}`;
-  const headers = Object.keys(dati.righe[0]).filter(k => k !== '_indice');
+
+  const colonneDati = Object.keys(dati.righe[0] || {}).filter(k => k !== '_indice');
+  const ordinate = ORDINE_COLONNE.filter(c => colonneDati.includes(c));
+  // Solo le colonne del riferimento presenti nei dati (ordine del file allegato),
+  // ignorando quelle mancanti e le eventuali colonne extra. Fallback: tutte, se
+  // nessuna colonna di riferimento è presente.
+  const baseCols = ordinate.length ? ordinate : colonneDati;
+  const header = [...baseCols, ...STATUS_COLONNE];
+
   const righeOut = dati.righe.map((r, i) => {
     const out = { ...r };
     delete out._indice;
     const pag = dati.pagamenti[i];
-    if (pag) {
-      out['Incassata SI/No'] = 'SI';
-      out['Data/ora Incasso'] = pag.dataOra;
-    } else {
-      out['Incassata SI/No'] = '';
-      out['Data/ora Incasso'] = '';
-    }
+    out['Incassata SI/No'] = pag ? 'SI' : '';
+    out['Data/ora Incasso'] = pag ? pag.dataOra : '';
     out['Inviato SI/No'] = 'SI';
     out['Data/ora Invio'] = dataOraInvio;
     return out;
   });
-  const ws = XLSX.utils.json_to_sheet(righeOut);
+
+  const ws = XLSX.utils.json_to_sheet(righeOut, { header });
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, 'Partite');
   return wb;
