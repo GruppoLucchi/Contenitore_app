@@ -700,9 +700,14 @@
   #risctabelleView .header{ background:var(--blu); color:#fff; padding:16px 20px; position:sticky; top:0; z-index:10; }
   #risctabelleView .header h1{ font-size:18px; font-weight:600; }
   #risctabelleView .header-sub{ font-size:12px; color:rgba(255,255,255,0.7); margin-top:2px; font-weight:400; }
-  #risctabelleView .rt-toolbar{ padding:12px 16px; background:var(--bianco); border-bottom:1px solid var(--grigio-bordo); }
-  #risctabelleView .rt-search{ width:100%; padding:12px 14px; border:1px solid var(--grigio-bordo); border-radius:var(--raggio-sm); font-size:15px; color:var(--testo); background:var(--bianco); font-family:inherit; }
+  #risctabelleView .rt-toolbar{ padding:12px 16px; background:var(--bianco); border-bottom:1px solid var(--grigio-bordo); display:flex; gap:8px; align-items:center; }
+  #risctabelleView .rt-search{ flex:1; min-width:0; padding:12px 14px; border:1px solid var(--grigio-bordo); border-radius:var(--raggio-sm); font-size:15px; color:var(--testo); background:var(--bianco); font-family:inherit; }
   #risctabelleView .rt-search:focus{ outline:none; border-color:var(--blu-chiaro); }
+  #risctabelleView .rt-mic{ flex:0 0 auto; width:44px; height:44px; border:1px solid var(--grigio-bordo); border-radius:var(--raggio-sm); background:var(--bianco); color:var(--blu); cursor:pointer; display:flex; align-items:center; justify-content:center; }
+  #risctabelleView .rt-mic svg{ width:20px; height:20px; }
+  #risctabelleView .rt-mic.rec{ background:var(--accento); color:#fff; border-color:var(--accento); animation:rt-pulse 1s infinite; }
+  #risctabelleView .rt-mic[hidden]{ display:none; }
+  @keyframes rt-pulse{ 0%,100%{opacity:1} 50%{opacity:.5} }
   #risctabelleView .rt-head{ display:grid; grid-template-columns:1fr 1fr 1.6fr; gap:10px; padding:10px 16px; font-size:11px; font-weight:700; color:var(--testo-secondario); text-transform:uppercase; letter-spacing:.03em; background:var(--grigio-bg); border-bottom:1px solid var(--grigio-bordo); }
   #risctabelleView .rt-scroll{ max-height:min(460px,62vh); overflow-y:auto; }
   #risctabelleView .rt-row{ display:grid; grid-template-columns:1fr 1fr 1.6fr; gap:10px; padding:14px 16px; border-bottom:1px solid var(--grigio-bordo); cursor:pointer; background:var(--bianco); font-size:13px; align-items:center; }
@@ -1052,6 +1057,9 @@
     </div>
     <div class="rt-toolbar">
       <input type="text" id="rt-cerca" class="rt-search" placeholder="Cerca per cliente o ragione sociale&hellip;" autocomplete="off">
+      <button type="button" class="rt-mic" id="rt-mic" title="Cerca a voce" aria-label="Cerca a voce">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"></rect><path d="M5 10a7 7 0 0 0 14 0"></path><line x1="12" y1="17" x2="12" y2="21"></line><line x1="8" y1="21" x2="16" y2="21"></line></svg>
+      </button>
     </div>
     <div class="rt-head">
       <span>Conto</span>
@@ -1801,7 +1809,7 @@
     );
     if (!filtrati.length){
       rtLista.innerHTML = '<div class="rt-vuoto">Nessun risultato.</div>';
-      return;
+      return filtrati;
     }
     rtLista.innerHTML = filtrati.map((it) => {
       const idx = riscItems.indexOf(it);
@@ -1819,6 +1827,7 @@
         renderRiscTabelle();
       });
     });
+    return filtrati;
   }
 
   async function caricaRiscTabelle(){
@@ -1873,6 +1882,40 @@
 
   rtCerca.addEventListener("input", renderRiscTabelle);
   rtEstrai.addEventListener("click", estraiPartiteAperte);
+
+  // Ricerca a voce (Web Speech API). Detta cliente/ragione sociale -> filtra;
+  // se individua un solo cliente lo seleziona. Dove non supportato, nascondo il microfono.
+  const rtMic = document.getElementById("rt-mic");
+  const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (SpeechRec && rtMic){
+    const recog = new SpeechRec();
+    recog.lang = "it-IT";
+    recog.interimResults = false;
+    recog.maxAlternatives = 1;
+    recog.addEventListener("result", (e) => {
+      const t = (e.results[0][0].transcript || "").trim();
+      rtCerca.value = t;
+      const match = renderRiscTabelle();
+      if (match && match.length === 1){
+        riscSelIndex = riscItems.indexOf(match[0]);
+        rtEstrai.disabled = false;
+        renderRiscTabelle();
+      }
+    });
+    recog.addEventListener("end", () => rtMic.classList.remove("rec"));
+    recog.addEventListener("error", (e) => {
+      rtMic.classList.remove("rec");
+      if (e && e.error === "not-allowed") rtToast("Microfono non autorizzato");
+      else if (e && e.error !== "aborted") rtToast("Riconoscimento vocale non riuscito");
+    });
+    rtMic.addEventListener("click", () => {
+      if (rtMic.classList.contains("rec")){ try { recog.stop(); } catch(e){} return; }
+      try { rtMic.classList.add("rec"); recog.start(); }
+      catch(e){ rtMic.classList.remove("rec"); }
+    });
+  } else if (rtMic){
+    rtMic.hidden = true;
+  }
 
   function buildRiscWsEnvelope(item){
     return `<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
