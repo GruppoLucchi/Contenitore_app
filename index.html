@@ -764,11 +764,11 @@
         <select id="selAzienda" class="text-input"></select>
       </div>
       <button type="button" class="btn-primary" id="loginBtn">Accedi</button>
-      <div class="downloads">
+      <div class="downloads hidden">
         <button type="button" class="btn-ghost" id="toggleQueryReqBtn" disabled>Visualizza chiamata query</button>
         <button type="button" class="btn-ghost" id="toggleQueryRespBtn" disabled>Visualizza risposta query</button>
       </div>
-      <div class="panels">
+      <div class="panels hidden">
         <div class="panel hidden" id="queryReqPanel">
           <pre id="queryReqPanelText"></pre>
         </div>
@@ -776,11 +776,11 @@
           <pre id="queryRespPanelText"></pre>
         </div>
       </div>
-      <div class="downloads">
+      <div class="downloads hidden">
         <button type="button" class="btn-ghost" id="toggleLoginReqBtn" disabled>Visualizza chiamata login</button>
         <button type="button" class="btn-ghost" id="toggleLoginRespBtn" disabled>Visualizza risposta login</button>
       </div>
-      <div class="panels">
+      <div class="panels hidden">
         <div class="panel hidden" id="loginReqPanel">
           <pre id="loginReqPanelText"></pre>
         </div>
@@ -2410,6 +2410,24 @@ function importaPartiteAperte(righe, nomeFile) {
   return valide.length;
 }
 
+// Converte un importo in numero gestendo numeri, "8907.18", "8.907,18"
+// (italiano), "8,907.18" (inglese), simboli valuta e spazi.
+function parseImporto(v){
+  if (typeof v === 'number') return isNaN(v) ? 0 : v;
+  if (v == null) return 0;
+  let s = String(v).trim();
+  if (!s) return 0;
+  s = s.replace(/[^\d.,\-]/g, ''); // via valuta/spazi
+  if (s.includes('.') && s.includes(',')){
+    if (s.lastIndexOf(',') > s.lastIndexOf('.')) s = s.replace(/\./g, '').replace(',', '.'); // 8.907,18
+    else s = s.replace(/,/g, ''); // 8,907.18
+  } else if (s.includes(',')){
+    s = s.replace(',', '.'); // 8907,18
+  }
+  const n = parseFloat(s);
+  return isNaN(n) ? 0 : n;
+}
+
 function costruisciClienti() {
   dati.clienti = {};
   dati.righe.forEach((r, i) => {
@@ -2453,7 +2471,7 @@ function aggiornaLista() {
   let totalePagato = 0, fatturePagate = 0, fattureTot = dati.righe.length;
   Object.keys(dati.pagamenti).forEach(k => {
     const r = dati.righe[parseInt(k)];
-    if (r) { totalePagato += parseFloat(r['Saldo']) || 0; fatturePagate++; }
+    if (r) { totalePagato += parseImporto(r['Saldo']); fatturePagate++; }
   });
 
   document.getElementById('stat-incassato').textContent = '€ ' + totalePagato.toLocaleString('it-IT', {minimumFractionDigits: 2, maximumFractionDigits: 2});
@@ -2464,7 +2482,7 @@ function aggiornaLista() {
   clientiList.forEach(c => {
     const fatture = c.fatture.map(i => dati.righe[i]);
     const pagate = c.fatture.filter(i => dati.pagamenti[i]).length;
-    const importoTot = fatture.reduce((s, r) => s + (parseFloat(r['Saldo']) || 0), 0);
+    const importoTot = fatture.reduce((s, r) => s + parseImporto(r['Saldo']), 0);
     const completato = pagate === fatture.length;
     const parziale = pagate > 0 && !completato;
     const iniziali = c.ragione.split(' ').slice(0,2).map(w => w[0]).join('').toUpperCase();
@@ -2503,7 +2521,7 @@ function renderFatture() {
   clienteAttuale.fatture.forEach(i => {
     const r = dati.righe[i];
     const pag = dati.pagamenti[i];
-    const importo = parseFloat(r['Saldo']) || 0;
+    const importo = parseImporto(r['Saldo']);
     const div = document.createElement('div');
     div.className = `fattura-card${pag ? ' pagata' : ''}`;
     div.innerHTML = `
@@ -2550,7 +2568,7 @@ function apriModal(indice, modifica) {
   fatturaAttuale = indice;
   const r = dati.righe[indice];
   document.getElementById('modal-fattura-info').textContent =
-    `${r['Ragione Sociale']} · ${r['Chiave']} · € ${parseFloat(r['Saldo']).toLocaleString('it-IT', {minimumFractionDigits:2})}`;
+    `${r['Ragione Sociale']} · ${r['Chiave']} · € ${parseImporto(r['Saldo']).toLocaleString('it-IT', {minimumFractionDigits:2})}`;
 
   const ora = new Date();
   const esistente = dati.pagamenti[indice];
@@ -2605,7 +2623,7 @@ function aggiornaReport() {
   Object.keys(dati.pagamenti).forEach(k => {
     const r = dati.righe[parseInt(k)];
     if (r) {
-      totalePagato += parseFloat(r['Saldo']) || 0;
+      totalePagato += parseImporto(r['Saldo']);
       fatturePagate++;
       clientiConPagamenti.add(r['Cli-For']);
     }
