@@ -1906,7 +1906,7 @@
     recog.interimResults = false;
     recog.maxAlternatives = 1;
     recog.addEventListener("result", (e) => {
-      const t = (e.results[0][0].transcript || "").trim();
+      const t = (e.results[0][0].transcript || "").trim().replace(/[.,;:!?\u2026]+$/, "").trim();
       rtCerca.value = t;
       const match = renderRiscTabelle();
       if (match && match.length === 1){
