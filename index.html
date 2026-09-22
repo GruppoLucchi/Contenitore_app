@@ -709,7 +709,8 @@
   #risctabelleView .rt-mic[hidden]{ display:none; }
   @keyframes rt-pulse{ 0%,100%{opacity:1} 50%{opacity:.5} }
   #risctabelleView .rt-head{ display:grid; grid-template-columns:1fr 1fr 1.6fr; gap:10px; padding:10px 16px; font-size:11px; font-weight:700; color:var(--testo-secondario); text-transform:uppercase; letter-spacing:.03em; background:var(--grigio-bg); border-bottom:1px solid var(--grigio-bordo); }
-  #risctabelleView .rt-scroll{ max-height:min(460px,62vh); overflow-y:auto; }
+  #risctabelleView .rt-scroll{ max-height:min(300px,55vh); overflow-y:auto; }
+  .tb-welcome{ margin-left:auto; font-size:13px; font-weight:600; color:rgba(255,255,255,0.92); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:55%; }
   #risctabelleView .rt-row{ display:grid; grid-template-columns:1fr 1fr 1.6fr; gap:10px; padding:14px 16px; border-bottom:1px solid var(--grigio-bordo); cursor:pointer; background:var(--bianco); font-size:13px; align-items:center; }
   #risctabelleView .rt-row span{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; min-width:0; }
   #risctabelleView .rt-row:active{ background:var(--grigio-bg); }
@@ -808,7 +809,7 @@
         <h2 id="menuUserLabel">Benvenuto</h2>
         <p class="menu-sub" id="menuContextLabel"></p>
       </div>
-      <button type="button" class="btn-link btn-link-light" id="menuLogoutBtn">Cambia utente</button>
+      <button type="button" class="btn-link btn-link-light" id="menuLogoutBtn">Login</button>
     </div>
     <div class="app-grid">
       <button type="button" class="app-card hidden" id="btnScontrini">
@@ -819,13 +820,13 @@
       </button>
       <button type="button" class="app-card hidden" id="btnRiscexcel">
         <span class="eyebrow">RISCEXCEL</span>
-        <span class="app-card-title">Riscossione</span>
+        <span class="app-card-title">Riscossione con file Excel</span>
         <span class="app-card-desc">Servizio riscossione con file Excel</span>
         <span class="vai">Apri applicazione &rarr;</span>
       </button>
       <button type="button" class="app-card hidden" id="btnRiscTabelle">
         <span class="eyebrow">RISCTABELLE</span>
-        <span class="app-card-title">Tabelle Riscossione</span>
+        <span class="app-card-title">Riscossione con estrazione dati</span>
         <span class="app-card-desc">Servizio Riscossione con estrazione partite aperte</span>
         <span class="vai">Apri applicazione &rarr;</span>
       </button>
@@ -846,7 +847,7 @@
         <h2 id="loggedUserLabel">Utente</h2>
         <div class="login-head-actions">
           <button type="button" class="btn-link" id="backToMenuBtn">Menu</button>
-          <button type="button" class="btn-link" id="logoutBtn">Cambia utente</button>
+          <button type="button" class="btn-link hidden" id="logoutBtn">Cambia utente</button>
         </div>
       </div>
 
@@ -897,7 +898,9 @@
   <div id="riscexcelView" class="hidden">
     <div class="top-bar">
       <button type="button" class="btn-link btn-link-light" id="riscexcelBackBtn">&larr; Menu</button>
-      <button type="button" class="btn-link btn-link-light" id="riscexcelLogoutBtn">Cambia utente</button>
+      <button type="button" class="btn-link btn-link-light hidden" id="riscexcelFileBtn">&larr; Nuovo file</button>
+      <span class="tb-welcome" id="riscexcelWelcome"></span>
+      <button type="button" class="btn-link btn-link-light hidden" id="riscexcelLogoutBtn">Cambia utente</button>
     </div>
 
     <!-- SCHERMO 1: CARICA FILE -->
@@ -1050,7 +1053,8 @@
   <div id="risctabelleView" class="hidden">
     <div class="top-bar">
       <button type="button" class="btn-link btn-link-light" id="risctabelleBackBtn">&larr; Menu</button>
-      <button type="button" class="btn-link btn-link-light" id="risctabelleLogoutBtn">Cambia utente</button>
+      <span class="tb-welcome" id="risctabelleWelcome"></span>
+      <button type="button" class="btn-link btn-link-light hidden" id="risctabelleLogoutBtn">Cambia utente</button>
     </div>
     <div class="header">
       <h1>Tabelle Riscossione</h1>
@@ -1256,9 +1260,12 @@
   const riscexcelView = document.getElementById("riscexcelView");
   const riscexcelBackBtn = document.getElementById("riscexcelBackBtn");
   const riscexcelLogoutBtn = document.getElementById("riscexcelLogoutBtn");
+  const riscexcelFileBtn = document.getElementById("riscexcelFileBtn");
+  const riscexcelWelcome = document.getElementById("riscexcelWelcome");
   const risctabelleView = document.getElementById("risctabelleView");
   const risctabelleBackBtn = document.getElementById("risctabelleBackBtn");
   const risctabelleLogoutBtn = document.getElementById("risctabelleLogoutBtn");
+  const risctabelleWelcome = document.getElementById("risctabelleWelcome");
   const rtCerca = document.getElementById("rt-cerca");
   const rtLista = document.getElementById("rt-lista");
   const rtEstrai = document.getElementById("rt-estrai");
@@ -1280,6 +1287,7 @@
   const cambiaConfigLink = document.getElementById("cambiaConfigLink");
 
   let currentUserCode = null; // nrute restituito dal login, usato come p_usercassa
+  let utenteCorrente = ""; // nome utente digitato, per i "Benvenuto" nelle app
   let sessionInfo = {}; // altri campi restituiti dal login (bra, sub, site, codazi, ecc.)
 
   // listapp può arrivare come array JSON o come stringa con nomi separati
@@ -1298,8 +1306,9 @@
 
   function showMenu(user, data){
     sessionInfo = data;
+    utenteCorrente = user;
     menuUserLabel.textContent = "Benvenuto " + user;
-    loggedUserLabel.textContent = user;
+    loggedUserLabel.textContent = "Benvenuto " + user;
 
     // Riga di contesto: Istanza (nome istanza) e Azienda (descrizione)
     menuContextLabel.innerHTML =
@@ -2024,6 +2033,7 @@
       // Passo alla vista RiscEXCEL con le partite estratte
       risctabelleView.classList.add("hidden");
       riscexcelView.classList.remove("hidden");
+      riscexcelWelcome.textContent = utenteCorrente ? ("Benvenuto " + utenteCorrente) : "";
     } catch(err){
       const msg = err && err.message ? err.message : String(err);
       rtPanWsResp.textContent = "Chiamata non riuscita.\n\n" + msg;
@@ -2075,6 +2085,17 @@
     menuView.classList.remove("hidden");
   });
 
+  // Dalla schermata risultato: torna alla scelta file (flusso RiscEXCEL) o alla
+  // scelta cliente (flusso RISCTABELLE), a seconda dell'origine dei dati.
+  riscexcelFileBtn.addEventListener("click", () => {
+    if (window.__origineDati === "tabelle"){
+      riscexcelView.classList.add("hidden");
+      risctabelleView.classList.remove("hidden");
+    } else if (typeof mostraSchermo === "function"){
+      mostraSchermo("s-carica");
+    }
+  });
+
   risctabelleBackBtn.addEventListener("click", () => {
     risctabelleView.classList.add("hidden");
     menuView.classList.remove("hidden");
@@ -2088,6 +2109,7 @@
   btnRiscexcel.addEventListener("click", () => {
     menuView.classList.add("hidden");
     riscexcelView.classList.remove("hidden");
+    riscexcelWelcome.textContent = utenteCorrente ? ("Benvenuto " + utenteCorrente) : "";
     // Riparte sempre dalla scelta file, proponendo l'eventuale ripresa sessione
     if (typeof vaiCarica === "function") vaiCarica();
   });
@@ -2095,6 +2117,7 @@
   btnRiscTabelle.addEventListener("click", () => {
     menuView.classList.add("hidden");
     risctabelleView.classList.remove("hidden");
+    risctabelleWelcome.textContent = utenteCorrente ? ("Benvenuto " + utenteCorrente) : "";
     caricaRiscTabelle();
   });
 
@@ -2438,6 +2461,7 @@ function caricaFile(input) {
         return obj;
       }).filter(r => r['Cli-For']);
       dati = { righe, clienti: {}, pagamenti: {}, nomeFile: file.name, dataCaricamento: new Date().toISOString() };
+      window.__origineDati = 'carica';
       const dbgBox = document.getElementById('rt-debug-box');
       if (dbgBox) dbgBox.classList.add('hidden');
       costruisciClienti();
@@ -2458,6 +2482,7 @@ function importaPartiteAperte(righe, nomeFile) {
     .filter(r => r['Cli-For']);
   if (!valide.length) return 0;
   dati = { righe: valide, clienti: {}, pagamenti: {}, nomeFile: nomeFile || 'Partite aperte', dataCaricamento: new Date().toISOString() };
+  window.__origineDati = 'tabelle';
   costruisciClienti();
   salvaSessione();
   vaiLista();
@@ -2504,6 +2529,25 @@ function mostraSchermo(id) {
   document.querySelectorAll('#riscexcelView .schermo').forEach(s => s.classList.remove('attivo'));
   document.getElementById(id).classList.add('attivo');
   window.scrollTo(0, 0);
+  // Top-bar per schermo: Menu solo su s-carica; "torna indietro" solo su s-lista;
+  // "Cambia utente" sempre nascosto (si cambia utente dal menu).
+  const bMenu = document.getElementById('riscexcelBackBtn');
+  const bFile = document.getElementById('riscexcelFileBtn');
+  const bLogout = document.getElementById('riscexcelLogoutBtn');
+  if (bMenu && bFile && bLogout){
+    bLogout.classList.add('hidden');
+    if (id === 's-carica'){
+      bMenu.classList.remove('hidden');
+      bFile.classList.add('hidden');
+    } else if (id === 's-lista'){
+      bMenu.classList.add('hidden');
+      bFile.classList.remove('hidden');
+      bFile.innerHTML = (window.__origineDati === 'tabelle') ? '&larr; Clienti' : '&larr; Nuovo file';
+    } else {
+      bMenu.classList.add('hidden');
+      bFile.classList.add('hidden');
+    }
+  }
 }
 
 function vaiLista() {
