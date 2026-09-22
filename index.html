@@ -593,11 +593,11 @@
   #riscexcelView .badge-header { background: var(--accento); color: var(--blu); font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 20px; }
 
   #riscexcelView #s-carica { justify-content: center; align-items: center; padding: 32px 24px; }
-  #riscexcelView .logo-area { text-align: center; margin-bottom: 48px; }
-  #riscexcelView .logo-icon { width: 80px; height: 80px; background: var(--blu); border-radius: 20px; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; box-shadow: var(--ombra); }
-  #riscexcelView .logo-icon svg { width: 44px; height: 44px; }
-  #riscexcelView .logo-area h1 { font-size: 26px; font-weight: 700; color: var(--blu); letter-spacing: -0.5px; }
-  #riscexcelView .logo-area p { color: var(--testo-secondario); margin-top: 6px; font-size: 15px; }
+  #riscexcelView .logo-area { text-align: center; margin-bottom: 18px; }
+  #riscexcelView .logo-icon { width: 52px; height: 52px; background: var(--blu); border-radius: 14px; margin: 0 auto 8px; display: flex; align-items: center; justify-content: center; box-shadow: var(--ombra); }
+  #riscexcelView .logo-icon svg { width: 30px; height: 30px; }
+  #riscexcelView .logo-area h1 { font-size: 20px; font-weight: 700; color: var(--blu); letter-spacing: -0.5px; }
+  #riscexcelView .logo-area p { color: var(--testo-secondario); margin-top: 3px; font-size: 13px; }
   #riscexcelView .card-carica { background: var(--bianco); border-radius: var(--raggio); padding: 28px 24px; width: 100%; max-width: 380px; box-shadow: var(--ombra); text-align: center; }
   #riscexcelView .card-carica p { color: var(--testo-secondario); font-size: 14px; margin-bottom: 20px; line-height: 1.5; }
   #riscexcelView .btn-primario { background: var(--blu); color: white; border: none; border-radius: var(--raggio-sm); padding: 16px 28px; font-size: 16px; font-weight: 600; cursor: pointer; width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; transition: background 0.15s; }
@@ -710,7 +710,7 @@
   @keyframes rt-pulse{ 0%,100%{opacity:1} 50%{opacity:.5} }
   #risctabelleView .rt-head{ display:grid; grid-template-columns:1fr 1fr 1.6fr; gap:10px; padding:10px 16px; font-size:11px; font-weight:700; color:var(--testo-secondario); text-transform:uppercase; letter-spacing:.03em; background:var(--grigio-bg); border-bottom:1px solid var(--grigio-bordo); }
   #risctabelleView .rt-scroll{ max-height:min(300px,55vh); overflow-y:auto; }
-  .tb-welcome{ margin-left:auto; font-size:13px; font-weight:600; color:rgba(255,255,255,0.92); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:55%; }
+  .tb-welcome{ margin-right:auto; font-size:13px; font-weight:600; color:rgba(255,255,255,0.92); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:55%; }
   #risctabelleView .rt-row{ display:grid; grid-template-columns:1fr 1fr 1.6fr; gap:10px; padding:14px 16px; border-bottom:1px solid var(--grigio-bordo); cursor:pointer; background:var(--bianco); font-size:13px; align-items:center; }
   #risctabelleView .rt-row span{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; min-width:0; }
   #risctabelleView .rt-row:active{ background:var(--grigio-bg); }
@@ -897,9 +897,9 @@
   <!-- RISCEXCEL VIEW (app Riscossione, integrata) -->
   <div id="riscexcelView" class="hidden">
     <div class="top-bar">
-      <button type="button" class="btn-link btn-link-light" id="riscexcelBackBtn">&larr; Menu</button>
-      <button type="button" class="btn-link btn-link-light hidden" id="riscexcelFileBtn">&larr; Nuovo file</button>
       <span class="tb-welcome" id="riscexcelWelcome"></span>
+      <button type="button" class="btn-link btn-link-light" id="riscexcelBackBtn">Menu</button>
+      <button type="button" class="btn-link btn-link-light hidden" id="riscexcelFileBtn">Nuovo file</button>
       <button type="button" class="btn-link btn-link-light hidden" id="riscexcelLogoutBtn">Cambia utente</button>
     </div>
 
@@ -1052,8 +1052,8 @@
   <!-- RISCTABELLE VIEW -->
   <div id="risctabelleView" class="hidden">
     <div class="top-bar">
-      <button type="button" class="btn-link btn-link-light" id="risctabelleBackBtn">&larr; Menu</button>
       <span class="tb-welcome" id="risctabelleWelcome"></span>
+      <button type="button" class="btn-link btn-link-light" id="risctabelleBackBtn">Menu</button>
       <button type="button" class="btn-link btn-link-light hidden" id="risctabelleLogoutBtn">Cambia utente</button>
     </div>
     <div class="header">
@@ -2507,6 +2507,13 @@ function parseImporto(v){
   return isNaN(n) ? 0 : n;
 }
 
+// Partita = concatenazione di Anno\Prefisso\No (fallback: Chiave se presente)
+function partitaDi(r){
+  const a = r['Anno'], p = r['Prefisso'], n = r['No'];
+  if (a || p || n) return [a || '', p || '', n || ''].join('\\');
+  return r['Chiave'] || '';
+}
+
 function costruisciClienti() {
   dati.clienti = {};
   dati.righe.forEach((r, i) => {
@@ -2542,7 +2549,7 @@ function mostraSchermo(id) {
     } else if (id === 's-lista'){
       bMenu.classList.add('hidden');
       bFile.classList.remove('hidden');
-      bFile.innerHTML = (window.__origineDati === 'tabelle') ? '&larr; Clienti' : '&larr; Nuovo file';
+      bFile.innerHTML = (window.__origineDati === 'tabelle') ? 'Clienti' : 'Nuovo file';
     } else {
       bMenu.classList.add('hidden');
       bFile.classList.add('hidden');
@@ -2625,7 +2632,7 @@ function renderFatture() {
     div.innerHTML = `
       <div class="fattura-top">
         <div>
-          <div class="fattura-doc">Partita ${r['Chiave'] || ''}</div>
+          <div class="fattura-doc">Partita ${partitaDi(r)}</div>
           <div class="fattura-meta">
             <span>Data Doc: ${formatData(r['Data_Doc'])}</span>
             <span>Scadenza: ${formatData(r['Scadenza'])}</span>
@@ -2666,7 +2673,7 @@ function apriModal(indice, modifica) {
   fatturaAttuale = indice;
   const r = dati.righe[indice];
   document.getElementById('modal-fattura-info').textContent =
-    `${r['Ragione Sociale']} · ${r['Chiave']} · € ${parseImporto(r['Saldo']).toLocaleString('it-IT', {minimumFractionDigits:2})}`;
+    `${r['Ragione Sociale']} · ${partitaDi(r)} · € ${parseImporto(r['Saldo']).toLocaleString('it-IT', {minimumFractionDigits:2})}`;
 
   const ora = new Date();
   const esistente = dati.pagamenti[indice];
