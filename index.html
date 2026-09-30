@@ -2507,6 +2507,16 @@ function parseImporto(v){
   return isNaN(n) ? 0 : n;
 }
 
+// Formatta un importo con separatore migliaia "." e decimali "," (2 cifre),
+// senza dipendere dal supporto locale del dispositivo.
+function formatImporto(n){
+  const num = (typeof n === 'number' && !isNaN(n)) ? n : 0;
+  const neg = num < 0;
+  const parti = Math.abs(num).toFixed(2).split('.');
+  const intero = parti[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  return (neg ? '-' : '') + intero + ',' + parti[1];
+}
+
 // Partita = concatenazione di Anno\Prefisso\No (fallback: Chiave se presente)
 function partitaDi(r){
   const a = r['Anno'], p = r['Prefisso'], n = r['No'];
@@ -2579,7 +2589,7 @@ function aggiornaLista() {
     if (r) { totalePagato += parseImporto(r['Saldo']); fatturePagate++; }
   });
 
-  document.getElementById('stat-incassato').textContent = '€ ' + totalePagato.toLocaleString('it-IT', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+  document.getElementById('stat-incassato').textContent = '€ ' + formatImporto(totalePagato);
   document.getElementById('stat-fatture').textContent = `${fatturePagate}/${fattureTot}`;
 
   const container = document.getElementById('lista-clienti');
@@ -2601,7 +2611,7 @@ function aggiornaLista() {
         ${pagate > 0 ? `<span class="badge-ok">✓ ${pagate}/${fatture.length} pagate</span>` : ''}
       </div>
       <div class="cliente-right">
-        <div class="cliente-importo">€ ${importoTot.toLocaleString('it-IT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</div>
+        <div class="cliente-importo">€ ${formatImporto(importoTot)}</div>
         <div class="cliente-fatture">${fatture.length} fattur${fatture.length === 1 ? 'a' : 'e'}</div>
       </div>`;
     div.onclick = () => vaiCliente(c.codice);
@@ -2638,7 +2648,7 @@ function renderFatture() {
             <span>Scadenza: ${formatData(r['Scadenza'])}</span>
           </div>
         </div>
-        <div class="fattura-importo">€ ${importo.toLocaleString('it-IT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</div>
+        <div class="fattura-importo">€ ${formatImporto(importo)}</div>
       </div>
       ${pag ? `
         <div class="pagata-info">
@@ -2673,7 +2683,7 @@ function apriModal(indice, modifica) {
   fatturaAttuale = indice;
   const r = dati.righe[indice];
   document.getElementById('modal-fattura-info').textContent =
-    `${r['Ragione Sociale']} · ${partitaDi(r)} · € ${parseImporto(r['Saldo']).toLocaleString('it-IT', {minimumFractionDigits:2})}`;
+    `${r['Ragione Sociale']} · ${partitaDi(r)} · € ${formatImporto(parseImporto(r['Saldo']))}`;
 
   const ora = new Date();
   const esistente = dati.pagamenti[indice];
@@ -2733,7 +2743,7 @@ function aggiornaReport() {
       clientiConPagamenti.add(r['Cli-For']);
     }
   });
-  document.getElementById('rep-totale').textContent = '€ ' + totalePagato.toLocaleString('it-IT', {minimumFractionDigits:2, maximumFractionDigits:2});
+  document.getElementById('rep-totale').textContent = '€ ' + formatImporto(totalePagato);
   document.getElementById('rep-pagate').textContent = fatturePagate;
   document.getElementById('rep-sospese').textContent = fattureTot - fatturePagate;
   document.getElementById('rep-clienti').textContent = clientiConPagamenti.size;
