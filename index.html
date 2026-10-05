@@ -687,7 +687,7 @@
   #riscexcelView .empty-state svg { margin-bottom: 16px; opacity: 0.4; }
   #riscexcelView .empty-state p { font-size: 15px; }
   /* ===== RISCTABELLE (stessa grafica di riscexcel) ===== */
-  #risctabelleView{
+  :is(#risctabelleView,#cliforupdateView){
     --blu:#1A3A5C; --blu-chiaro:#2C5F8A; --accento:#E8A020; --accento-chiaro:#FFF3DC;
     --verde:#1E7A4A; --grigio-bg:#F2F4F7; --grigio-bordo:#D8DCE4;
     --testo:#1C2B3A; --testo-secondario:#5A6A7A; --bianco:#FFFFFF;
@@ -695,33 +695,33 @@
     font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
     background:var(--grigio-bg); color:var(--testo); min-height:100vh;
   }
-  #risctabelleView *{ box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
-  #risctabelleView .top-bar{ display:flex; align-items:center; justify-content:flex-start; gap:14px; padding:12px 16px; background:var(--ink); }
-  #risctabelleView .header{ background:var(--blu); color:#fff; padding:16px 20px; position:sticky; top:0; z-index:10; }
-  #risctabelleView .header h1{ font-size:18px; font-weight:600; }
-  #risctabelleView .header-sub{ font-size:12px; color:rgba(255,255,255,0.7); margin-top:2px; font-weight:400; }
-  #risctabelleView .rt-toolbar{ padding:12px 16px; background:var(--bianco); border-bottom:1px solid var(--grigio-bordo); display:flex; gap:8px; align-items:center; }
-  #risctabelleView .rt-search{ flex:1; min-width:0; padding:12px 14px; border:1px solid var(--grigio-bordo); border-radius:var(--raggio-sm); font-size:15px; color:var(--testo); background:var(--bianco); font-family:inherit; }
-  #risctabelleView .rt-search:focus{ outline:none; border-color:var(--blu-chiaro); }
-  #risctabelleView .rt-mic{ flex:0 0 auto; width:44px; height:44px; border:1px solid var(--grigio-bordo); border-radius:var(--raggio-sm); background:var(--bianco); color:var(--blu); cursor:pointer; display:flex; align-items:center; justify-content:center; }
-  #risctabelleView .rt-mic svg{ width:20px; height:20px; }
-  #risctabelleView .rt-mic.rec{ background:var(--accento); color:#fff; border-color:var(--accento); animation:rt-pulse 1s infinite; }
-  #risctabelleView .rt-mic[hidden]{ display:none; }
+  :is(#risctabelleView,#cliforupdateView) *{ box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+  :is(#risctabelleView,#cliforupdateView) .top-bar{ display:flex; align-items:center; justify-content:flex-start; gap:14px; padding:12px 16px; background:var(--ink); }
+  :is(#risctabelleView,#cliforupdateView) .header{ background:var(--blu); color:#fff; padding:16px 20px; position:sticky; top:0; z-index:10; }
+  :is(#risctabelleView,#cliforupdateView) .header h1{ font-size:18px; font-weight:600; }
+  :is(#risctabelleView,#cliforupdateView) .header-sub{ font-size:12px; color:rgba(255,255,255,0.7); margin-top:2px; font-weight:400; }
+  :is(#risctabelleView,#cliforupdateView) .rt-toolbar{ padding:12px 16px; background:var(--bianco); border-bottom:1px solid var(--grigio-bordo); display:flex; gap:8px; align-items:center; }
+  :is(#risctabelleView,#cliforupdateView) .rt-search{ flex:1; min-width:0; padding:12px 14px; border:1px solid var(--grigio-bordo); border-radius:var(--raggio-sm); font-size:15px; color:var(--testo); background:var(--bianco); font-family:inherit; }
+  :is(#risctabelleView,#cliforupdateView) .rt-search:focus{ outline:none; border-color:var(--blu-chiaro); }
+  :is(#risctabelleView,#cliforupdateView) .rt-mic{ flex:0 0 auto; width:44px; height:44px; border:1px solid var(--grigio-bordo); border-radius:var(--raggio-sm); background:var(--bianco); color:var(--blu); cursor:pointer; display:flex; align-items:center; justify-content:center; }
+  :is(#risctabelleView,#cliforupdateView) .rt-mic svg{ width:20px; height:20px; }
+  :is(#risctabelleView,#cliforupdateView) .rt-mic.rec{ background:var(--accento); color:#fff; border-color:var(--accento); animation:rt-pulse 1s infinite; }
+  :is(#risctabelleView,#cliforupdateView) .rt-mic[hidden]{ display:none; }
   @keyframes rt-pulse{ 0%,100%{opacity:1} 50%{opacity:.5} }
-  #risctabelleView .rt-head{ display:grid; grid-template-columns:1fr 1fr 1.6fr; gap:10px; padding:10px 16px; font-size:11px; font-weight:700; color:var(--testo-secondario); text-transform:uppercase; letter-spacing:.03em; background:var(--grigio-bg); border-bottom:1px solid var(--grigio-bordo); }
-  #risctabelleView .rt-scroll{ max-height:min(300px,55vh); overflow-y:auto; }
+  :is(#risctabelleView,#cliforupdateView) .rt-head{ display:grid; grid-template-columns:1fr 1fr 1.6fr; gap:10px; padding:10px 16px; font-size:11px; font-weight:700; color:var(--testo-secondario); text-transform:uppercase; letter-spacing:.03em; background:var(--grigio-bg); border-bottom:1px solid var(--grigio-bordo); }
+  :is(#risctabelleView,#cliforupdateView) .rt-scroll{ max-height:min(300px,55vh); overflow-y:auto; }
   .tb-welcome{ flex:1 1 auto; min-width:0; text-align:left; font-size:13px; font-weight:600; color:rgba(255,255,255,0.92); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  #risctabelleView .rt-row{ display:grid; grid-template-columns:1fr 1fr 1.6fr; gap:10px; padding:14px 16px; border-bottom:1px solid var(--grigio-bordo); cursor:pointer; background:var(--bianco); font-size:13px; align-items:center; }
-  #risctabelleView .rt-row span{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; min-width:0; }
-  #risctabelleView .rt-row:active{ background:var(--grigio-bg); }
-  #risctabelleView .rt-row.sel{ background:var(--accento-chiaro); border-left:4px solid var(--accento); padding-left:12px; }
-  #risctabelleView .rt-row .conto{ font-weight:700; color:var(--blu); }
-  #risctabelleView .rt-row .rag{ color:var(--testo); }
-  #risctabelleView .rt-vuoto{ padding:30px 16px; text-align:center; color:var(--testo-secondario); font-size:14px; }
-  #risctabelleView .rt-fault{ margin-top:12px; text-align:left; white-space:pre-wrap; word-break:break-word; font-size:11px; font-family:ui-monospace,Menlo,Consolas,monospace; line-height:1.4; background:#0f1b26; color:#d7e2ec; padding:10px 12px; border-radius:var(--raggio-sm); max-height:40vh; overflow:auto; }
-  #risctabelleView .rt-footer{ background:var(--bianco); border-top:1px solid var(--grigio-bordo); padding:14px 16px calc(14px + env(safe-area-inset-bottom)); }
-  #risctabelleView .btn-primario{ background:var(--blu); color:#fff; border:none; border-radius:var(--raggio-sm); padding:15px; font-size:16px; font-weight:600; width:100%; cursor:pointer; font-family:inherit; }
-  #risctabelleView .btn-primario:disabled{ opacity:.5; cursor:default; }
+  :is(#risctabelleView,#cliforupdateView) .rt-row{ display:grid; grid-template-columns:1fr 1fr 1.6fr; gap:10px; padding:14px 16px; border-bottom:1px solid var(--grigio-bordo); cursor:pointer; background:var(--bianco); font-size:13px; align-items:center; }
+  :is(#risctabelleView,#cliforupdateView) .rt-row span{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; min-width:0; }
+  :is(#risctabelleView,#cliforupdateView) .rt-row:active{ background:var(--grigio-bg); }
+  :is(#risctabelleView,#cliforupdateView) .rt-row.sel{ background:var(--accento-chiaro); border-left:4px solid var(--accento); padding-left:12px; }
+  :is(#risctabelleView,#cliforupdateView) .rt-row .conto{ font-weight:700; color:var(--blu); }
+  :is(#risctabelleView,#cliforupdateView) .rt-row .rag{ color:var(--testo); }
+  :is(#risctabelleView,#cliforupdateView) .rt-vuoto{ padding:30px 16px; text-align:center; color:var(--testo-secondario); font-size:14px; }
+  :is(#risctabelleView,#cliforupdateView) .rt-fault{ margin-top:12px; text-align:left; white-space:pre-wrap; word-break:break-word; font-size:11px; font-family:ui-monospace,Menlo,Consolas,monospace; line-height:1.4; background:#0f1b26; color:#d7e2ec; padding:10px 12px; border-radius:var(--raggio-sm); max-height:40vh; overflow:auto; }
+  :is(#risctabelleView,#cliforupdateView) .rt-footer{ background:var(--bianco); border-top:1px solid var(--grigio-bordo); padding:14px 16px calc(14px + env(safe-area-inset-bottom)); }
+  :is(#risctabelleView,#cliforupdateView) .btn-primario{ background:var(--blu); color:#fff; border:none; border-radius:var(--raggio-sm); padding:15px; font-size:16px; font-weight:600; width:100%; cursor:pointer; font-family:inherit; }
+  :is(#risctabelleView,#cliforupdateView) .btn-primario:disabled{ opacity:.5; cursor:default; }
   /* Debug box (chiamata/risposta query e WS) dentro la vista RiscEXCEL */
   .rt-debug-box{ padding:12px 16px; background:var(--bianco); border-bottom:1px solid var(--grigio-bordo); }
   .rt-debug-box .rt-debug-row{ display:flex; gap:8px; margin-top:8px; }
@@ -730,8 +730,10 @@
   .rt-debug-box .rt-dbg:active{ background:var(--grigio-bordo); }
   .rt-debug-box .rt-panel{ display:none; margin-top:8px; background:#0f1b26; color:#d7e2ec; border-radius:var(--raggio-sm); padding:10px 12px; font-size:11px; white-space:pre-wrap; word-break:break-word; max-height:40vh; overflow:auto; font-family:ui-monospace,Menlo,Consolas,monospace; line-height:1.4; }
   .rt-debug-box .rt-panel.show{ display:block; }
-  #risctabelleView .rt-toast{ position:fixed; left:50%; bottom:84px; transform:translateX(-50%) translateY(10px); background:var(--testo); color:#fff; padding:11px 18px; border-radius:20px; font-size:13px; opacity:0; pointer-events:none; transition:opacity .2s, transform .2s; z-index:30; max-width:90%; text-align:center; }
-  #risctabelleView .rt-toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+  :is(#risctabelleView,#cliforupdateView) .rt-toast{ position:fixed; left:50%; bottom:84px; transform:translateX(-50%) translateY(10px); background:var(--testo); color:#fff; padding:11px 18px; border-radius:20px; font-size:13px; opacity:0; pointer-events:none; transition:opacity .2s, transform .2s; z-index:30; max-width:90%; text-align:center; }
+  :is(#risctabelleView,#cliforupdateView) .rt-toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+  #cliforupdateView .rt-head{ grid-template-columns:1fr 1.8fr; }
+  #cliforupdateView .rt-row{ grid-template-columns:1fr 1.8fr; }
 </style>
 </head>
 <body>
@@ -830,11 +832,11 @@
         <span class="app-card-desc">Servizio Riscossione con estrazione partite aperte</span>
         <span class="vai">Apri applicazione &rarr;</span>
       </button>
-      <button type="button" class="app-card placeholder hidden" id="btnCliforupdate">
+      <button type="button" class="app-card hidden" id="btnCliforupdate">
         <span class="eyebrow">CLIFORUPDATE</span>
         <span class="app-card-title">Aggiornamento clienti/fornitori</span>
         <span class="app-card-desc">Aggiornamento anagrafiche clienti e fornitori.</span>
-        <span class="vai">Non ancora disponibile</span>
+        <span class="vai">Apri applicazione &rarr;</span>
       </button>
     </div>
     <div id="menuEmpty" class="login-error hidden">Nessuna applicazione disponibile per questo utente.</div>
@@ -1079,6 +1081,35 @@
     </div>
   </div>
 
+  <!-- CLIFORUPDATE VIEW (anagrafiche clienti/fornitori) -->
+  <div id="cliforupdateView" class="hidden">
+    <div class="top-bar">
+      <span class="tb-welcome" id="cliforupdateWelcome"></span>
+      <button type="button" class="btn-link btn-link-light" id="cliforupdateBackBtn">Menu</button>
+      <button type="button" class="btn-link btn-link-light hidden" id="cliforupdateLogoutBtn">Cambia utente</button>
+    </div>
+    <div class="header">
+      <h1>Aggiornamento anagrafica</h1>
+      <div class="header-sub">Seleziona un cliente per estrarre l'anagrafica</div>
+    </div>
+    <div class="rt-toolbar">
+      <input type="text" id="cu-cerca" class="rt-search" placeholder="Cerca per cliente o ragione sociale&hellip;" autocomplete="off">
+      <button type="button" class="rt-mic" id="cu-mic" title="Cerca a voce" aria-label="Cerca a voce">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"></rect><path d="M5 10a7 7 0 0 0 14 0"></path><line x1="12" y1="17" x2="12" y2="21"></line><line x1="8" y1="21" x2="16" y2="21"></line></svg>
+      </button>
+    </div>
+    <div class="rt-head">
+      <span>Cliente</span>
+      <span>Ragione sociale</span>
+    </div>
+    <div class="rt-scroll" id="cu-lista">
+      <div class="rt-vuoto">Caricamento&hellip;</div>
+    </div>
+    <div class="rt-footer">
+      <button type="button" class="btn-primario" id="cu-estrai" disabled>Estrai anagrafica</button>
+    </div>
+  </div>
+
   <details class="install-card">
     <summary>Installa l'app sul telefono <span class="chev">&#9656;</span></summary>
     <div class="install-body">
@@ -1119,6 +1150,9 @@
   let WS_RISC_QUERY_URL = "https://www.lucchi.com:448/wigest617/servlet/" + WS_RISC_QUERY_NAME;
   // Web service RISCTABELLE (bapp_risc_ws): come bapp_cassa_ws (senza SQLDataProviderServer)
   let WS_RISC_URL = "https://www.lucchi.com:448/wigest617/servlet/bapp_risc_ws";
+  // Query CLIFORUPDATE (qapp_cli_ws): stesso schema SQLDataProviderServer
+  const WS_CLI_QUERY_NAME = "SQLDataProviderServer/qapp_cli_ws";
+  let WS_CLI_QUERY_URL = "https://www.lucchi.com:448/wigest617/servlet/" + WS_CLI_QUERY_NAME;
 
   // ---- Configurazione multi-cliente (config.json) -------------------------
   // Ogni "profilo" del config porta una o più aziende (nome/url/istanze).
@@ -1150,6 +1184,7 @@
     WS_COMPANIES_URL = base + WS_COMPANIES_NAME;
     WS_RISC_QUERY_URL = base + WS_RISC_QUERY_NAME;
     WS_RISC_URL = base + "bapp_risc_ws";
+    WS_CLI_QUERY_URL = base + WS_CLI_QUERY_NAME;
   }
 
   // ---- shared helpers ----------------------------------------------------
@@ -1269,6 +1304,13 @@
   const rtCerca = document.getElementById("rt-cerca");
   const rtLista = document.getElementById("rt-lista");
   const rtEstrai = document.getElementById("rt-estrai");
+  const cliforupdateView = document.getElementById("cliforupdateView");
+  const cliforupdateBackBtn = document.getElementById("cliforupdateBackBtn");
+  const cliforupdateLogoutBtn = document.getElementById("cliforupdateLogoutBtn");
+  const cliforupdateWelcome = document.getElementById("cliforupdateWelcome");
+  const cuCerca = document.getElementById("cu-cerca");
+  const cuLista = document.getElementById("cu-lista");
+  const cuEstrai = document.getElementById("cu-estrai");
   const rtBtnQReq = document.getElementById("rt-btn-qreq");
   const rtBtnQResp = document.getElementById("rt-btn-qresp");
   const rtBtnWsReq = document.getElementById("rt-btn-wsreq");
@@ -1332,6 +1374,7 @@
     appView.classList.add("hidden");
     riscexcelView.classList.add("hidden");
     risctabelleView.classList.add("hidden");
+    cliforupdateView.classList.add("hidden");
     menuView.classList.remove("hidden");
   }
 
@@ -2050,6 +2093,153 @@
   rtBtnWsReq.addEventListener("click", () => rtPanWsReq.classList.toggle("show"));
   rtBtnWsResp.addEventListener("click", () => rtPanWsResp.classList.toggle("show"));
 
+  // ---- CLIFORUPDATE: query qapp_cli_ws + selezione cliente ----------------
+  let cliItems = [];
+  let cliSelIndex = -1;
+
+  function buildCliQueryEnvelope(){
+    const ns = "http://qapp_cli_ws." + selezione.istanza + ".ws.localhost/";
+    return `<?xml version="1.0" encoding="utf-8"?>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+  <soap:Body>
+    <tns:qapp_cli_ws_TabularQuery xmlns:tns="${ns}">
+      <tns:m_UserName>ws</tns:m_UserName>
+      <tns:m_Password>ws_1234!</tns:m_Password>
+      <tns:m_Company>${escapeXml(selezione.mCompany)}</tns:m_Company>
+      <tns:m_Instance>${escapeXml(selezione.istanza)}</tns:m_Instance>
+      <tns:p_user>${escapeXml(selezione.pUser)}</tns:p_user>
+    </tns:qapp_cli_ws_TabularQuery>
+  </soap:Body>
+</soap:Envelope>`;
+  }
+
+  // Come la query RISCTABELLE ma senza il campo Conto (G20GEACC)
+  function parseCli(xmlText){
+    const doc = new DOMParser().parseFromString(deepDecode(xmlText), "text/xml");
+    return findAllByLocalName(doc, "item").map((it) => ({
+      A19CODE:  textOf(findByLocalName(it, "A19CODE")),
+      A19CLIEN: textOf(findByLocalName(it, "A19CLIEN")),
+      G19DESC:  textOf(findByLocalName(it, "G19DESC"))
+    }));
+  }
+
+  function renderCli(){
+    const q = (cuCerca.value || "").trim().toLowerCase();
+    const filtrati = cliItems.filter((it) =>
+      !q ||
+      String(it.A19CLIEN || "").toLowerCase().includes(q) ||
+      String(it.G19DESC || "").toLowerCase().includes(q)
+    );
+    if (!filtrati.length){
+      cuLista.innerHTML = '<div class="rt-vuoto">Nessun risultato.</div>';
+      return filtrati;
+    }
+    cuLista.innerHTML = filtrati.map((it) => {
+      const idx = cliItems.indexOf(it);
+      const sel = idx === cliSelIndex ? " sel" : "";
+      return `<div class="rt-row${sel}" data-idx="${idx}">` +
+        `<span>${escapeXml(it.A19CLIEN)}</span>` +
+        `<span class="rag">${escapeXml(it.G19DESC)}</span>` +
+      `</div>`;
+    }).join("");
+    cuLista.querySelectorAll(".rt-row").forEach((el) => {
+      el.addEventListener("click", () => {
+        cliSelIndex = Number(el.getAttribute("data-idx"));
+        cuEstrai.disabled = false;
+        renderCli();
+      });
+    });
+    return filtrati;
+  }
+
+  async function caricaCliforupdate(){
+    cliItems = [];
+    cliSelIndex = -1;
+    cuEstrai.disabled = true;
+    cuCerca.value = "";
+    cuLista.innerHTML = '<div class="rt-vuoto">Caricamento&hellip;</div>';
+    if (!selezione.istanza){
+      cuLista.innerHTML = '<div class="rt-vuoto">Sessione non valida: rientra dal login.</div>';
+      return;
+    }
+    try {
+      const xml = buildCliQueryEnvelope();
+      const resp = await fetch(WS_CLI_QUERY_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/xml; charset=utf-8" },
+        body: xml
+      });
+      const txt = await resp.text();
+      if (!resp.ok){
+        const body = deepDecode(txt).trim();
+        cuLista.innerHTML =
+          '<div class="rt-vuoto">Errore HTTP ' + resp.status + ' ' + resp.statusText + '.' +
+          (body ? '<div class="rt-fault">' + escapeXml(body) + '</div>' : '') + '</div>';
+        return;
+      }
+      cliItems = parseCli(txt);
+      if (!cliItems.length){
+        cuLista.innerHTML = '<div class="rt-vuoto">Nessun cliente disponibile.</div>';
+        return;
+      }
+      renderCli();
+    } catch (err){
+      cuLista.innerHTML = '<div class="rt-vuoto">Chiamata non riuscita. ' +
+        escapeXml(err && err.message ? err.message : String(err)) + '</div>';
+    }
+  }
+
+  function cuToast(msg){
+    let t = document.getElementById("cu-toast");
+    if (!t){ t = document.createElement("div"); t.id = "cu-toast"; t.className = "rt-toast"; cliforupdateView.appendChild(t); }
+    t.textContent = msg;
+    t.classList.add("show");
+    clearTimeout(cuToast._h);
+    cuToast._h = setTimeout(() => t.classList.remove("show"), 2600);
+  }
+
+  cuCerca.addEventListener("input", renderCli);
+  cuEstrai.addEventListener("click", () => {
+    if (cliSelIndex < 0) return;
+    const it = cliItems[cliSelIndex];
+    // TODO: chiamare bapp_cli_ws con la riga selezionata (specifiche in arrivo)
+    cuToast("Selezionato: " + (it.A19CLIEN || "") + " — estrazione anagrafica in arrivo");
+  });
+
+  // Ricerca a voce per CLIFORUPDATE
+  const cuMic = document.getElementById("cu-mic");
+  const SpeechRecCli = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (SpeechRecCli && cuMic){
+    const recogCli = new SpeechRecCli();
+    recogCli.lang = "it-IT";
+    recogCli.interimResults = false;
+    recogCli.maxAlternatives = 1;
+    recogCli.addEventListener("result", (e) => {
+      const t = (e.results[0][0].transcript || "").trim().replace(/[.,;:!?\u2026]+$/, "").trim();
+      cuCerca.value = t;
+      const match = renderCli();
+      if (match && match.length === 1){
+        cliSelIndex = cliItems.indexOf(match[0]);
+        cuEstrai.disabled = false;
+        renderCli();
+      }
+    });
+    recogCli.addEventListener("end", () => cuMic.classList.remove("rec"));
+    recogCli.addEventListener("error", (e) => {
+      cuMic.classList.remove("rec");
+      const err = (e && e.error) || "sconosciuto";
+      if (err === "aborted") return;
+      const mappa = { "no-speech":"Non ho sentito nulla, riprova", "audio-capture":"Nessun microfono disponibile", "not-allowed":"Microfono non autorizzato", "service-not-allowed":"Riconoscimento vocale non consentito dal browser/sistema", "network":"Servizio vocale online non raggiungibile", "language-not-supported":"Lingua non supportata dal riconoscimento" };
+      cuToast(mappa[err] || ("Riconoscimento vocale non riuscito (" + err + ")"));
+    });
+    cuMic.addEventListener("click", () => {
+      if (cuMic.classList.contains("rec")){ try { recogCli.stop(); } catch(e){} return; }
+      try { cuMic.classList.add("rec"); recogCli.start(); } catch(e){ cuMic.classList.remove("rec"); }
+    });
+  } else if (cuMic){
+    cuMic.hidden = true;
+  }
+
   function resetToLogin(){
     currentUserCode = null;
     sessionInfo = {};
@@ -2057,6 +2247,7 @@
     appView.classList.add("hidden");
     riscexcelView.classList.add("hidden");
     risctabelleView.classList.add("hidden");
+    cliforupdateView.classList.add("hidden");
     loginView.classList.remove("hidden");
     userInput.value = "";
     passInput.value = "";
@@ -2071,6 +2262,7 @@
   menuLogoutBtn.addEventListener("click", resetToLogin);
   riscexcelLogoutBtn.addEventListener("click", resetToLogin);
   risctabelleLogoutBtn.addEventListener("click", resetToLogin);
+  cliforupdateLogoutBtn.addEventListener("click", resetToLogin);
 
   // Avvio: carica config.json e costruisce la scelta cliente/istanza nel login
   initConfig();
@@ -2121,8 +2313,17 @@
     caricaRiscTabelle();
   });
 
-  // CLIFORUPDATE: per ora non chiama nulla, il bottone è solo un segnaposto.
-  btnCliforupdate.addEventListener("click", () => {});
+  btnCliforupdate.addEventListener("click", () => {
+    menuView.classList.add("hidden");
+    cliforupdateView.classList.remove("hidden");
+    cliforupdateWelcome.textContent = utenteCorrente ? ("Benvenuto " + utenteCorrente) : "";
+    caricaCliforupdate();
+  });
+
+  cliforupdateBackBtn.addEventListener("click", () => {
+    cliforupdateView.classList.add("hidden");
+    menuView.classList.remove("hidden");
+  });
 
   // ---- PRIMANOTA CASSA (dopo login) ---------------------------------------
 
