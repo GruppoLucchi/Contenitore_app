@@ -2304,7 +2304,7 @@
   function cuGetField(data, keys){
     for (let i = 0; i < keys.length; i++){
       const v = data[keys[i]];
-      if (v !== undefined && v !== null) return String(v);
+      if (v !== undefined && v !== null) return String(v).trim();
     }
     return "";
   }
@@ -2342,7 +2342,8 @@
       let data;
       try { data = parseLoginResponse(txt); } catch(e){ cuToast("Risposta del web service non riconosciuta come JSON"); return; }
       if (!okResp(data)){ cuToast(data.messaggio || "Nessun dato per questo cliente."); return; }
-      popolaForm(data, it);
+      const rec = Array.isArray(data.dati) ? (data.dati[0] || {}) : (data.dati || data);
+      popolaForm(rec, it);
       cuMostra("form");
     } catch(err){
       cuToast("Chiamata non riuscita: " + (err && err.message ? err.message : String(err)));
