@@ -724,12 +724,12 @@
   :is(#risctabelleView,#cliforupdateView) .btn-primario:disabled{ opacity:.5; cursor:default; }
   /* Debug box (chiamata/risposta query e WS) dentro la vista RiscEXCEL */
   .rt-debug-box{ padding:12px 16px; background:var(--bianco); border-bottom:1px solid var(--grigio-bordo); }
-  .rt-debug-box .rt-debug-row{ display:flex; gap:8px; margin-top:8px; }
-  .rt-debug-box .rt-debug-row:first-child{ margin-top:0; }
-  .rt-debug-box .rt-dbg{ flex:1; background:var(--grigio-bg); color:var(--blu); border:1px solid var(--grigio-bordo); border-radius:var(--raggio-sm); padding:9px; font-size:12px; font-weight:600; cursor:pointer; font-family:inherit; }
-  .rt-debug-box .rt-dbg:active{ background:var(--grigio-bordo); }
-  .rt-debug-box .rt-panel{ display:none; margin-top:8px; background:#0f1b26; color:#d7e2ec; border-radius:var(--raggio-sm); padding:10px 12px; font-size:11px; white-space:pre-wrap; word-break:break-word; max-height:40vh; overflow:auto; font-family:ui-monospace,Menlo,Consolas,monospace; line-height:1.4; }
-  .rt-debug-box .rt-panel.show{ display:block; }
+  .rt-debug-row{ display:flex; gap:8px; margin-top:8px; }
+  .rt-debug-row:first-child{ margin-top:0; }
+  .rt-dbg{ flex:1; background:var(--grigio-bg); color:var(--blu); border:1px solid var(--grigio-bordo); border-radius:var(--raggio-sm); padding:9px; font-size:12px; font-weight:600; cursor:pointer; font-family:inherit; }
+  .rt-dbg:active{ background:var(--grigio-bordo); }
+  .rt-panel{ display:none; margin-top:8px; background:#0f1b26; color:#d7e2ec; border-radius:var(--raggio-sm); padding:10px 12px; font-size:11px; white-space:pre-wrap; word-break:break-word; max-height:40vh; overflow:auto; font-family:ui-monospace,Menlo,Consolas,monospace; line-height:1.4; }
+  .rt-panel.show{ display:block; }
   :is(#risctabelleView,#cliforupdateView) .rt-toast{ position:fixed; left:50%; bottom:84px; transform:translateX(-50%) translateY(10px); background:var(--testo); color:#fff; padding:11px 18px; border-radius:20px; font-size:13px; opacity:0; pointer-events:none; transition:opacity .2s, transform .2s; z-index:30; max-width:90%; text-align:center; }
   :is(#risctabelleView,#cliforupdateView) .rt-toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
   #cliforupdateView .rt-head{ grid-template-columns:1fr 1.8fr; }
@@ -1118,6 +1118,12 @@
     </div>
     <div class="rt-footer">
       <button type="button" class="btn-primario" id="cu-estrai" disabled>Estrai anagrafica</button>
+      <div class="rt-debug-row">
+        <button type="button" class="rt-dbg" id="cu-btn-ereq">Chiamata (E)</button>
+        <button type="button" class="rt-dbg" id="cu-btn-eresp">Risposta (E)</button>
+      </div>
+      <pre class="rt-panel" id="cu-pan-ereq"></pre>
+      <pre class="rt-panel" id="cu-pan-eresp"></pre>
     </div>
     </div><!-- /cu-schermo-lista -->
 
@@ -1144,14 +1150,6 @@
       <div class="cu-form-footer">
         <button type="button" class="btn-primario" id="cu-aggiorna">Aggiorna anagrafica</button>
         <button type="button" class="btn-secondario" id="cu-torna">Torna all'elenco</button>
-      </div>
-      <div class="rt-debug-box" id="cu-debug-box">
-        <div class="rt-debug-row">
-          <button type="button" class="rt-dbg" id="cu-btn-ereq">Chiamata (E)</button>
-          <button type="button" class="rt-dbg" id="cu-btn-eresp">Risposta (E)</button>
-        </div>
-        <pre class="rt-panel" id="cu-pan-ereq"></pre>
-        <pre class="rt-panel" id="cu-pan-eresp"></pre>
       </div>
     </div>
 
