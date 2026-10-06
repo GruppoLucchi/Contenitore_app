@@ -1145,6 +1145,14 @@
         <button type="button" class="btn-primario" id="cu-aggiorna">Aggiorna anagrafica</button>
         <button type="button" class="btn-secondario" id="cu-torna">Torna all'elenco</button>
       </div>
+      <div class="rt-debug-box" id="cu-debug-box">
+        <div class="rt-debug-row">
+          <button type="button" class="rt-dbg" id="cu-btn-ereq">Chiamata (E)</button>
+          <button type="button" class="rt-dbg" id="cu-btn-eresp">Risposta (E)</button>
+        </div>
+        <pre class="rt-panel" id="cu-pan-ereq"></pre>
+        <pre class="rt-panel" id="cu-pan-eresp"></pre>
+      </div>
     </div>
 
     <div id="cu-schermo-ok" class="hidden">
@@ -2324,10 +2332,14 @@
     const it = cliItems[cliSelIndex];
     const old = cuEstrai.textContent;
     cuEstrai.disabled = true; cuEstrai.textContent = "Estrazione in corso\u2026";
+    document.getElementById("cu-pan-ereq").classList.remove("show");
+    document.getElementById("cu-pan-eresp").classList.remove("show");
     try {
       const xml = buildCliWsEnvelope("E", { cliente: it.A19CLIEN });
+      document.getElementById("cu-pan-ereq").textContent = xml;
       const resp = await fetch(WS_CLI_URL, { method:"POST", headers:{ "Content-Type":"text/xml; charset=utf-8" }, body: xml });
       const txt = await resp.text();
+      document.getElementById("cu-pan-eresp").textContent = deepDecode(txt);
       if (!resp.ok){ cuToast("Errore HTTP " + resp.status + " " + resp.statusText); return; }
       let data;
       try { data = parseLoginResponse(txt); } catch(e){ cuToast("Risposta del web service non riconosciuta come JSON"); return; }
@@ -2375,6 +2387,8 @@
   document.getElementById("cu-aggiorna").addEventListener("click", aggiornaAnagrafica);
   document.getElementById("cu-torna").addEventListener("click", () => cuMostra("lista"));
   document.getElementById("cu-ok-btn").addEventListener("click", () => cuMostra("lista"));
+  document.getElementById("cu-btn-ereq").addEventListener("click", () => document.getElementById("cu-pan-ereq").classList.toggle("show"));
+  document.getElementById("cu-btn-eresp").addEventListener("click", () => document.getElementById("cu-pan-eresp").classList.toggle("show"));
 
   // Ricerca a voce per CLIFORUPDATE
   const cuMic = document.getElementById("cu-mic");

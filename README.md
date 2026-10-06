@@ -64,17 +64,36 @@ Al submit vengono chiamati in sequenza due servizi:
 - **Riscossione con estrazione dati (RISCTABELLE)** — chiama la query
   `qapp_risc_ws` (`…/servlet/SQLDataProviderServer/qapp_risc_ws`, namespace
   `http://qapp_risc_ws.<istanza>.ws.localhost/`) e mostra l'elenco clienti
-  (Conto/Cliente/Ragione sociale) con ricerca testuale e vocale. Scelto un
-  cliente, **`bapp_risc_ws`** (`…/servlet/bapp_risc_ws`) restituisce un JSON:
-  se `okexp` = `N` mostra `messaggio`; se `okexp` = `Y` trasforma `dati` (array
-  o Excel base64) e prosegue nello stesso flusso di RISCEXCEL. La "Partita" è
-  data da `Anno\Prefisso\No`.
+  (Conto/Cliente/Ragione sociale) con ricerca testuale e vocale (microfono).
+  Scelto un cliente, **`bapp_risc_ws`** (`…/servlet/bapp_risc_ws`) restituisce un
+  JSON: se `okexp` = `N` mostra `messaggio`; se `okexp` = `Y` trasforma `dati`
+  (array o Excel base64) e prosegue nello stesso flusso di RISCEXCEL. La
+  "Partita" è data da `Anno\Prefisso\No`.
+- **Aggiornamento clienti/fornitori (CLIFORUPDATE)** — chiama la query
+  `qapp_cli_ws` (`…/servlet/SQLDataProviderServer/qapp_cli_ws`, namespace
+  `http://qapp_cli_ws.<istanza>.ws.localhost/`) e mostra l'elenco (Cliente/Ragione
+  sociale, senza Conto) con ricerca testuale e vocale. Con **Estrai anagrafica**
+  chiama **`bapp_cli_ws`** (`…/servlet/bapp_cli_ws`) con `p_tipo=E` e `p_cliente`
+  = cliente scelto; la risposta JSON (`okexp=Y`) popola una maschera con Codice
+  cliente e Ragione sociale (sola lettura), Indirizzo/Città/Provincia/Mail/
+  Cellulare (modificabili) e due autorizzazioni come check-box (`Y`/`N`). I nomi
+  dei campi nel JSON sono le etichette (`Cli-For`, `Ragione Sociale`, `Indirizzo`,
+  `Città`, `Provincia`, `Mail`, `Cellulare`, `Autorizzazione Spedizione Fatture
+  via Email`, `Autorizzazione invio con Whatsapp`). **Aggiorna anagrafica** richiama
+  `bapp_cli_ws` con `p_tipo=U` e i valori del form (`p_cliente`, `p_cellu`,
+  `p_aucell1`, `p_ladd1`, `p_lemai`, `p_autsp`, `p_lcitt`, `p_lprov`); con
+  `okexp=Y` conferma e torna all'elenco. Nella maschera due bottoni mostrano la
+  chiamata e la risposta dell'estrazione (`p_tipo=E`) per diagnostica.
+
+Gli importi di RISCEXCEL e RISCTABELLE sono formattati con separatore delle
+migliaia (`.`) e decimali (`,`), indipendentemente dal locale del dispositivo.
 
 Nota: le query (`SQLDataProviderServer/...`) portano l'istanza nel namespace e
 nel percorso; i web service (`bgla_chkpwd_ai_ws`, `bapp_cassa_ws`,
-`bapp_risc_ws`) usano il namespace generico e instradano tramite `m_Instance`.
-Gli `url` nel `config.json` contengono solo il percorso del servlet: il nome del
-web service viene aggiunto dall'app.
+`bapp_risc_ws`, `bapp_cli_ws`) usano il namespace generico e instradano tramite
+`m_Instance`. Gli `url` nel `config.json` contengono solo il percorso del
+servlet: il nome del web service (o `SQLDataProviderServer/<query>`) viene
+aggiunto dall'app.
 
 ## Pubblicazione su GitHub Pages
 
