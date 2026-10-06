@@ -734,6 +734,16 @@
   :is(#risctabelleView,#cliforupdateView) .rt-toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
   #cliforupdateView .rt-head{ grid-template-columns:1fr 1.8fr; }
   #cliforupdateView .rt-row{ grid-template-columns:1fr 1.8fr; }
+  #cliforupdateView .cu-form{ padding:14px 16px; display:flex; flex-direction:column; max-height:min(58vh,520px); overflow-y:auto; }
+  #cliforupdateView .cu-form label{ font-size:12px; font-weight:600; color:var(--testo-secondario); margin:12px 0 4px; }
+  #cliforupdateView .cu-form label.cu-check{ display:flex; align-items:center; gap:10px; margin:14px 0 2px; font-size:13px; color:var(--testo); }
+  #cliforupdateView .cu-form input[type=text]{ padding:11px 12px; border:1px solid var(--grigio-bordo); border-radius:var(--raggio-sm); font-size:15px; font-family:inherit; color:var(--testo); background:var(--bianco); }
+  #cliforupdateView .cu-form input[type=text]:focus{ outline:none; border-color:var(--blu-chiaro); }
+  #cliforupdateView .cu-form input[readonly]{ background:var(--grigio-bg); color:var(--testo-secondario); }
+  #cliforupdateView .cu-form input[type=checkbox]{ width:22px; height:22px; flex:0 0 auto; accent-color:var(--blu); }
+  #cliforupdateView .cu-form-footer{ padding:14px 16px calc(14px + env(safe-area-inset-bottom)); background:var(--bianco); border-top:1px solid var(--grigio-bordo); display:flex; flex-direction:column; gap:10px; }
+  #cliforupdateView .btn-secondario{ background:var(--grigio-bg); color:var(--blu); border:1px solid var(--grigio-bordo); border-radius:var(--raggio-sm); padding:14px; font-size:15px; font-weight:600; width:100%; cursor:pointer; font-family:inherit; }
+  #cliforupdateView .cu-ok{ padding:48px 20px; }
 </style>
 </head>
 <body>
@@ -1088,6 +1098,7 @@
       <button type="button" class="btn-link btn-link-light" id="cliforupdateBackBtn">Menu</button>
       <button type="button" class="btn-link btn-link-light hidden" id="cliforupdateLogoutBtn">Cambia utente</button>
     </div>
+    <div id="cu-schermo-lista">
     <div class="header">
       <h1>Aggiornamento anagrafica</h1>
       <div class="header-sub">Seleziona un cliente per estrarre l'anagrafica</div>
@@ -1107,6 +1118,39 @@
     </div>
     <div class="rt-footer">
       <button type="button" class="btn-primario" id="cu-estrai" disabled>Estrai anagrafica</button>
+    </div>
+    </div><!-- /cu-schermo-lista -->
+
+    <div id="cu-schermo-form" class="hidden">
+      <div class="header"><h1>Anagrafica cliente</h1></div>
+      <div class="cu-form">
+        <label for="cuf-cliforid">Codice cliente</label>
+        <input type="text" id="cuf-cliforid" readonly>
+        <label for="cuf-ragione">Ragione Sociale</label>
+        <input type="text" id="cuf-ragione" readonly>
+        <label for="cuf-indirizzo">Indirizzo</label>
+        <input type="text" id="cuf-indirizzo">
+        <label for="cuf-citta">Città</label>
+        <input type="text" id="cuf-citta">
+        <label for="cuf-provincia">Provincia</label>
+        <input type="text" id="cuf-provincia">
+        <label for="cuf-mail">Mail</label>
+        <input type="text" id="cuf-mail">
+        <label class="cu-check"><input type="checkbox" id="cuf-autsp"> Autorizzazione Spedizione Fatture via Email</label>
+        <label for="cuf-cellu">Cellulare</label>
+        <input type="text" id="cuf-cellu">
+        <label class="cu-check"><input type="checkbox" id="cuf-aucell1"> Autorizzazione invio comunicazioni con Whatsapp</label>
+      </div>
+      <div class="cu-form-footer">
+        <button type="button" class="btn-primario" id="cu-aggiorna">Aggiorna anagrafica</button>
+        <button type="button" class="btn-secondario" id="cu-torna">Torna all'elenco</button>
+      </div>
+    </div>
+
+    <div id="cu-schermo-ok" class="hidden">
+      <div class="cu-ok">
+        <button type="button" class="btn-primario" id="cu-ok-btn">Anagrafica correttamente aggiornata</button>
+      </div>
     </div>
   </div>
 
@@ -1153,6 +1197,8 @@
   // Query CLIFORUPDATE (qapp_cli_ws): stesso schema SQLDataProviderServer
   const WS_CLI_QUERY_NAME = "SQLDataProviderServer/qapp_cli_ws";
   let WS_CLI_QUERY_URL = "https://www.lucchi.com:448/wigest617/servlet/" + WS_CLI_QUERY_NAME;
+  // Web service CLIFORUPDATE (bapp_cli_ws)
+  let WS_CLI_URL = "https://www.lucchi.com:448/wigest617/servlet/bapp_cli_ws";
 
   // ---- Configurazione multi-cliente (config.json) -------------------------
   // Ogni "profilo" del config porta una o più aziende (nome/url/istanze).
@@ -1185,6 +1231,7 @@
     WS_RISC_QUERY_URL = base + WS_RISC_QUERY_NAME;
     WS_RISC_URL = base + "bapp_risc_ws";
     WS_CLI_QUERY_URL = base + WS_CLI_QUERY_NAME;
+    WS_CLI_URL = base + "bapp_cli_ws";
   }
 
   // ---- shared helpers ----------------------------------------------------
@@ -2153,6 +2200,7 @@
   }
 
   async function caricaCliforupdate(){
+    if (typeof cuMostra === "function") cuMostra("lista");
     cliItems = [];
     cliSelIndex = -1;
     cuEstrai.disabled = true;
@@ -2199,12 +2247,134 @@
   }
 
   cuCerca.addEventListener("input", renderCli);
-  cuEstrai.addEventListener("click", () => {
+
+  // Mostra uno dei tre sotto-schermi di CLIFORUPDATE
+  function cuMostra(s){
+    document.getElementById("cu-schermo-lista").classList.toggle("hidden", s !== "lista");
+    document.getElementById("cu-schermo-form").classList.toggle("hidden", s !== "form");
+    document.getElementById("cu-schermo-ok").classList.toggle("hidden", s !== "ok");
+  }
+
+  // Envelope di bapp_cli_ws: p_tipo = "E" (estrai) o "U" (aggiorna)
+  function buildCliWsEnvelope(tipo, d){
+    d = d || {};
+    return `<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:bapp="http://bapp_cli_ws.ws.localhost/">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <bapp:bapp_cli_ws_Run>
+         <bapp:m_UserName>ws</bapp:m_UserName>
+         <bapp:m_Password>ws_1234!</bapp:m_Password>
+         <bapp:m_Company>${escapeXml(selezione.mCompany)}</bapp:m_Company>
+         <bapp:m_Instance>${escapeXml(selezione.istanza)}</bapp:m_Instance>
+         <bapp:p_user>${escapeXml(selezione.pUser)}</bapp:p_user>
+         <bapp:p_ws_call>Y</bapp:p_ws_call>
+         <bapp:p_Subs>${escapeXml(selezione.pSubs)}</bapp:p_Subs>
+         <bapp:p_Branc>${escapeXml(selezione.pBranc)}</bapp:p_Branc>
+         <bapp:p_Sect>${escapeXml(selezione.pSect)}</bapp:p_Sect>
+         <bapp:p_Curr>${escapeXml(selezione.pCurr)}</bapp:p_Curr>
+         <bapp:p_PhiSite>${escapeXml(selezione.pPhiSite)}</bapp:p_PhiSite>
+         <bapp:p_PaySite></bapp:p_PaySite>
+         <bapp:p_PaySubs></bapp:p_PaySubs>
+         <bapp:p_Wareh></bapp:p_Wareh>
+         <bapp:p_DefaYearS></bapp:p_DefaYearS>
+         <bapp:p_DefaSess></bapp:p_DefaSess>
+         <bapp:p_UL></bapp:p_UL>
+         <bapp:p_tipo>${escapeXml(tipo)}</bapp:p_tipo>
+         <bapp:p_cliente>${escapeXml(d.cliente || "")}</bapp:p_cliente>
+         <bapp:p_cellu>${escapeXml(d.cellu || "")}</bapp:p_cellu>
+         <bapp:p_aucell1>${escapeXml(d.aucell1 || "")}</bapp:p_aucell1>
+         <bapp:p_ladd1>${escapeXml(d.ladd1 || "")}</bapp:p_ladd1>
+         <bapp:p_lemai>${escapeXml(d.lemai || "")}</bapp:p_lemai>
+         <bapp:p_autsp>${escapeXml(d.autsp || "")}</bapp:p_autsp>
+         <bapp:p_lcitt>${escapeXml(d.lcitt || "")}</bapp:p_lcitt>
+         <bapp:p_lprov>${escapeXml(d.lprov || "")}</bapp:p_lprov>
+      </bapp:bapp_cli_ws_Run>
+   </soapenv:Body>
+</soapenv:Envelope>`;
+  }
+
+  // Legge un campo dal JSON provando più nomi possibili
+  function cuGetField(data, keys){
+    for (let i = 0; i < keys.length; i++){
+      const v = data[keys[i]];
+      if (v !== undefined && v !== null) return String(v);
+    }
+    return "";
+  }
+
+  function popolaForm(data, it){
+    document.getElementById("cuf-cliforid").value = cuGetField(data, ['Cli-For']) || (it ? it.A19CLIEN : "");
+    document.getElementById("cuf-ragione").value  = cuGetField(data, ['Ragione Sociale']) || (it ? it.G19DESC : "");
+    document.getElementById("cuf-indirizzo").value = cuGetField(data, ['Indirizzo']);
+    document.getElementById("cuf-citta").value     = cuGetField(data, ['Città']);
+    document.getElementById("cuf-provincia").value = cuGetField(data, ['Provincia']);
+    document.getElementById("cuf-mail").value      = cuGetField(data, ['Mail']);
+    document.getElementById("cuf-cellu").value     = cuGetField(data, ['Cellulare']);
+    document.getElementById("cuf-autsp").checked   = cuGetField(data, ['Autorizzazione Spedizione Fatture via Email']).trim().toUpperCase() === "Y";
+    document.getElementById("cuf-aucell1").checked = cuGetField(data, ['Autorizzazione invio con Whatsapp']).trim().toUpperCase() === "Y";
+  }
+
+  function okResp(data){
+    return String(data.okexp == null ? "" : data.okexp).trim().toUpperCase() === "Y";
+  }
+
+  async function estraiAnagrafica(){
     if (cliSelIndex < 0) return;
     const it = cliItems[cliSelIndex];
-    // TODO: chiamare bapp_cli_ws con la riga selezionata (specifiche in arrivo)
-    cuToast("Selezionato: " + (it.A19CLIEN || "") + " — estrazione anagrafica in arrivo");
-  });
+    const old = cuEstrai.textContent;
+    cuEstrai.disabled = true; cuEstrai.textContent = "Estrazione in corso\u2026";
+    try {
+      const xml = buildCliWsEnvelope("E", { cliente: it.A19CLIEN });
+      const resp = await fetch(WS_CLI_URL, { method:"POST", headers:{ "Content-Type":"text/xml; charset=utf-8" }, body: xml });
+      const txt = await resp.text();
+      if (!resp.ok){ cuToast("Errore HTTP " + resp.status + " " + resp.statusText); return; }
+      let data;
+      try { data = parseLoginResponse(txt); } catch(e){ cuToast("Risposta del web service non riconosciuta come JSON"); return; }
+      if (!okResp(data)){ cuToast(data.messaggio || "Nessun dato per questo cliente."); return; }
+      popolaForm(data, it);
+      cuMostra("form");
+    } catch(err){
+      cuToast("Chiamata non riuscita: " + (err && err.message ? err.message : String(err)));
+    } finally {
+      cuEstrai.textContent = old; cuEstrai.disabled = (cliSelIndex < 0);
+    }
+  }
+
+  async function aggiornaAnagrafica(){
+    const d = {
+      cliente: document.getElementById("cuf-cliforid").value,
+      cellu:   document.getElementById("cuf-cellu").value,
+      aucell1: document.getElementById("cuf-aucell1").checked ? "Y" : "N",
+      ladd1:   document.getElementById("cuf-indirizzo").value,
+      lemai:   document.getElementById("cuf-mail").value,
+      autsp:   document.getElementById("cuf-autsp").checked ? "Y" : "N",
+      lcitt:   document.getElementById("cuf-citta").value,
+      lprov:   document.getElementById("cuf-provincia").value
+    };
+    const btn = document.getElementById("cu-aggiorna");
+    const old = btn.textContent;
+    btn.disabled = true; btn.textContent = "Aggiornamento\u2026";
+    try {
+      const xml = buildCliWsEnvelope("U", d);
+      const resp = await fetch(WS_CLI_URL, { method:"POST", headers:{ "Content-Type":"text/xml; charset=utf-8" }, body: xml });
+      const txt = await resp.text();
+      if (!resp.ok){ cuToast("Errore HTTP " + resp.status + " " + resp.statusText); return; }
+      let data;
+      try { data = parseLoginResponse(txt); } catch(e){ cuToast("Risposta del web service non riconosciuta come JSON"); return; }
+      if (!okResp(data)){ cuToast(data.messaggio || "Aggiornamento non riuscito."); return; }
+      cuMostra("ok");
+    } catch(err){
+      cuToast("Chiamata non riuscita: " + (err && err.message ? err.message : String(err)));
+    } finally {
+      btn.textContent = old; btn.disabled = false;
+    }
+  }
+
+  cuEstrai.addEventListener("click", estraiAnagrafica);
+  document.getElementById("cu-aggiorna").addEventListener("click", aggiornaAnagrafica);
+  document.getElementById("cu-torna").addEventListener("click", () => cuMostra("lista"));
+  document.getElementById("cu-ok-btn").addEventListener("click", () => cuMostra("lista"));
 
   // Ricerca a voce per CLIFORUPDATE
   const cuMic = document.getElementById("cu-mic");
