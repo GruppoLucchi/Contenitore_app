@@ -1146,6 +1146,9 @@
         <label for="cuf-cellu">Cellulare</label>
         <input type="text" id="cuf-cellu">
         <label class="cu-check"><input type="checkbox" id="cuf-aucell1"> Autorizzazione invio comunicazioni con Whatsapp</label>
+        <label for="cuf-l2pec">PEC Comunicazioni ordinarie</label>
+        <input type="text" id="cuf-l2pec">
+        <label class="cu-check"><input type="checkbox" id="cuf-aupec"> Autorizzazione Spedizione PEC</label>
       </div>
       <div class="cu-form-footer">
         <button type="button" class="btn-primario" id="cu-aggiorna">Aggiorna anagrafica</button>
@@ -2295,6 +2298,8 @@
          <bapp:p_autsp>${escapeXml(d.autsp || "")}</bapp:p_autsp>
          <bapp:p_lcitt>${escapeXml(d.lcitt || "")}</bapp:p_lcitt>
          <bapp:p_lprov>${escapeXml(d.lprov || "")}</bapp:p_lprov>
+         <bapp:p_l2pec>${escapeXml(d.l2pec || "")}</bapp:p_l2pec>
+         <bapp:p_aupec>${escapeXml(d.aupec || "")}</bapp:p_aupec>
       </bapp:bapp_cli_ws_Run>
    </soapenv:Body>
 </soapenv:Envelope>`;
@@ -2319,6 +2324,11 @@
     document.getElementById("cuf-cellu").value     = cuGetField(data, ['Cellulare']);
     document.getElementById("cuf-autsp").checked   = cuGetField(data, ['Autorizzazione Spedizione Fatture via Email']).trim().toUpperCase() === "Y";
     document.getElementById("cuf-aucell1").checked = cuGetField(data, ['Autorizzazione invio con Whatsapp']).trim().toUpperCase() === "Y";
+    const l2pecVal = cuGetField(data, ['PEC Comunicazioni ordinarie']);
+    const l2pecEl = document.getElementById("cuf-l2pec");
+    l2pecEl.value = l2pecVal;
+    l2pecEl.readOnly = l2pecVal !== ""; // modificabile solo se arriva vuota dal JSON
+    document.getElementById("cuf-aupec").checked   = cuGetField(data, ['Autorizzazione Spedizione PEC']).trim().toUpperCase() === "Y";
   }
 
   function okResp(data){
@@ -2361,7 +2371,9 @@
       lemai:   document.getElementById("cuf-mail").value,
       autsp:   document.getElementById("cuf-autsp").checked ? "Y" : "N",
       lcitt:   document.getElementById("cuf-citta").value,
-      lprov:   document.getElementById("cuf-provincia").value
+      lprov:   document.getElementById("cuf-provincia").value,
+      l2pec:   document.getElementById("cuf-l2pec").value,
+      aupec:   document.getElementById("cuf-aupec").checked ? "Y" : "N"
     };
     const btn = document.getElementById("cu-aggiorna");
     const old = btn.textContent;

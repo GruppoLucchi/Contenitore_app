@@ -69,21 +69,50 @@ Al submit vengono chiamati in sequenza due servizi:
   JSON: se `okexp` = `N` mostra `messaggio`; se `okexp` = `Y` trasforma `dati`
   (array o Excel base64) e prosegue nello stesso flusso di RISCEXCEL. La
   "Partita" è data da `Anno\Prefisso\No`.
-- **Aggiornamento clienti/fornitori (CLIFORUPDATE)** — chiama la query
-  `qapp_cli_ws` (`…/servlet/SQLDataProviderServer/qapp_cli_ws`, namespace
-  `http://qapp_cli_ws.<istanza>.ws.localhost/`) e mostra l'elenco (Cliente/Ragione
-  sociale, senza Conto) con ricerca testuale e vocale. Con **Estrai anagrafica**
-  chiama **`bapp_cli_ws`** (`…/servlet/bapp_cli_ws`) con `p_tipo=E` e `p_cliente`
-  = cliente scelto; la risposta JSON (`okexp=Y`) popola una maschera con Codice
-  cliente e Ragione sociale (sola lettura), Indirizzo/Città/Provincia/Mail/
-  Cellulare (modificabili) e due autorizzazioni come check-box (`Y`/`N`). I nomi
-  dei campi nel JSON sono le etichette (`Cli-For`, `Ragione Sociale`, `Indirizzo`,
-  `Città`, `Provincia`, `Mail`, `Cellulare`, `Autorizzazione Spedizione Fatture
-  via Email`, `Autorizzazione invio con Whatsapp`). **Aggiorna anagrafica** richiama
-  `bapp_cli_ws` con `p_tipo=U` e i valori del form (`p_cliente`, `p_cellu`,
-  `p_aucell1`, `p_ladd1`, `p_lemai`, `p_autsp`, `p_lcitt`, `p_lprov`); con
-  `okexp=Y` conferma e torna all'elenco. Nella maschera due bottoni mostrano la
-  chiamata e la risposta dell'estrazione (`p_tipo=E`) per diagnostica.
+- **Aggiornamento clienti/fornitori (CLIFORUPDATE)** — tre sotto-schermate:
+  elenco, maschera anagrafica, conferma.
+
+  1. *Elenco*: chiama la query `qapp_cli_ws`
+     (`…/servlet/SQLDataProviderServer/qapp_cli_ws`, namespace
+     `http://qapp_cli_ws.<istanza>.ws.localhost/`) e mostra Cliente (`A19CLIEN`) e
+     Ragione sociale (`G19DESC`) — senza la colonna Conto — con ricerca testuale e
+     vocale. Sotto il pulsante **Estrai anagrafica** ci sono due bottoni di
+     diagnostica (**Chiamata (E)** / **Risposta (E)**) che mostrano l'envelope e la
+     risposta dell'estrazione.
+
+  2. *Estrazione*: **Estrai anagrafica** chiama **`bapp_cli_ws`**
+     (`…/servlet/bapp_cli_ws`, web service, namespace generico
+     `http://bapp_cli_ws.ws.localhost/`, operazione `bapp_cli_ws_Run`) con
+     `p_tipo=E` e `p_cliente` = cliente scelto (gli altri `p_*` di campo vuoti; i
+     valori di contesto — `m_Company`, `m_Instance`, `p_user`, `p_Subs`, `p_Branc`,
+     `p_Sect`, `p_Curr`, `p_PhiSite` — dal login). La risposta è un JSON con
+     `okexp`, `messaggio` e `dati` (array): se `okexp=N` mostra `messaggio`; se
+     `okexp=Y` i campi sono in **`dati[0]`** e popolano la maschera. I valori
+     arrivano riempiti di spazi a lunghezza fissa e vengono ripuliti (trim).
+
+  3. *Maschera anagrafica* — campi (nome JSON = etichetta):
+     - `Cli-For` → Codice cliente — **sola lettura**
+     - `Ragione Sociale` → Ragione Sociale — **sola lettura**
+     - `Indirizzo` → Indirizzo — modificabile
+     - `Città` → Città — modificabile
+     - `Provincia` → Provincia — modificabile
+     - `Mail` → Mail — modificabile
+     - `Autorizzazione Spedizione Fatture via Email` → check-box (`Y`/`N`)
+     - `Cellulare` → Cellulare — modificabile
+     - `Autorizzazione invio con Whatsapp` → check-box (`Y`/`N`)
+     - `PEC Comunicazioni ordinarie` → PEC Comunicazioni ordinarie — modificabile
+       **solo se arriva vuota** dal JSON, altrimenti sola lettura
+     - `Autorizzazione Spedizione PEC` → check-box (`Y`/`N`)
+
+  4. *Aggiornamento*: **Aggiorna anagrafica** richiama `bapp_cli_ws` con
+     `p_tipo=U` e i valori del form, con questa mappatura:
+     `p_cliente`=Cli-For, `p_cellu`=Cellulare, `p_aucell1`=Autorizzazione Whatsapp,
+     `p_ladd1`=Indirizzo, `p_lemai`=Mail, `p_autsp`=Autorizzazione Spedizione
+     Fatture via Email, `p_lcitt`=Città, `p_lprov`=Provincia,
+     `p_l2pec`=PEC Comunicazioni ordinarie, `p_aupec`=Autorizzazione Spedizione PEC.
+     Con `okexp=Y` compare il bottone "Anagrafica correttamente aggiornata" che
+     torna all'elenco; con `okexp=N` mostra `messaggio`. **Torna all'elenco**
+     riporta alla lista senza aggiornare.
 
 Gli importi di RISCEXCEL e RISCTABELLE sono formattati con separatore delle
 migliaia (`.`) e decimali (`,`), indipendentemente dal locale del dispositivo.
