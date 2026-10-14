@@ -744,6 +744,7 @@
   #cliforupdateView .cu-form-footer{ padding:14px 16px calc(14px + env(safe-area-inset-bottom)); background:var(--bianco); border-top:1px solid var(--grigio-bordo); display:flex; flex-direction:column; gap:10px; }
   #cliforupdateView .btn-secondario{ background:var(--grigio-bg); color:var(--blu); border:1px solid var(--grigio-bordo); border-radius:var(--raggio-sm); padding:14px; font-size:15px; font-weight:600; width:100%; cursor:pointer; font-family:inherit; }
   #cliforupdateView .cu-ok{ padding:48px 20px; }
+  #cliforupdateView .cu-debug-u{ padding:12px 16px calc(12px + env(safe-area-inset-bottom)); background:var(--bianco); border-top:1px solid var(--grigio-bordo); }
   #cliforupdateView .cu-firma{ padding:12px 16px 6px; background:var(--bianco); border-top:1px solid var(--grigio-bordo); }
   #cliforupdateView .cu-firma-label{ font-size:12px; font-weight:600; color:var(--testo-secondario); margin-bottom:6px; }
   #cliforupdateView #cu-firma-canvas{ display:block; width:100%; height:160px; border:1px dashed var(--blu-chiaro); border-radius:var(--raggio-sm); background:#fff; touch-action:none; }
@@ -1177,6 +1178,15 @@
           <button type="button" class="btn-secondario" id="cu-pdf-scarica">Scarica PDF</button>
         </div>
       </div>
+    </div>
+
+    <div class="cu-debug-u hidden" id="cu-debug-u">
+      <div class="rt-debug-row">
+        <button type="button" class="rt-dbg" id="cu-btn-ureq">Chiamata (U)</button>
+        <button type="button" class="rt-dbg" id="cu-btn-uresp">Risposta (U)</button>
+      </div>
+      <pre class="rt-panel" id="cu-pan-ureq"></pre>
+      <pre class="rt-panel" id="cu-pan-uresp"></pre>
     </div>
   </div>
 
@@ -2284,6 +2294,7 @@
     document.getElementById("cu-schermo-form").classList.toggle("hidden", s !== "form");
     document.getElementById("cu-schermo-ok").classList.toggle("hidden", s !== "ok");
     if (s === "form") cuAggiornaFirma(); // il canvas va dimensionato a maschera visibile
+    document.getElementById("cu-debug-u").classList.toggle("hidden", s !== "form" && s !== "ok");
   }
 
   // Envelope di bapp_cli_ws: p_tipo = "E" (estrai) o "U" (aggiorna)
@@ -2360,6 +2371,11 @@
     };
     cuFirmaPulisci();
     cuFirmaBox.classList.add("hidden");
+    // Pannelli chiamata/risposta dell'aggiornamento: ripartono vuoti per ogni cliente
+    document.getElementById("cu-pan-ureq").textContent = "(nessuna chiamata di aggiornamento effettuata)";
+    document.getElementById("cu-pan-uresp").textContent = "(nessuna risposta dal web service)";
+    document.getElementById("cu-pan-ureq").classList.remove("show");
+    document.getElementById("cu-pan-uresp").classList.remove("show");
   }
 
   function okResp(data){
@@ -2417,10 +2433,15 @@
     const btn = document.getElementById("cu-aggiorna");
     const old = btn.textContent;
     btn.disabled = true; btn.textContent = "Aggiornamento\u2026";
+    document.getElementById("cu-pan-ureq").classList.remove("show");
+    document.getElementById("cu-pan-uresp").classList.remove("show");
     try {
       const xml = buildCliWsEnvelope("U", d);
+      document.getElementById("cu-pan-ureq").textContent = cuDebugTesto(xml);
+      document.getElementById("cu-pan-uresp").textContent = "(in attesa di risposta…)";
       const resp = await fetch(WS_CLI_URL, { method:"POST", headers:{ "Content-Type":"text/xml; charset=utf-8" }, body: xml });
       const txt = await resp.text();
+      document.getElementById("cu-pan-uresp").textContent = cuDebugTesto(deepDecode(txt));
       if (!resp.ok){ cuToast("Errore HTTP " + resp.status + " " + resp.statusText); return; }
       let data;
       try { data = parseLoginResponse(txt); } catch(e){ cuToast("Risposta del web service non riconosciuta come JSON"); return; }
@@ -2429,7 +2450,9 @@
       cuPreparaOk(serveFirma ? cuPdfDaRisposta(data) : null, d);
       cuMostra("ok");
     } catch(err){
-      cuToast("Chiamata non riuscita: " + (err && err.message ? err.message : String(err)));
+      const msg = err && err.message ? err.message : String(err);
+      document.getElementById("cu-pan-uresp").textContent = "Chiamata non riuscita.\n\n" + msg;
+      cuToast("Chiamata non riuscita: " + msg);
     } finally {
       btn.textContent = old; btn.disabled = false;
     }
@@ -2441,6 +2464,16 @@
   document.getElementById("cu-ok-btn").addEventListener("click", () => cuMostra("lista"));
   document.getElementById("cu-btn-ereq").addEventListener("click", () => document.getElementById("cu-pan-ereq").classList.toggle("show"));
   document.getElementById("cu-btn-eresp").addEventListener("click", () => document.getElementById("cu-pan-eresp").classList.toggle("show"));
+  document.getElementById("cu-btn-ureq").addEventListener("click", () => document.getElementById("cu-pan-ureq").classList.toggle("show"));
+  document.getElementById("cu-btn-uresp").addEventListener("click", () => document.getElementById("cu-pan-uresp").classList.toggle("show"));
+
+  // Solo per la visualizzazione nei pannelli: le sequenze base64 molto lunghe (la
+  // firma nella chiamata, un eventuale PDF nella risposta) vengono abbreviate, perché
+  // renderebbero il pannello illeggibile. Quello che viene inviato resta intero.
+  function cuDebugTesto(s){
+    return String(s == null ? "" : s).replace(/[A-Za-z0-9+\/=]{200,}/g,
+      (m) => m.slice(0, 60) + "\u2026[troncato: " + m.length + " caratteri]");
+  }
 
   // ---- CLIFORUPDATE: firma su canvas ---------------------------------------
   const cuFirmaBox = document.getElementById("cu-firma-box");

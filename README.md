@@ -147,6 +147,15 @@ Al submit vengono chiamati in sequenza due servizi:
        `JVBER`) e reso disponibile. Se non c'è, non cambia nulla: resta il
        bottone "Anagrafica correttamente aggiornata". **Da confermare** con
        Wigest il punto esatto della risposta in cui arriva il PDF.
+     - **Diagnostica dell'aggiornamento**: sotto la maschera anagrafica, e anche
+       sotto la schermata di conferma (così restano consultabili dopo un
+       aggiornamento riuscito), ci sono i bottoni **Chiamata (U)** e **Risposta (U)**.
+       Mostrano l'envelope inviato a `bapp_cli_ws` con `p_tipo=U` e la risposta
+       del web service, e si aggiornano a ogni pressione di *Aggiorna anagrafica*.
+       Ripartono vuoti quando si apre un altro cliente. Nei pannelli le sequenze
+       base64 molto lunghe (la firma nella chiamata, un eventuale PDF nella risposta)
+       sono abbreviate con l'indicazione della lunghezza, solo per la
+       visualizzazione: la chiamata inviata contiene sempre il valore intero.
      - **Dopo l'aggiornamento**, se il PDF è arrivato, la schermata di conferma
        offre: **Apri mail con il PDF** (scarica il PDF e apre `mailto:` con
        destinatario = campo *Mail* dell'anagrafica; l'allegato lo aggiunge
