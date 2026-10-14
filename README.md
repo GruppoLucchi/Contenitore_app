@@ -1,4 +1,4 @@
-# Primanota Cassa
+# APP Gruppo Lucchi
 
 PWA installabile e multi-cliente. Dopo il login mostra un menu con le
 applicazioni disponibili per l'utente (Scontrini, Riscossione con file Excel,
@@ -11,9 +11,9 @@ chiamate ai dati passano dai web service Wigest su `www.lucchi.com:448`.
 - `config.json` — configurazione multi-cliente (clienti, url dei web service, istanze).
 - `manifest.json` — manifest PWA (nome, colori, icone).
 - `sw.js` — service worker (cache della sola shell statica; le chiamate ai web service vanno sempre in rete).
-- `icons/` — icone PNG dell'app installata: `icon-192.png`, `icon-512.png` e le
-  varianti `icon-maskable-192.png`, `icon-maskable-512.png` (monogramma "C" ottone su
-  fondo scuro). Sono dichiarate nel `manifest.json` e **necessarie** per poter
+- `icon-192.png`, `icon-512.png`, `icon-maskable-192.png`, `icon-maskable-512.png` —
+  icone PNG dell'app installata (monogramma "C" ottone su fondo scuro), nella root
+  come il logo. Sono dichiarate nel `manifest.json` e **necessarie** per poter
   installare l'app su Android.
 - `gla_logo_color.jpg` — logo usato come favicon e `apple-touch-icon` (iPhone).
   Non è usato nel manifest: è piccolo (181×106 px) e in JPEG.
@@ -175,17 +175,22 @@ aggiunto dall'app.
 
 Su Android, Chrome propone "Installa app" solo se il sito è installabile:
 HTTPS, `manifest.json` valido, service worker attivo e **icone PNG di almeno 192
-e 512 px** dichiarate nel manifest. La cartella `icons/` va quindi caricata nel
-repository **insieme agli altri file, mantenendo la struttura** (non appiattire i
-file nella root).
+e 512 px** dichiarate nel manifest, con la **dimensione reale uguale a quella
+dichiarata** (un'icona dichiarata 192×192 ma di altre dimensioni viene rifiutata).
+I quattro file `icon-*.png` vanno caricati nel repository nella root, insieme agli
+altri file.
 
 Per capire perché un telefono non installa l'app, aprire il sito da Chrome o Edge
 sul computer: F12 → scheda **Application** → **Manifest**; in fondo la sezione
 **Installability** elenca gli eventuali errori. Sul telefono, `chrome://webapks`
 elenca le app installate da Chrome.
 
-Il nome dell'app sul telefono dipende dalla piattaforma: **Primanota** su Android
-(`short_name` del manifest), **Contenitore** su iPhone (`apple-mobile-web-app-title`).
+Il nome dell'app sul telefono è **APP Gruppo Lucchi**. Su Android viene da `name` e
+`short_name` del `manifest.json`; su iPhone da `apple-mobile-web-app-title` in
+`index.html` (con `<title>` come ripiego). Per cambiarlo vanno modificati tutti e
+tre i punti. Un'app già installata non si rinomina da sola: su Android il nome si
+aggiorna con l'aggiornamento periodico dell'app installata, su iPhone va rimossa e
+aggiunta di nuovo alla Home.
 
 ## Aggiornamenti e cache (importante)
 
