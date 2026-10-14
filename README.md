@@ -2,12 +2,12 @@
 
 PWA installabile e multi-cliente. Dopo il login mostra un menu con le
 applicazioni disponibili per l'utente (Scontrini, Riscossione con file Excel,
-Riscossione con estrazione dati). Tutte le chiamate ai dati passano dai web
-service Wigest su `www.lucchi.com:448`.
+Riscossione con estrazione dati, Aggiornamento clienti/fornitori). Tutte le
+chiamate ai dati passano dai web service Wigest su `www.lucchi.com:448`.
 
 ## File
 
-- `index.html` — tutta l'applicazione: login, menu e le tre app.
+- `index.html` — tutta l'applicazione: login, menu e le quattro app.
 - `config.json` — configurazione multi-cliente (clienti, url dei web service, istanze).
 - `manifest.json` — manifest PWA.
 - `sw.js` — service worker (cache della sola shell statica; le chiamate ai web service vanno sempre in rete).
@@ -114,13 +114,48 @@ Al submit vengono chiamati in sequenza due servizi:
      torna all'elenco; con `okexp=N` mostra `messaggio`. **Torna all'elenco**
      riporta alla lista senza aggiornare.
 
+  5. *Firma e PDF del consenso*:
+     - **Quando compare la firma**: nella maschera, sotto i campi, appare il
+       riquadro "Firma per le autorizzazioni modificate" quando l'utente
+       **modifica una spunta** rispetto a quanto estratto, sia aggiungendo sia
+       togliendo l'autorizzazione. Le spunte considerate sono *Autorizzazione
+       Spedizione Fatture via Email*, *Autorizzazione invio con Whatsapp* e
+       *Autorizzazione Spedizione PEC*. Se l'utente rimette la spunta com'era, il
+       riquadro scompare e la firma viene cancellata.
+     - **Firma**: `<canvas>` su cui si scrive col dito/penna (Pointer Events,
+       risoluzione adattata al pixel ratio del dispositivo). Pulsante *Cancella
+       firma*. Viene esportata come PNG con sfondo trasparente, in base64 senza
+       prefisso `data:`. Se il riquadro è visibile e vuoto, **Aggiorna
+       anagrafica** non procede e chiede di firmare.
+     - **Invio**: nessun web service aggiuntivo. La firma viaggia nella stessa
+       chiamata `bapp_cli_ws`, nel parametro **`firmacli`** (nome nella costante
+       `CLI_FIRMA_PARAM` di `index.html`), inserito dopo `p_aupec`. Il parametro è
+       presente in ogni chiamata, come gli altri `p_*`: vuoto in estrazione
+       (`p_tipo=E`) e in aggiornamento senza firma, valorizzato in aggiornamento
+       (`p_tipo=U`) quando una spunta è stata modificata. Il contenuto è il PNG
+       della firma in base64, senza prefisso `data:`, con sfondo trasparente e
+       tratto nero. Lato Wigest il parametro è di tipo **memo**; va decodificato
+       da base64 in byte per ottenere l'immagine da inserire nel PDF.
+     - **PDF di ritorno**: Wigest crea il PDF con la firma. Se la risposta di
+       `bapp_cli_ws` (U) contiene il PDF in base64 in `dati` (stringa, oppure
+       `dati.pdf`) viene rilevato dal contenuto (un PDF in base64 inizia con
+       `JVBER`) e reso disponibile. Se non c'è, non cambia nulla: resta il
+       bottone "Anagrafica correttamente aggiornata". **Da confermare** con
+       Wigest il punto esatto della risposta in cui arriva il PDF.
+     - **Dopo l'aggiornamento**, se il PDF è arrivato, la schermata di conferma
+       offre: **Apri mail con il PDF** (scarica il PDF e apre `mailto:` con
+       destinatario = campo *Mail* dell'anagrafica; l'allegato lo aggiunge
+       l'utente, come "Apri mail" di RISCEXCEL), **Condividi PDF** (Web Share API
+       con il file allegato, mostrato solo se il dispositivo lo supporta) e
+       **Scarica PDF**. Nome file: `consenso_<Cli-For>_<data-ora>.pdf`.
+
 Gli importi di RISCEXCEL e RISCTABELLE sono formattati con separatore delle
 migliaia (`.`) e decimali (`,`), indipendentemente dal locale del dispositivo.
 
 Nota: le query (`SQLDataProviderServer/...`) portano l'istanza nel namespace e
 nel percorso; i web service (`bgla_chkpwd_ai_ws`, `bapp_cassa_ws`,
-`bapp_risc_ws`, `bapp_cli_ws`) usano il namespace generico e instradano tramite
-`m_Instance`. Gli `url` nel `config.json` contengono solo il percorso del
+`bapp_risc_ws`, `bapp_cli_ws`) usano il namespace generico e instradano
+tramite `m_Instance`. Gli `url` nel `config.json` contengono solo il percorso del
 servlet: il nome del web service (o `SQLDataProviderServer/<query>`) viene
 aggiunto dall'app.
 
