@@ -8,13 +8,17 @@
 // controllerchange nell'index - l'app si aggiorna DA SOLA alla riapertura,
 // senza reinstallare e senza manovre da parte dell'utente.
 
-const CACHE_NAME = "primanota-cassa-v47";
+const CACHE_NAME = "primanota-cassa-v48";
 const APP_SHELL = [
   "./",
   "./index.html",
   "./config.json",
   "./manifest.json",
-  "./gla_logo_color.jpg"
+  "./gla_logo_color.jpg",
+  "./icons/icon-192.png",
+  "./icons/icon-512.png",
+  "./icons/icon-maskable-192.png",
+  "./icons/icon-maskable-512.png"
 ];
 
 self.addEventListener("install", (event) => {

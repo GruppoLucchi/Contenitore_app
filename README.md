@@ -9,9 +9,14 @@ chiamate ai dati passano dai web service Wigest su `www.lucchi.com:448`.
 
 - `index.html` — tutta l'applicazione: login, menu e le quattro app.
 - `config.json` — configurazione multi-cliente (clienti, url dei web service, istanze).
-- `manifest.json` — manifest PWA.
+- `manifest.json` — manifest PWA (nome, colori, icone).
 - `sw.js` — service worker (cache della sola shell statica; le chiamate ai web service vanno sempre in rete).
-- `gla_logo_color.jpg` — logo usato come icona della schermata Home.
+- `icons/` — icone PNG dell'app installata: `icon-192.png`, `icon-512.png` e le
+  varianti `icon-maskable-192.png`, `icon-maskable-512.png` (monogramma "C" ottone su
+  fondo scuro). Sono dichiarate nel `manifest.json` e **necessarie** per poter
+  installare l'app su Android.
+- `gla_logo_color.jpg` — logo usato come favicon e `apple-touch-icon` (iPhone).
+  Non è usato nel manifest: è piccolo (181×106 px) e in JPEG.
 
 ## Configurazione multi-cliente (`config.json`)
 
@@ -165,6 +170,22 @@ aggiunto dall'app.
 2. Impostazioni repo → **Pages** → Source: branch `main`, cartella `/ (root)` → Save.
 3. Dopo un paio di minuti l'app è online in HTTPS (requisito per service worker e installazione).
 4. Da telefono usa "Aggiungi a schermata Home" / "Installa app".
+
+## Installazione su telefono e diagnostica
+
+Su Android, Chrome propone "Installa app" solo se il sito è installabile:
+HTTPS, `manifest.json` valido, service worker attivo e **icone PNG di almeno 192
+e 512 px** dichiarate nel manifest. La cartella `icons/` va quindi caricata nel
+repository **insieme agli altri file, mantenendo la struttura** (non appiattire i
+file nella root).
+
+Per capire perché un telefono non installa l'app, aprire il sito da Chrome o Edge
+sul computer: F12 → scheda **Application** → **Manifest**; in fondo la sezione
+**Installability** elenca gli eventuali errori. Sul telefono, `chrome://webapks`
+elenca le app installate da Chrome.
+
+Il nome dell'app sul telefono dipende dalla piattaforma: **Primanota** su Android
+(`short_name` del manifest), **Contenitore** su iPhone (`apple-mobile-web-app-title`).
 
 ## Aggiornamenti e cache (importante)
 
