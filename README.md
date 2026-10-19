@@ -133,7 +133,7 @@ Al submit vengono chiamati in sequenza due servizi:
        prefisso `data:`. Se il riquadro è visibile e vuoto, **Aggiorna
        anagrafica** non procede e chiede di firmare.
      - **Invio**: nessun web service aggiuntivo. La firma viaggia nella stessa
-       chiamata `bapp_cli_ws`, nel parametro **`firmacli`** (nome nella costante
+       chiamata `bapp_cli_ws`, nel parametro **`p_firmacli`** (nome nella costante
        `CLI_FIRMA_PARAM` di `index.html`), inserito dopo `p_aupec`. Il parametro è
        presente in ogni chiamata, come gli altri `p_*`: vuoto in estrazione
        (`p_tipo=E`) e in aggiornamento senza firma, valorizzato in aggiornamento
