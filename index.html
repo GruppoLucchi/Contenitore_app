@@ -744,6 +744,7 @@
   #cliforupdateView .cu-form-footer{ padding:14px 16px calc(14px + env(safe-area-inset-bottom)); background:var(--bianco); border-top:1px solid var(--grigio-bordo); display:flex; flex-direction:column; gap:10px; }
   #cliforupdateView .btn-secondario{ background:var(--grigio-bg); color:var(--blu); border:1px solid var(--grigio-bordo); border-radius:var(--raggio-sm); padding:14px; font-size:15px; font-weight:600; width:100%; cursor:pointer; font-family:inherit; }
   #cliforupdateView .cu-ok{ padding:48px 20px; }
+  #cliforupdateView .cu-errore{ padding:10px 16px; background:#FDECEA; color:#B3261E; border-top:1px solid #F3C9C6; font-size:13px; line-height:1.4; }
   #cliforupdateView .cu-debug-u{ padding:12px 16px calc(12px + env(safe-area-inset-bottom)); background:var(--bianco); border-top:1px solid var(--grigio-bordo); }
   #cliforupdateView .cu-firma{ padding:12px 16px 6px; background:var(--bianco); border-top:1px solid var(--grigio-bordo); }
   #cliforupdateView .cu-firma-label{ font-size:12px; font-weight:600; color:var(--testo-secondario); margin-bottom:6px; }
@@ -851,8 +852,8 @@
       </button>
       <button type="button" class="app-card hidden" id="btnCliforupdate">
         <span class="eyebrow">CLIFORUPDATE</span>
-        <span class="app-card-title">Aggiornamento clienti/fornitori</span>
-        <span class="app-card-desc">Aggiornamento anagrafiche clienti e fornitori.</span>
+        <span class="app-card-title">Aggiornamento Clienti</span>
+        <span class="app-card-desc">Aggiornamento anagrafiche clienti.</span>
         <span class="vai">Apri applicazione &rarr;</span>
       </button>
     </div>
@@ -1098,7 +1099,7 @@
     </div>
   </div>
 
-  <!-- CLIFORUPDATE VIEW (anagrafiche clienti/fornitori) -->
+  <!-- CLIFORUPDATE VIEW (anagrafiche clienti) -->
   <div id="cliforupdateView" class="hidden">
     <div class="top-bar">
       <span class="tb-welcome" id="cliforupdateWelcome"></span>
@@ -1157,6 +1158,7 @@
         <input type="text" id="cuf-l2pec">
         <label class="cu-check"><input type="checkbox" id="cuf-aupec"> Autorizzazione Spedizione PEC</label>
       </div>
+      <div class="cu-errore hidden" id="cu-errore-auth" role="alert">Non possono essere selezionate contemporaneamente sia l'autorizzazione all'invio tramite mail che l'autorizzazione all'invio tramite PEC</div>
       <div class="cu-firma hidden" id="cu-firma-box">
         <div class="cu-firma-label">Firma per le autorizzazioni modificate</div>
         <canvas id="cu-firma-canvas"></canvas>
@@ -2376,6 +2378,7 @@
     document.getElementById("cu-pan-uresp").textContent = "(nessuna risposta dal web service)";
     document.getElementById("cu-pan-ureq").classList.remove("show");
     document.getElementById("cu-pan-uresp").classList.remove("show");
+    cuControllaAutorizzazioni(); // se l'anagrafica arriva già con entrambe, il bottone resta disattivato
   }
 
   function okResp(data){
@@ -2410,6 +2413,7 @@
   }
 
   async function aggiornaAnagrafica(){
+    if (cuConflittoAutorizzazioni()){ cuControllaAutorizzazioni(); return; }
     const d = {
       cliente: document.getElementById("cuf-cliforid").value,
       cellu:   document.getElementById("cuf-cellu").value,
@@ -2454,7 +2458,7 @@
       document.getElementById("cu-pan-uresp").textContent = "Chiamata non riuscita.\n\n" + msg;
       cuToast("Chiamata non riuscita: " + msg);
     } finally {
-      btn.textContent = old; btn.disabled = false;
+      btn.textContent = old; cuControllaAutorizzazioni();
     }
   }
 
@@ -2550,6 +2554,20 @@
     return cuFirmaCanvas.toDataURL("image/png").replace(/^data:image\/png;base64,/, "");
   }
 
+  // Regola: l'autorizzazione all'invio via mail e quella via PEC non possono essere
+  // attive insieme. Se lo sono, il bottone "Aggiorna anagrafica" viene disattivato e
+  // compare il messaggio di errore finché una delle due non viene tolta.
+  function cuConflittoAutorizzazioni(){
+    return document.getElementById("cuf-autsp").checked &&
+           document.getElementById("cuf-aupec").checked;
+  }
+
+  function cuControllaAutorizzazioni(){
+    const conflitto = cuConflittoAutorizzazioni();
+    document.getElementById("cu-errore-auth").classList.toggle("hidden", !conflitto);
+    document.getElementById("cu-aggiorna").disabled = conflitto;
+  }
+
   // La firma serve se almeno una spunta è diversa da quanto estratto,
   // sia che l'autorizzazione sia stata aggiunta sia che sia stata tolta.
   function cuAutorizzazioniModificate(){
@@ -2573,6 +2591,9 @@
 
   ["cuf-autsp", "cuf-aucell1", "cuf-aupec"].forEach((id) =>
     document.getElementById(id).addEventListener("change", cuAggiornaFirma)
+  );
+  ["cuf-autsp", "cuf-aupec"].forEach((id) =>
+    document.getElementById(id).addEventListener("change", cuControllaAutorizzazioni)
   );
 
   // ---- CLIFORUPDATE: PDF del consenso (restituito da bapp_cli_ws, p_tipo=U) ----

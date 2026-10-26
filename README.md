@@ -2,7 +2,7 @@
 
 PWA installabile e multi-cliente. Dopo il login mostra un menu con le
 applicazioni disponibili per l'utente (Scontrini, Riscossione con file Excel,
-Riscossione con estrazione dati, Aggiornamento clienti/fornitori). Tutte le
+Riscossione con estrazione dati, Aggiornamento Clienti). Tutte le
 chiamate ai dati passano dai web service Wigest su `www.lucchi.com:448`.
 
 ## File
@@ -74,7 +74,7 @@ Al submit vengono chiamati in sequenza due servizi:
   JSON: se `okexp` = `N` mostra `messaggio`; se `okexp` = `Y` trasforma `dati`
   (array o Excel base64) e prosegue nello stesso flusso di RISCEXCEL. La
   "Partita" è data da `Anno\Prefisso\No`.
-- **Aggiornamento clienti/fornitori (CLIFORUPDATE)** — tre sotto-schermate:
+- **Aggiornamento Clienti (CLIFORUPDATE)** — tre sotto-schermate:
   elenco, maschera anagrafica, conferma.
 
   1. *Elenco*: chiama la query `qapp_cli_ws`
@@ -108,6 +108,13 @@ Al submit vengono chiamati in sequenza due servizi:
      - `PEC Comunicazioni ordinarie` → PEC Comunicazioni ordinarie — modificabile
        **solo se arriva vuota** dal JSON, altrimenti sola lettura
      - `Autorizzazione Spedizione PEC` → check-box (`Y`/`N`)
+     - **Regola**: *Autorizzazione Spedizione Fatture via Email* e *Autorizzazione
+       Spedizione PEC* non possono essere attive insieme. Se lo sono (anche se
+       l'anagrafica arriva già così), il bottone **Aggiorna anagrafica** è disattivato
+       e sotto i campi compare il messaggio "Non possono essere selezionate
+       contemporaneamente sia l'autorizzazione all'invio tramite mail che
+       l'autorizzazione all'invio tramite PEC"; si riattiva appena una delle due
+       viene tolta. La regola non riguarda l'autorizzazione Whatsapp.
 
   4. *Aggiornamento*: **Aggiorna anagrafica** richiama `bapp_cli_ws` con
      `p_tipo=U` e i valori del form, con questa mappatura:
