@@ -150,6 +150,38 @@ blocco "SCONTRINI (stile G)" in fondo al `<style>`, tutte sotto
 `body.scontrini-mode`. "Benvenuto" è scritto da `showMenu` in due `span`
 (`mh-label`, `mh-name`); il testo letto resta "Benvenuto <utente>".
 
+### Aspetto di Riscossione con file Excel (stile G)
+
+Lo stile G è applicato alle schermate **Carica file** ed **Elenco clienti**
+(quella che compare dopo il caricamento del file). Dettaglio cliente, report e
+finestra "Conferma pagamento" mantengono per ora lo stile precedente. **I bottoni
+non sono stati spostati né rinominati**: stesse scritte, stesso ordine, stessi id
+e comportamenti.
+
+- **Carica file**: fascia scura con "Benvenuto" e il nome utente su due righe, il
+  pulsante **Menu** a destra, il titolo "Riscossione" e "Gestione incassi
+  giornalieri"; scheda bianca con il testo, **Carica file Excel** (scuro) e, se c'è
+  una sessione salvata, il riquadro verde con **Riprendi sessione**, **centrato
+  sulla riga** e largo quanto il testo.
+- **Elenco clienti**: fascia scura con "Benvenuto", **Nuovo file** (o **Clienti**,
+  se si arriva da RISCTABELLE) a destra, titolo "Clienti" con il sottotitolo
+  (numero clienti e nome file) e **Report →** a destra del titolo; riepilogo
+  "Incassato oggi" e "Fatture pagate" in due schede bianche che sovrappongono la
+  fascia; schede cliente bianche, **verdi** se tutte le fatture sono pagate,
+  **ambra** se solo alcune, con il badge "✓ n/N pagate"; **Invia Report**
+  flottante in basso a destra (scuro). La lista ha 88 px di margine in fondo, così
+  il pulsante flottante non copre l'ultimo cliente.
+- Nessun riquadro scuro fisso in fondo: ogni blocco segue direttamente il
+  precedente. La testata con il logo non compare in queste schermate.
+
+Come è realizzato: il `body` riceve la classe `riscexcel-mode` solo mentre
+`#riscexcelView` è visibile (stesso `MutationObserver` di menu e Scontrini).
+`mostraSchermo` scrive la schermata attiva in `data-schermo` su `#riscexcelView`,
+e le regole della fascia scura valgono solo per `s-carica` e `s-lista`. Le regole
+sono nel blocco "RISCOSSIONE CON FILE EXCEL (stile G)" in fondo al `<style>`.
+"Benvenuto" è scritto in due `span` (`mh-label`, `mh-name`); il testo letto resta
+"Benvenuto <utente>".
+
 ## Applicazioni
 
 - **Scontrini** — carica un file/foto e lo invia a `bapp_cassa_ws`.
