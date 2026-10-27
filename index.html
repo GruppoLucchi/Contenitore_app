@@ -1356,15 +1356,6 @@
     color:#c3cfda;
     word-break:break-all;
   }
-  body.riscexcel-mode #s-lista .badge-header{
-    height:36px;
-    padding:0 14px;
-    border-radius:18px;
-    background:#ffffff;
-    color:var(--ink);
-    font-size:13px;
-    font-weight:700;
-  }
   body.riscexcel-mode #s-lista .lista-stats{
     margin-top:-44px;
     padding:0 20px;
@@ -1394,7 +1385,7 @@
     line-height:1.4;
     color:#5b6877;
   }
-  body.riscexcel-mode #s-lista .lista-scroll{ padding:16px 20px 88px; }
+  body.riscexcel-mode #s-lista .lista-scroll{ flex:none; overflow:visible; padding:16px 20px 0; }
   body.riscexcel-mode #s-lista .cliente-card{
     padding:14px 16px;
     border:1px solid #e1e6ec;
@@ -1445,15 +1436,19 @@
     border-color:#f0dcae;
     color:#7a5208;
   }
+  /* "Invia Report": subito sotto l'ultimo cliente, centrato sulla riga (non più flottante) */
   body.riscexcel-mode #s-lista .fab{
+    position:static;
+    width:fit-content;
+    margin:6px auto 28px;
     height:52px;
-    padding:0 24px;
+    padding:0 28px;
     border-radius:26px;
     background:var(--ink);
     color:#ffffff;
     font-size:15px;
     font-weight:700;
-    box-shadow:0 6px 18px rgba(28,43,57,.35);
+    box-shadow:0 4px 14px rgba(28,43,57,.25);
   }
   body.riscexcel-mode #s-lista .fab:active{ background:#2a3f54; opacity:1; }
   body.riscexcel-mode #s-lista .fab svg{ display:none; }
@@ -1940,7 +1935,6 @@
           <h1>Clienti</h1>
           <div class="header-sub" id="lista-sub"></div>
         </div>
-        <button class="badge-header" onclick="vaiReport()" style="cursor:pointer;border:none">Report &rarr;</button>
       </div>
       <div class="lista-stats">
         <div class="stat-box">
