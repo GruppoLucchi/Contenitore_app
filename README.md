@@ -60,6 +60,34 @@ Al submit vengono chiamati in sequenza due servizi:
    contiene `pwdok`, `nrute` (codice utente, usato come `p_user`/`p_usercassa`)
    e `listapp` (app abilitate per l'utente).
 
+### Aspetto della schermata di login (stile G)
+
+Il login ha una grafica propria, scelta tra le proposte di restyling dell'app
+(le altre schermate hanno ancora lo stile precedente e verranno aggiornate una
+alla volta):
+
+- **Testata scura** (colore `--ink`, lo stesso del menu) con l'aspetto originale
+  dell'app: il logo `gla_logo_color.jpg` in un riquadro bianco arrotondato e,
+  accanto, "WIGEST 5.5" con il sottotitolo "Sistema Informativo Gestionale sul
+  Web", centrati. Cambia solo il fondo, che è una fascia con lo stesso leggero
+  riflesso dello sfondo originale.
+- **Scheda bianca "Accedi"** che sovrappone la testata, con Cliente e Istanza
+  (solo se servono), Utente e Password; la combo Azienda compare dopo la query,
+  come prima.
+- **Pannello scuro in basso** con il pulsante **Accedi** (bianco), il nome del
+  cliente con il link "Cambia configurazione" e le "Istruzioni per l'installazione".
+- Sfondo della pagina chiaro (`#f3f6fa`).
+
+Come è realizzato: lo stile vale **solo mentre il login è visibile**. Il `body`
+ha la classe `login-mode` all'avvio; il JavaScript la toglie quando si entra nel
+menu (`showMenu`) e la rimette al ritorno al login (`resetToLogin`). Tutte le
+regole CSS del login sono nel blocco "LOGIN (stile G)" in fondo al `<style>` e
+iniziano con `body.login-mode`, quindi non toccano le altre schermate. Per
+cambiare l'aspetto del login basta modificare quel blocco. Nell'HTML il pulsante
+Accedi (`loginBtn`) e la riga di configurazione (`clienteCorrenteLabel`,
+`cambiaConfigLink`) stanno ora nel contenitore `.login-footer`, fuori dalla
+scheda; gli id e la logica JavaScript non sono cambiati.
+
 ## Applicazioni
 
 - **Scontrini** — carica un file/foto e lo invia a `bapp_cassa_ws`.
