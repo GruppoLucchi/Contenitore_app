@@ -152,11 +152,11 @@ blocco "SCONTRINI (stile G)" in fondo al `<style>`, tutte sotto
 
 ### Aspetto di Riscossione con file Excel (stile G)
 
-Lo stile G è applicato alle schermate **Carica file** ed **Elenco clienti**
-(quella che compare dopo il caricamento del file). Dettaglio cliente, report e
-finestra "Conferma pagamento" mantengono per ora lo stile precedente. **I bottoni
-non sono stati spostati né rinominati**: stesse scritte, stesso ordine, stessi id
-e comportamenti.
+Lo stile G è applicato a tutte le schermate: **Carica file**, **Elenco clienti**
+(quella che compare dopo il caricamento del file), **Dettaglio cliente**,
+**Report giornaliero** e la finestra **Conferma pagamento**. **I bottoni non sono
+stati spostati né rinominati**: stesse scritte, stesso ordine, stessi id e
+comportamenti.
 
 - **Carica file**: fascia scura con "Benvenuto" e il nome utente su due righe, il
   pulsante **Menu** a destra, il titolo "Riscossione" e "Gestione incassi
@@ -171,14 +171,29 @@ e comportamenti.
   **ambra** se solo alcune, con il badge "✓ n/N pagate"; **Invia Report**
   flottante in basso a destra (scuro). La lista ha 88 px di margine in fondo, così
   il pulsante flottante non copre l'ultimo cliente.
+- **Dettaglio cliente**: fascia scura con "Benvenuto", la freccia **‹** in un
+  cerchio a sinistra del codice cliente, ragione sociale e "città (prov) · n
+  fatture"; le fatture sono schede bianche (verdi se pagate) che sovrappongono la
+  fascia. **✓ Segna come pagata** è verde, centrato e largo quanto il testo; sulle
+  fatture pagate restano la riga "Pagata" con data/ora e **Modifica**, e sotto
+  **Annulla pagamento** (rosso, centrato).
+- **Report giornaliero**: freccia **‹** e titolo nella fascia; scheda "Riepilogo"
+  (totale incassato verde, fatture in sospeso ambra) e scheda con il testo, poi
+  **Scarica Excel** (verde) e **Apri mail** (scuro), nello stesso ordine di prima.
+- **Conferma pagamento**: foglio bianco dal basso sopra uno sfondo scuro, con Data
+  e Ora, **Annulla** a sinistra e **✓ Conferma pagato** (verde) a destra. Il formato
+  di data e ora dipende dalla lingua del telefono.
 - Nessun riquadro scuro fisso in fondo: ogni blocco segue direttamente il
   precedente. La testata con il logo non compare in queste schermate.
 
 Come è realizzato: il `body` riceve la classe `riscexcel-mode` solo mentre
 `#riscexcelView` è visibile (stesso `MutationObserver` di menu e Scontrini).
-`mostraSchermo` scrive la schermata attiva in `data-schermo` su `#riscexcelView`,
-e le regole della fascia scura valgono solo per `s-carica` e `s-lista`. Le regole
-sono nel blocco "RISCOSSIONE CON FILE EXCEL (stile G)" in fondo al `<style>`.
+`mostraSchermo` scrive la schermata attiva in `data-schermo` su `#riscexcelView`.
+Le regole sono nel blocco "RISCOSSIONE CON FILE EXCEL (stile G)" in fondo al
+`<style>`, tutte sotto `body.riscexcel-mode`. Nota: l'intestazione originale
+(`.header`) aveva `z-index:10` perché era fissa in alto; negli stili G è
+`position:static; z-index:auto`, altrimenti passerebbe sopra le schede che la
+sovrappongono e ne coprirebbe la parte alta.
 "Benvenuto" è scritto in due `span` (`mh-label`, `mh-name`); il testo letto resta
 "Benvenuto <utente>".
 

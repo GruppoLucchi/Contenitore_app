@@ -1196,10 +1196,9 @@
 
   /* ===== RISCOSSIONE CON FILE EXCEL (stile G) =====
      Vale SOLO mentre la schermata è visibile (body.riscexcel-mode, attivata dal JS che
-     osserva #riscexcelView) e, per la fascia scura e le schede, solo per "Carica file"
-     (s-carica) ed "Elenco clienti" (s-lista), riconosciute da data-schermo.
-     Dettaglio cliente, report e finestra di pagamento mantengono lo stile precedente.
-     I bottoni restano dove sono e con le stesse scritte. */
+     osserva #riscexcelView). Riguarda tutte le schermate: Carica file (s-carica),
+     Elenco clienti (s-lista), Dettaglio cliente (s-cliente), Report (s-report) e la
+     finestra "Conferma pagamento". I bottoni restano dove sono e con le stesse scritte. */
   body.riscexcel-mode{
     background:#f3f6fa;
     padding:0;
@@ -1208,28 +1207,28 @@
   body.riscexcel-mode #riscexcelView{ background:#f3f6fa; }
 
   /* barra in alto = riga superiore della fascia scura */
-  body.riscexcel-mode #riscexcelView:is([data-schermo="s-carica"],[data-schermo="s-lista"]) .top-bar{
+  body.riscexcel-mode #riscexcelView .top-bar{
     padding:calc(32px + env(safe-area-inset-top, 0px)) 20px 0;
     gap:12px;
   }
-  body.riscexcel-mode #riscexcelView:is([data-schermo="s-carica"],[data-schermo="s-lista"]) .tb-welcome{
+  body.riscexcel-mode #riscexcelView .tb-welcome{
     white-space:normal;
     font-size:16px;
     font-weight:600;
     color:#ffffff;
   }
-  body.riscexcel-mode #riscexcelView:is([data-schermo="s-carica"],[data-schermo="s-lista"]) .tb-welcome .mh-label{
+  body.riscexcel-mode #riscexcelView .tb-welcome .mh-label{
     display:block;
     font-size:13px;
     font-weight:400;
     line-height:1.4;
     color:#c3cfda;
   }
-  body.riscexcel-mode #riscexcelView:is([data-schermo="s-carica"],[data-schermo="s-lista"]) .tb-welcome .mh-name{
+  body.riscexcel-mode #riscexcelView .tb-welcome .mh-name{
     display:block;
     line-height:1.3;
   }
-  body.riscexcel-mode #riscexcelView:is([data-schermo="s-carica"],[data-schermo="s-lista"]) .top-bar .btn-link{
+  body.riscexcel-mode #riscexcelView .top-bar .btn-link{
     flex:none;
     min-height:44px;
     padding:0 18px;
@@ -1340,6 +1339,7 @@
   /* --- Elenco clienti --- */
   body.riscexcel-mode #s-lista .header{
     position:static;
+    z-index:auto;
     padding:22px 20px 72px;
     background:var(--ink);
     gap:12px;
@@ -1457,6 +1457,270 @@
   }
   body.riscexcel-mode #s-lista .fab:active{ background:#2a3f54; opacity:1; }
   body.riscexcel-mode #s-lista .fab svg{ display:none; }
+
+  /* --- Dettaglio cliente e Report: intestazione con freccia ‹ --- */
+  body.riscexcel-mode #s-cliente .header,
+  body.riscexcel-mode #s-report .header{
+    position:static;
+    z-index:auto;
+    background:var(--ink);
+    gap:12px;
+  }
+  body.riscexcel-mode #s-cliente .header{ padding:18px 20px 0; }
+  body.riscexcel-mode #s-report .header{ padding:18px 20px 72px; }
+  body.riscexcel-mode #s-cliente .header-back,
+  body.riscexcel-mode #s-report .header-back{
+    flex:none;
+    width:44px;
+    height:44px;
+    padding:0 0 3px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border:1px solid rgba(255,255,255,.35);
+    border-radius:50%;
+    font-size:28px;
+    line-height:1;
+  }
+  body.riscexcel-mode #s-cliente .header h1,
+  body.riscexcel-mode #s-report .header h1{
+    font-size:22px;
+    font-weight:600;
+    line-height:1.25;
+  }
+
+  /* --- Dettaglio cliente --- */
+  body.riscexcel-mode #s-cliente .cliente-header-info{
+    padding:12px 20px 72px;
+    background:var(--ink);
+  }
+  body.riscexcel-mode #s-cliente .cliente-header-nome{
+    font-size:15px;
+    font-weight:600;
+    line-height:1.3;
+  }
+  body.riscexcel-mode #s-cliente .cliente-header-dettagli{
+    margin-top:2px;
+    font-size:12.5px;
+    line-height:1.4;
+    color:#c3cfda;
+  }
+  body.riscexcel-mode #s-cliente .fatture-scroll{
+    margin-top:-44px;
+    padding:0 20px 28px;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    overflow:visible;
+  }
+  body.riscexcel-mode #s-cliente .fattura-card{
+    margin-bottom:0;
+    padding:16px;
+    background:#ffffff;
+    border:1px solid #e1e6ec;
+    border-radius:18px;
+    box-shadow:0 4px 14px rgba(28,43,57,.10);
+    overflow:visible;
+  }
+  body.riscexcel-mode #s-cliente .fattura-card.pagata{
+    background:#e8f4ee;
+    border-color:#bfe3d0;
+  }
+  body.riscexcel-mode #s-cliente .fattura-doc{
+    font-size:15px;
+    font-weight:600;
+    line-height:1.3;
+    color:var(--ink);
+  }
+  body.riscexcel-mode #s-cliente .fattura-importo{
+    font-size:17px;
+    line-height:1.3;
+    color:var(--ink);
+  }
+  body.riscexcel-mode #s-cliente .fattura-meta{
+    margin-top:4px;
+    gap:2px 12px;
+  }
+  body.riscexcel-mode #s-cliente .fattura-meta span{
+    font-size:12.5px;
+    line-height:1.5;
+    color:#5b6877;
+  }
+  body.riscexcel-mode #s-cliente .fattura-card.pagata .fattura-meta span{ color:#3c4c5c; }
+  body.riscexcel-mode #s-cliente .btn-paga{
+    min-height:44px;
+    padding:0 22px;
+    border-radius:12px;
+    background:#2d7a56;
+  }
+  body.riscexcel-mode #s-cliente .pagata-info{
+    color:#1f5f43;
+    margin-top:12px;
+    padding:8px 0 0;
+    background:transparent;
+    border-top:1px solid #bfe3d0;
+    border-radius:0;
+  }
+  body.riscexcel-mode #s-cliente .pagata-info span{
+    font-size:13px;
+    font-weight:700;
+    color:#1f5f43;
+  }
+  body.riscexcel-mode #s-cliente .pagata-info .pagata-data{
+    flex:1;
+    min-width:0;
+    font-size:13px;
+    font-weight:400;
+    color:#1f5f43;
+  }
+  body.riscexcel-mode #s-cliente .btn-modifica-data{
+    min-height:44px;
+    padding:0 6px;
+    font-size:13px;
+    font-weight:600;
+    color:#1f5f43;
+    text-underline-offset:3px;
+  }
+  body.riscexcel-mode #s-cliente .fattura-card.pagata .fattura-azione{ margin-top:0; }
+  body.riscexcel-mode #s-cliente .btn-annulla{
+    min-height:44px;
+    padding:0 16px;
+    border:0;
+    background:transparent;
+    color:#b3261e;
+    font-size:13px;
+    font-weight:600;
+    text-decoration:underline;
+    text-underline-offset:3px;
+  }
+
+  /* --- Report giornaliero --- */
+  body.riscexcel-mode #s-report .report-body{
+    margin-top:-44px;
+    padding:0 20px 28px;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+  body.riscexcel-mode #s-report .report-riepilogo{
+    margin-bottom:0;
+    padding:18px 20px 8px;
+    background:#ffffff;
+    border:1px solid #e1e6ec;
+    border-radius:22px;
+    box-shadow:0 4px 14px rgba(28,43,57,.12);
+  }
+  body.riscexcel-mode #s-report .report-riepilogo h3{
+    margin-bottom:4px;
+    font-size:16px;
+    font-weight:600;
+    line-height:1.3;
+    letter-spacing:0;
+    text-transform:none;
+    color:var(--ink);
+  }
+  body.riscexcel-mode #s-report .report-riga{
+    min-height:44px;
+    padding:0;
+    border-bottom:1px solid #eef1f5;
+  }
+  body.riscexcel-mode #s-report .report-riga:last-child{ border-bottom:none; }
+  body.riscexcel-mode #s-report .report-riga .lab{
+    font-size:14px;
+    color:#3c4c5c;
+  }
+  body.riscexcel-mode #s-report .report-riga .val{ font-size:16px; }
+  body.riscexcel-mode #s-report .report-riga .val.verde{ color:#2d7a56; }
+  body.riscexcel-mode #s-report .report-riga .val.accento{ color:#a8730f; }
+  body.riscexcel-mode #s-report .card-invio{
+    padding:20px;
+    background:#ffffff;
+    border:1px solid #e1e6ec;
+    border-radius:22px;
+    box-shadow:0 4px 14px rgba(28,43,57,.12);
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+  }
+  body.riscexcel-mode #s-report .card-invio p{
+    margin:0;
+    font-size:14px;
+    line-height:1.55;
+    color:#3c4c5c;
+  }
+  body.riscexcel-mode #s-report .btn-grande{
+    height:52px;
+    padding:0 16px;
+    border-radius:14px;
+    background:var(--ink);
+    font-size:16px;
+    font-weight:600;
+    margin-bottom:0;
+  }
+  body.riscexcel-mode #s-report .btn-grande.verde{ background:#2d7a56; }
+  body.riscexcel-mode #s-report .avviso{
+    margin-bottom:0;
+    border-radius:12px;
+    background:#fbf1dc;
+    border:1px solid #f0dcae;
+  }
+
+  /* --- Finestra "Conferma pagamento" --- */
+  body.riscexcel-mode #riscexcelView .modal-overlay{ background:rgba(10,18,26,.55); }
+  body.riscexcel-mode #riscexcelView .modal{
+    padding:24px 20px 28px;
+    border-radius:24px 24px 0 0;
+  }
+  body.riscexcel-mode #riscexcelView .modal h3{
+    font-size:18px;
+    line-height:1.3;
+  }
+  body.riscexcel-mode #riscexcelView .modal p{
+    margin-bottom:18px;
+    line-height:1.5;
+  }
+  body.riscexcel-mode #riscexcelView .campo-data{
+    gap:12px;
+    margin-bottom:20px;
+  }
+  body.riscexcel-mode #riscexcelView .campo label{
+    font-size:12.5px;
+    letter-spacing:0;
+    text-transform:none;
+    color:#3c4c5c;
+  }
+  body.riscexcel-mode #riscexcelView .campo input{
+    font-family:inherit;
+    height:48px;
+    padding:0 12px;
+    border:1px solid #cdd5de;
+    border-radius:12px;
+    font-size:15px;
+  }
+  body.riscexcel-mode #riscexcelView .campo input:focus{
+    border-color:#1f4e79;
+    box-shadow:0 0 0 3px rgba(31,78,121,.15);
+  }
+  body.riscexcel-mode #riscexcelView .btn-cancella{
+    flex:1;
+    height:52px;
+    padding:0;
+    background:#ffffff;
+    border:1px solid #cdd5de;
+    border-radius:14px;
+    color:var(--ink);
+    font-size:15px;
+    font-weight:600;
+  }
+  body.riscexcel-mode #riscexcelView .btn-conferma{
+    flex:1.5;
+    height:52px;
+    padding:0;
+    border-radius:14px;
+    background:#2d7a56;
+    font-size:15px;
+    font-weight:600;
+  }
 </style>
 </head>
 <body class="login-mode">
