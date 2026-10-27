@@ -1021,6 +1021,178 @@
     word-break:break-word;
   }
   body.menu-mode .menu-context .ctx-istanza{ word-break:break-all; }
+
+  /* ===== SCONTRINI (stile G) =====
+     Vale SOLO mentre la schermata Scontrini è visibile (body.scontrini-mode,
+     attivata dal JS che osserva la classe di #appView). I bottoni restano dove
+     sono e con le stesse scritte: cambia solo l'aspetto. */
+  body.scontrini-mode{
+    background:#f3f6fa;
+    padding:0;
+  }
+  body.scontrini-mode .app{
+    max-width:480px;
+    min-height:100vh;
+    min-height:100dvh;
+    display:flex;
+    flex-direction:column;
+    padding-bottom:calc(24px + env(safe-area-inset-bottom, 0px));
+  }
+  body.scontrini-mode .brand{ display:none; }
+  body.scontrini-mode .g-band{
+    background:var(--ink);
+    padding:calc(32px + env(safe-area-inset-top, 0px)) 20px 72px;
+  }
+  body.scontrini-mode .g-band .login-head{
+    margin-bottom:0;
+    align-items:center;
+    gap:12px;
+  }
+  body.scontrini-mode .g-band .login-head h2{
+    font-size:16px;
+    font-weight:600;
+    line-height:1.3;
+    color:#ffffff;
+    word-break:break-word;
+  }
+  body.scontrini-mode .g-band .mh-label{
+    display:block;
+    font-size:13px;
+    font-weight:400;
+    line-height:1.4;
+    color:#c3cfda;
+  }
+  body.scontrini-mode .g-band .mh-name{ display:block; }
+  body.scontrini-mode .g-band .login-head-actions{ flex:none; }
+  body.scontrini-mode #backToMenuBtn{
+    min-height:44px;
+    padding:0 18px;
+    display:inline-flex;
+    align-items:center;
+    border:1px solid rgba(255,255,255,.35);
+    border-radius:22px;
+    background:transparent;
+    font-size:14px;
+    font-weight:600;
+    color:#ffffff;
+    text-decoration:none;
+  }
+  body.scontrini-mode #backToMenuBtn:hover{ background:rgba(255,255,255,.08); }
+  body.scontrini-mode .g-title{
+    margin:22px 0 0;
+    font-size:22px;
+    font-weight:600;
+    line-height:1.25;
+    color:#ffffff;
+  }
+  body.scontrini-mode .g-sub{
+    margin:6px 0 0;
+    font-size:13px;
+    line-height:1.45;
+    color:#c3cfda;
+  }
+  body.scontrini-mode #appView .card{
+    margin:-44px 20px 0;
+    padding:20px;
+    background:#ffffff;
+    border:1px solid #e1e6ec;
+    border-radius:22px;
+    box-shadow:0 4px 14px rgba(28,43,57,.12);
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+  }
+  body.scontrini-mode #appView .field{ margin-bottom:0; }
+  body.scontrini-mode #appView .field label{
+    font-size:12.5px;
+    font-weight:600;
+    letter-spacing:0;
+    text-transform:none;
+    color:var(--ink-soft);
+    margin-bottom:8px;
+  }
+  body.scontrini-mode #appView .choose-row{ margin-bottom:10px; }
+  body.scontrini-mode #appView .btn-choose{
+    flex:1;
+    min-width:0;
+    min-height:48px;
+    padding:0 12px;
+    background:#ffffff;
+    border:1px solid #cdd5de;
+    border-radius:12px;
+    color:var(--ink);
+    font-size:14px;
+    font-weight:600;
+  }
+  body.scontrini-mode #appView .btn-choose:hover{ background:#eef2f6; }
+  body.scontrini-mode #appView .file-name{
+    min-height:46px;
+    padding:0 14px;
+    border:1px dashed #cdd5de;
+    border-radius:12px;
+    font-size:14px;
+    background:#eef2f6;
+  }
+  body.scontrini-mode #appView .file-name.filled{
+    border-style:solid;
+    border-color:#a8730f;
+  }
+  body.scontrini-mode #appView .btn-outline{
+    min-height:46px;
+    padding:0 14px;
+    border:1px solid #cdd5de;
+    border-radius:12px;
+    font-size:14px;
+    font-weight:600;
+  }
+  body.scontrini-mode #appView .btn-outline:hover:not(:disabled){ border-color:#a8730f; }
+  body.scontrini-mode #appView .text-input{
+    height:48px;
+    padding:0 14px;
+    border:1px solid #cdd5de;
+    border-radius:12px;
+    font-size:15px;
+  }
+  body.scontrini-mode #appView .text-input:focus{
+    border-color:#1f4e79;
+    box-shadow:0 0 0 3px rgba(31,78,121,.15);
+  }
+  body.scontrini-mode #appView .btn-primary{
+    height:52px;
+    padding:0 16px;
+    border-radius:14px;
+    background:var(--ink);
+    color:#ffffff;
+    font-size:16px;
+    font-weight:600;
+    letter-spacing:0;
+  }
+  body.scontrini-mode #appView .btn-primary:hover:not(:disabled){ background:#2a3f54; }
+  body.scontrini-mode #appView .btn-primary:disabled{
+    background:#d5dbe3;
+    color:#5b6877;
+  }
+  body.scontrini-mode #appView .btn-primary .spinner{
+    border-color:rgba(255,255,255,.4);
+    border-top-color:#ffffff;
+  }
+  body.scontrini-mode #appView .result-wrap{ margin-top:0; }
+  body.scontrini-mode #appView .panel{
+    border:1px solid #e1e6ec;
+    border-radius:12px;
+    background:#ffffff;
+  }
+  body.scontrini-mode #appView .panel summary{
+    background:#eef2f6;
+    color:var(--ink-soft);
+  }
+  body.scontrini-mode #appView .panel summary .chev{ color:#a8730f; }
+  body.scontrini-mode #appView .btn-ghost{
+    border:1px solid #cdd5de;
+    border-radius:12px;
+    color:var(--ink);
+  }
+  body.scontrini-mode #appView .btn-ghost:hover:not(:disabled){ border-color:#a8730f; }
 </style>
 </head>
 <body class="login-mode">
@@ -1133,7 +1305,7 @@
 
   <!-- APP VIEW (visible only after successful login) -->
   <div id="appView" class="hidden">
-    <div class="card">
+    <div class="g-band">
       <div class="login-head">
         <h2 id="loggedUserLabel">Utente</h2>
         <div class="login-head-actions">
@@ -1141,6 +1313,10 @@
           <button type="button" class="btn-link hidden" id="logoutBtn">Cambia utente</button>
         </div>
       </div>
+      <h1 class="g-title">Inserimento Scontrini</h1>
+      <p class="g-sub">Carica gli scontrini e invia i dati alla Primanota di cassa.</p>
+    </div>
+    <div class="card">
 
       <div class="field">
         <label for="fileInput">File da caricare</label>
@@ -1659,6 +1835,11 @@
   new MutationObserver(() => {
     document.body.classList.toggle("menu-mode", !menuView.classList.contains("hidden"));
   }).observe(menuView, { attributes: true, attributeFilter: ["class"] });
+
+  // Stessa logica per la schermata Scontrini (body.scontrini-mode).
+  new MutationObserver(() => {
+    document.body.classList.toggle("scontrini-mode", !appView.classList.contains("hidden"));
+  }).observe(appView, { attributes: true, attributeFilter: ["class"] });
   const riscexcelView = document.getElementById("riscexcelView");
   const riscexcelBackBtn = document.getElementById("riscexcelBackBtn");
   const riscexcelLogoutBtn = document.getElementById("riscexcelLogoutBtn");
@@ -1717,7 +1898,7 @@
     sessionInfo = data;
     utenteCorrente = user;
     menuUserLabel.innerHTML = '<span class="mh-label">Benvenuto</span> <span class="mh-name">' + escapeXml(user) + '</span>';
-    loggedUserLabel.textContent = "Benvenuto " + user;
+    loggedUserLabel.innerHTML = '<span class="mh-label">Benvenuto</span> <span class="mh-name">' + escapeXml(user) + '</span>';
 
     // Pannello in basso: Azienda (descrizione) e Istanza (nome istanza)
     menuContextLabel.innerHTML =

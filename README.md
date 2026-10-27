@@ -121,6 +121,35 @@ o nascosto (accesso, ritorno dalle app, logout). Le regole CSS sono nel blocco
 del titolo ("Benvenuto" + nome utente) e il riquadro Azienda/Istanza sono
 generati da `showMenu`.
 
+### Aspetto di Inserimento Scontrini (stile G)
+
+Anche la schermata Scontrini usa lo stile G, in modo omogeneo con login e menu.
+**I bottoni non sono stati spostati né rinominati**: stesso ordine, stesse
+scritte, stessi id (Menu, Cambia utente [nascosto], Scegli file, Scatta foto,
+Visualizza file caricato, Invia a Primanota di cassa, Scarica richiesta (.txt),
+Scarica risposta (.txt)).
+
+- **Fascia scura** in alto con "Benvenuto" e il nome utente su due righe, il
+  pulsante **Menu** a destra (stessa posizione di prima), il titolo "Inserimento
+  Scontrini" e il sottotitolo. La riga Benvenuto/Menu nel codice sta ora in
+  `.g-band`, sopra la scheda, e non più dentro la scheda.
+- **Scheda bianca** che sovrappone la fascia, con gli stessi elementi di prima
+  nello stesso ordine: File da caricare (Scegli file, Scatta foto; nome del file
+  e Visualizza file caricato), Descrizione, Invia a Primanota di cassa, e dopo
+  l'invio la ricevuta, i pannelli Chiamata inviata / Risposta ricevuta e i due
+  pulsanti di download.
+- I pulsanti di scelta file sono bianchi con bordo e si dividono la riga in parti
+  uguali; **Invia a Primanota di cassa** è scuro (resta dentro la scheda, sotto
+  la Descrizione). Quando un file è scelto, il suo riquadro ha il bordo ambra,
+  il colore di Scontrini nel menu.
+- La testata con il logo non compare in questa schermata.
+
+Come è realizzato: il `body` riceve la classe `scontrini-mode` solo mentre
+`#appView` è visibile (stesso `MutationObserver` del menu). Le regole sono nel
+blocco "SCONTRINI (stile G)" in fondo al `<style>`, tutte sotto
+`body.scontrini-mode`. "Benvenuto" è scritto da `showMenu` in due `span`
+(`mh-label`, `mh-name`); il testo letto resta "Benvenuto <utente>".
+
 ## Applicazioni
 
 - **Scontrini** — carica un file/foto e lo invia a `bapp_cassa_ws`.
