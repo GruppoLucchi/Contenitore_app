@@ -874,6 +874,157 @@
   body.login-mode .install-body{ padding:12px 4px 0; }
   body.login-mode .install-os h3{ color:#c3cfda; }
   body.login-mode .install-os ol{ color:#e5ecf2; }
+
+  /* ===== MENU (stile G) =====
+     Vale SOLO mentre il menu è visibile (body.menu-mode, attivata dal JS che
+     osserva la classe di #menuView). Nel menu la testata con il logo non si mostra. */
+  .app-ico{ display:none; }
+  .menu-footer{ display:none; }
+  /* Le istruzioni di installazione compaiono solo nella schermata di login */
+  body:not(.login-mode) .install-card{ display:none; }
+
+  body.menu-mode{
+    background:#f3f6fa;
+    padding:0;
+  }
+  body.menu-mode .app{
+    max-width:480px;
+    min-height:100vh;
+    min-height:100dvh;
+    display:flex;
+    flex-direction:column;
+  }
+  body.menu-mode .brand{ display:none; }
+  body.menu-mode #menuView{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+  }
+  body.menu-mode .menu-head{
+    background:var(--ink);
+    margin:0;
+    padding:calc(32px + env(safe-area-inset-top, 0px)) 20px 84px;
+    align-items:flex-start;
+    gap:12px;
+  }
+  body.menu-mode .menu-head h2{
+    font-size:24px;
+    font-weight:600;
+    line-height:1.2;
+    color:#ffffff;
+    word-break:break-word;
+  }
+  body.menu-mode .menu-head h2 .mh-label{
+    display:block;
+    font-size:13px;
+    font-weight:400;
+    line-height:1.4;
+    color:#c3cfda;
+  }
+  body.menu-mode .menu-head h2 .mh-name{
+    display:block;
+    margin-top:2px;
+  }
+  body.menu-mode #menuLogoutBtn{
+    flex:none;
+    min-height:44px;
+    padding:0 18px;
+    display:inline-flex;
+    align-items:center;
+    border:1px solid rgba(255,255,255,.35);
+    border-radius:22px;
+    background:transparent;
+    font-size:14px;
+    font-weight:600;
+    color:#ffffff;
+    text-decoration:none;
+  }
+  body.menu-mode #menuLogoutBtn:hover{ background:rgba(255,255,255,.08); }
+  body.menu-mode .app-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:14px;
+    padding:0 20px;
+    margin:-52px 0 24px;
+  }
+  body.menu-mode .app-card{
+    justify-content:space-between;
+    min-height:210px;
+    padding:16px;
+    background:#ffffff;
+    border:1px solid #e1e6ec;
+    border-radius:22px;
+    box-shadow:0 4px 14px rgba(28,43,57,.14);
+  }
+  body.menu-mode .app-card:hover,
+  body.menu-mode .app-card:focus-visible{
+    border-color:#cdd5de;
+    box-shadow:0 6px 18px rgba(28,43,57,.2);
+    transform:translateY(-2px);
+  }
+  body.menu-mode .app-card:focus-visible{
+    outline:3px solid #2a6aa3;
+    outline-offset:2px;
+  }
+  body.menu-mode .app-card-title{
+    font-size:15px;
+    font-weight:600;
+    line-height:1.3;
+    color:var(--ink);
+    margin:0;
+  }
+  body.menu-mode .app-card-desc{ display:none; }
+  body.menu-mode .app-ico{
+    display:flex;
+    flex:none;
+    width:48px;
+    height:48px;
+    border-radius:50%;
+    align-items:center;
+    justify-content:center;
+    color:#ffffff;
+  }
+  body.menu-mode .app-ico svg{
+    width:24px;
+    height:24px;
+  }
+  body.menu-mode .app-ico-scontrini{ background:#a8730f; }
+  body.menu-mode .app-ico-excel{ background:#2d7a56; }
+  body.menu-mode .app-ico-estrazione{ background:#2a6aa3; }
+  body.menu-mode .app-ico-clienti{ background:#7a4a9e; }
+  body.menu-mode #menuEmpty{ margin:0 20px 24px; }
+  body.menu-mode .menu-footer{
+    display:block;
+    margin-top:auto;
+    background:var(--ink);
+    padding:20px 20px calc(28px + env(safe-area-inset-bottom, 0px));
+    border-radius:24px 24px 0 0;
+  }
+  body.menu-mode .menu-context{
+    padding:14px 16px;
+    background:rgba(255,255,255,.08);
+    border:1px solid rgba(255,255,255,.16);
+    border-radius:16px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  body.menu-mode .menu-context .ctx-label{
+    display:block;
+    font-size:11px;
+    font-weight:600;
+    letter-spacing:.6px;
+    text-transform:uppercase;
+    color:#c3cfda;
+  }
+  body.menu-mode .menu-context .ctx-value{
+    display:block;
+    margin-top:2px;
+    font-size:13px;
+    line-height:1.4;
+    color:#ffffff;
+    word-break:break-word;
+  }
+  body.menu-mode .menu-context .ctx-istanza{ word-break:break-all; }
 </style>
 </head>
 <body class="login-mode">
@@ -952,29 +1103,36 @@
     <div class="menu-head">
       <div class="menu-head-info">
         <h2 id="menuUserLabel">Benvenuto</h2>
-        <p class="menu-sub" id="menuContextLabel"></p>
       </div>
       <button type="button" class="btn-link btn-link-light" id="menuLogoutBtn">Login</button>
     </div>
     <div class="app-grid">
       <button type="button" class="app-card hidden" id="btnScontrini">
+        <span class="app-ico app-ico-scontrini" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6"/><path d="M9 12h6"/></svg></span>
         <span class="app-card-title">Inserimento Scontrini</span>
         <span class="app-card-desc">Carica gli scontrini e invia i dati alla Primanota di cassa.</span>
       </button>
       <button type="button" class="app-card hidden" id="btnRiscexcel">
+        <span class="app-ico app-ico-excel" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 10h16"/><path d="M4 15h16"/><path d="M10 4v16"/></svg></span>
         <span class="app-card-title">Riscossione con file Excel</span>
         <span class="app-card-desc">Servizio riscossione con file Excel</span>
       </button>
       <button type="button" class="app-card hidden" id="btnRiscTabelle">
+        <span class="app-ico app-ico-estrazione" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v6c0 1.7 3.1 3 7 3s7-1.3 7-3V6"/><path d="M5 12v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6"/></svg></span>
         <span class="app-card-title">Riscossione con estrazione dati</span>
         <span class="app-card-desc">Servizio Riscossione con estrazione partite aperte</span>
       </button>
       <button type="button" class="app-card hidden" id="btnCliforupdate">
+        <span class="app-ico app-ico-clienti" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg></span>
         <span class="app-card-title">Aggiornamento Clienti</span>
         <span class="app-card-desc">Aggiornamento anagrafiche clienti.</span>
       </button>
     </div>
     <div id="menuEmpty" class="login-error hidden">Nessuna applicazione disponibile per questo utente.</div>
+
+    <div class="menu-footer">
+      <div class="menu-context" id="menuContextLabel"></div>
+    </div>
   </div>
 
   <!-- APP VIEW (visible only after successful login) -->
@@ -1498,6 +1656,13 @@
   const btnRiscTabelle = document.getElementById("btnRiscTabelle");
   const btnCliforupdate = document.getElementById("btnCliforupdate");
   const menuEmpty = document.getElementById("menuEmpty");
+
+  // Modalità grafica del menu (stile G): attiva solo quando il menu è visibile.
+  // Si osserva la classe di #menuView, così vale per qualunque punto del codice
+  // che lo mostra o lo nasconde (accesso, ritorno dalle app, logout).
+  new MutationObserver(() => {
+    document.body.classList.toggle("menu-mode", !menuView.classList.contains("hidden"));
+  }).observe(menuView, { attributes: true, attributeFilter: ["class"] });
   const riscexcelView = document.getElementById("riscexcelView");
   const riscexcelBackBtn = document.getElementById("riscexcelBackBtn");
   const riscexcelLogoutBtn = document.getElementById("riscexcelLogoutBtn");
@@ -1555,14 +1720,13 @@
   function showMenu(user, data){
     sessionInfo = data;
     utenteCorrente = user;
-    menuUserLabel.textContent = "Benvenuto " + user;
+    menuUserLabel.innerHTML = '<span class="mh-label">Benvenuto</span> <span class="mh-name">' + escapeXml(user) + '</span>';
     loggedUserLabel.textContent = "Benvenuto " + user;
 
-    // Riga di contesto: Istanza (nome istanza) e Azienda (descrizione)
+    // Pannello in basso: Azienda (descrizione) e Istanza (nome istanza)
     menuContextLabel.innerHTML =
-      '<span class="etichetta">Istanza</span> ' + escapeXml(selezione.istanza || "") +
-      '<span class="sep">·</span>' +
-      '<span class="etichetta">Azienda</span> ' + escapeXml(selezione.desAzienda || "");
+      '<div><span class="ctx-label">Azienda</span><span class="ctx-value">' + escapeXml(selezione.desAzienda || "") + '</span></div>' +
+      '<div><span class="ctx-label">Istanza</span><span class="ctx-value ctx-istanza">' + escapeXml(selezione.istanza || "") + '</span></div>';
 
     const apps = parseListApp(data.listapp);
     const hasScontrini = apps.includes("SCONTRINI");

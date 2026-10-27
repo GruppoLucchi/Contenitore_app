@@ -88,6 +88,34 @@ Accedi (`loginBtn`) e la riga di configurazione (`clienteCorrenteLabel`,
 `cambiaConfigLink`) stanno ora nel contenitore `.login-footer`, fuori dalla
 scheda; gli id e la logica JavaScript non sono cambiati.
 
+### Aspetto del menu delle applicazioni (stile G)
+
+Anche la schermata con i bottoni che aprono le app usa lo stile G (le schermate
+delle singole app hanno ancora lo stile precedente):
+
+- **Testata scura** con "Benvenuto" e il nome utente su due righe e, a destra,
+  il pulsante **Login** (torna alla schermata di accesso). In questa schermata la
+  testata con il logo non compare.
+- **Bottoni delle app** bianchi, in griglia 2×2, che sovrappongono la testata.
+  Ognuno ha un'icona in un cerchio colorato (Scontrini ambra, Riscossione con
+  file Excel verde, Riscossione con estrazione dati azzurro, Aggiornamento
+  Clienti viola) e il titolo; la descrizione è nascosta ma resta nel codice.
+  Compaiono solo le app abilitate all'utente (`listapp`), come prima.
+- **Pannello scuro in basso** con **Azienda** e **Istanza** (in quest'ordine).
+- Sfondo della pagina chiaro (`#f3f6fa`).
+
+Le **istruzioni per l'installazione** compaiono solo nella schermata di login: la
+regola `body:not(.login-mode) .install-card { display:none }` le nasconde in tutte
+le altre schermate.
+
+Come è realizzato: il `body` riceve la classe `menu-mode` solo mentre `#menuView`
+è visibile. Un `MutationObserver` osserva la classe di `#menuView` e la attiva o
+la toglie, quindi funziona da qualunque punto del codice il menu venga mostrato
+o nascosto (accesso, ritorno dalle app, logout). Le regole CSS sono nel blocco
+"MENU (stile G)" in fondo al `<style>` e iniziano con `body.menu-mode`. Il testo
+del titolo ("Benvenuto" + nome utente) e il riquadro Azienda/Istanza sono
+generati da `showMenu`.
+
 ## Applicazioni
 
 - **Scontrini** — carica un file/foto e lo invia a `bapp_cassa_ws`.
