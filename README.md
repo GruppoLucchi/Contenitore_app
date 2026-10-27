@@ -74,8 +74,10 @@ alla volta):
 - **Scheda bianca "Accedi"** che sovrappone la testata, con Cliente e Istanza
   (solo se servono), Utente e Password; la combo Azienda compare dopo la query,
   come prima.
-- **Pannello scuro in basso** con il pulsante **Accedi** (bianco), il nome del
-  cliente con il link "Cambia configurazione" e le "Istruzioni per l'installazione".
+- **Blocco scuro subito sotto la scheda** (non fissato in fondo alla pagina), con
+  larghezza e margini laterali uguali a quelli della scheda: contiene il pulsante
+  **Accedi** (bianco), il nome del cliente con il link "Cambia configurazione" e le
+  "Istruzioni per l'installazione".
 - Sfondo della pagina chiaro (`#f3f6fa`).
 
 Come è realizzato: lo stile vale **solo mentre il login è visibile**. Il `body`
@@ -99,9 +101,12 @@ delle singole app hanno ancora lo stile precedente):
 - **Bottoni delle app** bianchi, in griglia 2×2, che sovrappongono la testata.
   Ognuno ha un'icona in un cerchio colorato (Scontrini ambra, Riscossione con
   file Excel verde, Riscossione con estrazione dati azzurro, Aggiornamento
-  Clienti viola) e il titolo; la descrizione è nascosta ma resta nel codice.
-  Compaiono solo le app abilitate all'utente (`listapp`), come prima.
-- **Pannello scuro in basso** con **Azienda** e **Istanza** (in quest'ordine).
+  Clienti viola) e, **subito sotto l'icona**, il titolo: i riquadri sono compatti
+  (altezza data dal contenuto). Il testo descrittivo secondario è nascosto ma
+  resta nel codice. Compaiono solo le app abilitate all'utente (`listapp`),
+  come prima.
+- **Blocco scuro subito sotto i riquadri** con **Azienda** e **Istanza** (in
+  quest'ordine), come scheda arrotondata con gli stessi margini laterali.
 - Sfondo della pagina chiaro (`#f3f6fa`).
 
 Le **istruzioni per l'installazione** compaiono solo nella schermata di login: la
