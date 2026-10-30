@@ -4208,12 +4208,14 @@
     try {
       // 1) geolocalizzazione e data/ora del momento in cui viene definita
       const pos = await timPosizione();
-      const geo = { latit: "", longit: "", altit: "", datageo: "" };
+      // Latitudine, longitudine e altitudine mancanti vengono passate come 0;
+      // la data/ora resta vuota se la posizione non è stata rilevata.
+      const geo = { latit: "0", longit: "0", altit: "0", datageo: "" };
       if (pos){
         const c = pos.coords;
-        geo.latit = c.latitude.toFixed(6);
-        geo.longit = c.longitude.toFixed(6);
-        geo.altit = (c.altitude === null || c.altitude === undefined) ? "" : c.altitude.toFixed(1);
+        if (Number.isFinite(c.latitude)) geo.latit = c.latitude.toFixed(6);
+        if (Number.isFinite(c.longitude)) geo.longit = c.longitude.toFixed(6);
+        if (Number.isFinite(c.altitude)) geo.altit = c.altitude.toFixed(1);
         geo.datageo = timDataOra(new Date(pos.timestamp));
       }
       // 2) chiamata a bapp_tim_ws

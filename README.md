@@ -385,12 +385,15 @@ passerà allo stile G, andranno aggiornati insieme.
    **`p_latit`**, **`p_longit`**, **`p_altit`**, **`p_datageo`**, **`p_note`** = testo
    delle note.
    - `p_latit` e `p_longit`: gradi decimali con 6 decimali e punto (es.
-     `40.640123`); `p_altit`: metri con 1 decimale, vuoto se il telefono non
-     fornisce l'altitudine; `p_datageo`: data e ora **in cui la posizione è stata
-     rilevata**, formato `AAAA-MM-GG HH:MM:SS` (ora locale del telefono).
-   - Se la posizione non è disponibile (permesso negato, GPS spento, tempo
-     scaduto) **la chiamata parte lo stesso con i quattro campi geo vuoti** e il
-     messaggio a video lo segnala ("posizione non disponibile").
+     `40.640123`); `p_altit`: metri con 1 decimale; `p_datageo`: data e ora **in cui
+     la posizione è stata rilevata**, formato `AAAA-MM-GG HH:MM:SS` (ora locale del
+     telefono).
+   - **Se latitudine, longitudine o altitudine mancano, viene passato `0`**: per
+     tutte e tre se la posizione non è disponibile (permesso negato, GPS spento,
+     tempo scaduto), e per la sola altitudine se il telefono non la fornisce. In
+     questi casi la chiamata parte lo stesso e il messaggio a video segnala
+     "posizione non disponibile". `p_datageo` resta **vuoto** se la posizione non è
+     stata rilevata.
    - Il testo delle note è passato con i caratteri speciali (`&`, `<`, `>`, `"`)
      codificati in XML.
    - **USCITA** usa lo stesso web service e gli stessi parametri, con
