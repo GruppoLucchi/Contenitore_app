@@ -1872,6 +1872,7 @@
   #timbratureView .rt-row{ grid-template-columns:1fr 1.8fr; }
   #timbratureView .tim-header h1{ text-align:center; }
   #timbratureView .tim-body{ padding:16px; display:flex; flex-direction:column; background:var(--bianco); }
+  #timbratureView .tim-dataora{ text-align:center; font-size:20px; font-weight:700; color:var(--blu); font-variant-numeric:tabular-nums; margin-bottom:14px; }
   #timbratureView .tim-azioni{ display:flex; gap:10px; }
   #timbratureView .tim-azioni .btn-primario{ flex:1; }
   #timbratureView .tim-body label{ font-size:12px; font-weight:600; color:var(--testo-secondario); margin:16px 0 4px; }
@@ -2374,6 +2375,7 @@
     <div id="tim-schermo-dettaglio" class="hidden">
       <div class="header tim-header"><h1 id="tim-ragione"></h1></div>
       <div class="tim-body">
+        <div class="tim-dataora" id="tim-dataora" role="timer"></div>
         <div class="tim-azioni">
           <button type="button" class="btn-primario tim-ingresso" id="tim-ingresso">INGRESSO</button>
           <button type="button" class="btn-primario" id="tim-uscita">USCITA</button>
@@ -4139,6 +4141,7 @@
     timPanReq.classList.remove("show");
     timPanResp.classList.remove("show");
     timMostra("dettaglio");
+    timAvviaOra();
   }
 
   // Stessa query di CLIFORUPDATE: buildCliQueryEnvelope / WS_CLI_QUERY_URL
@@ -4181,6 +4184,35 @@
   }
 
   timCerca.addEventListener("input", renderTim);
+
+  // ---- data e ora mostrate sopra INGRESSO / USCITA: orologio del telefono, aggiornato ogni secondo ----
+  const timDataOraEl = document.getElementById("tim-dataora");
+  let timOraTimer = null;
+
+  function timDataOraVista(d){
+    const p = (n) => String(n).padStart(2, "0");
+    return p(d.getDate()) + "/" + p(d.getMonth() + 1) + "/" + d.getFullYear() + " " +
+           p(d.getHours()) + ":" + p(d.getMinutes()) + ":" + p(d.getSeconds());
+  }
+
+  function timFermaOra(){
+    if (timOraTimer){ clearInterval(timOraTimer); timOraTimer = null; }
+  }
+
+  function timAvviaOra(){
+    timFermaOra();
+    const tick = () => {
+      // si ferma da solo quando la videata del cliente non è più visibile (elenco, menu, logout)
+      if (timbratureView.classList.contains("hidden") ||
+          document.getElementById("tim-schermo-dettaglio").classList.contains("hidden")){
+        timFermaOra();
+        return;
+      }
+      timDataOraEl.textContent = timDataOraVista(new Date());
+    };
+    timDataOraEl.textContent = timDataOraVista(new Date());
+    timOraTimer = setInterval(tick, 1000);
+  }
 
   // ---- geolocalizzazione e data/ora della timbratura ----
   function timDataOra(d){

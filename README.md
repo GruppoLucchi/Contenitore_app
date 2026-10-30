@@ -366,8 +366,10 @@ passerà allo stile G, andranno aggiornati insieme.
    lettura (`parseCli`). Mostra Cliente (`A19CLIEN`) e Ragione sociale (`G19DESC`),
    con ricerca testuale e vocale. **Toccando un cliente si apre subito la
    videata successiva** (nessun pulsante intermedio).
-2. **Videata del cliente.** In alto, **centrata, la sola Ragione Sociale**. Sotto i
-   due bottoni **INGRESSO** e **USCITA**; sotto uno spazio per digitare le **note**
+2. **Videata del cliente.** In alto, **centrata, la sola Ragione Sociale**. Sotto,
+   **la data e l'ora** (formato `gg/mm/aaaa hh:mm:ss`, orologio del telefono,
+   aggiornato ogni secondo; si ferma da solo quando si lascia la videata). Sotto
+   ancora i due bottoni **INGRESSO** e **USCITA**; sotto uno spazio per digitare le **note**
    (`<textarea id="note" name="note">`); sotto i pulsanti **Chiamata** e **Risposta**,
    che mostrano/nascondono la chiamata inviata al web service e la sua risposta
    (si aggiornano a ogni timbratura; ripartono vuoti quando si apre un altro
