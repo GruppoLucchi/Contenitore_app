@@ -1882,6 +1882,17 @@
   #timbratureView .rt-dbg{ padding:11px 9px; }  /* come in CLIFORUPDATE ma con spazio per il tocco (lì l'azzeramento generale li riduce a 16 px) */
   #timbratureView .cu-form-footer{ padding:14px 16px calc(14px + env(safe-area-inset-bottom)); background:var(--bianco); border-top:1px solid var(--grigio-bordo); display:flex; flex-direction:column; gap:10px; }
   #timbratureView .btn-secondario{ background:var(--grigio-bg); color:var(--blu); border:1px solid var(--grigio-bordo); border-radius:var(--raggio-sm); padding:14px; font-size:15px; font-weight:600; width:100%; cursor:pointer; font-family:inherit; }
+  /* Avvisi con il messaggio del web service: sotto il campo note, persistenti, si chiudono toccandoli */
+  #timbratureView .tim-messaggi{ display:flex; flex-direction:column; gap:8px; margin-top:12px; }
+  #timbratureView .tim-messaggi:empty{ display:none; }
+  #timbratureView .tim-msg{ display:flex; align-items:flex-start; gap:10px; width:100%; padding:12px 14px; border:0; border-radius:var(--raggio-sm); color:#fff; font-family:inherit; font-size:15px; font-weight:600; line-height:1.3; text-align:left; cursor:pointer; }
+  #timbratureView .tim-msg[hidden]{ display:none; }
+  #timbratureView .tim-msg-ok{ background:var(--verde); }
+  #timbratureView .tim-msg-err{ background:#B3261E; }
+  #timbratureView .tim-msg-info{ background:var(--blu-chiaro); }
+  #timbratureView .tim-msg-testo{ flex:1; min-width:0; word-break:break-word; }
+  #timbratureView .tim-msg-dett{ display:block; margin-top:3px; font-size:12px; font-weight:400; opacity:.92; }
+  #timbratureView .tim-msg-x{ flex:none; font-size:20px; line-height:1; font-weight:400; opacity:.85; }
   /* icona del bottone nel menu */
   body.menu-mode .app-ico-timbrature{ background:#0f766e; }
 </style>
@@ -2371,6 +2382,7 @@
         </div>
         <label for="note">Note</label>
         <textarea id="note" name="note" class="tim-note" rows="4" placeholder="Note"></textarea>
+        <div class="tim-messaggi" id="tim-messaggi" aria-live="polite"></div>
         <div class="rt-debug-row">
           <button type="button" class="rt-dbg" id="tim-btn-req">Chiamata</button>
           <button type="button" class="rt-dbg" id="tim-btn-resp">Risposta</button>
@@ -3950,6 +3962,7 @@
     risctabelleView.classList.add("hidden");
     cliforupdateView.classList.add("hidden");
     timbratureView.classList.add("hidden");
+    document.getElementById("tim-messaggi").innerHTML = "";   // gli avvisi non passano a un'altra sessione
     loginView.classList.remove("hidden");
     document.body.classList.add("login-mode");
     userInput.value = "";
@@ -4056,6 +4069,39 @@
     timToast._h = setTimeout(() => t.classList.remove("show"), 3200);
   }
 
+  // Avviso con il messaggio del web service: nella videata del cliente, SOTTO IL CAMPO NOTE,
+  // verde (okexp = Y) o rosso (okexp = N). NON si chiude da solo: scompare solo quando
+  // l'utente lo tocca. Gli avvisi si impilano (il più recente in alto) e restano legati al
+  // cliente della timbratura: si vedono solo nella videata di quel cliente.
+  // tipo: "ok" (verde), "err" (rosso), "info" (neutro).
+  function timMessaggio(testo, tipo, dettaglio, cliente){
+    const cont = document.getElementById("tim-messaggi");
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "tim-msg tim-msg-" + tipo;
+    b.dataset.cliente = String(cliente === undefined || cliente === null ? "" : cliente);
+    const corrente = timItems[timSelIndex];
+    b.hidden = !corrente || String(corrente.A19CLIEN) !== b.dataset.cliente;
+    b.setAttribute("role", tipo === "err" ? "alert" : "status");
+    const t = document.createElement("span");
+    t.className = "tim-msg-testo";
+    t.textContent = testo;                      // textContent: il testo del web service non è mai interpretato come HTML
+    if (dettaglio){
+      const d = document.createElement("span");
+      d.className = "tim-msg-dett";
+      d.textContent = dettaglio;
+      t.appendChild(d);
+    }
+    const x = document.createElement("span");
+    x.className = "tim-msg-x";
+    x.setAttribute("aria-hidden", "true");
+    x.textContent = "\u00d7";
+    b.appendChild(t);
+    b.appendChild(x);
+    b.addEventListener("click", () => b.remove());
+    cont.insertBefore(b, cont.firstChild);
+  }
+
   // Due schermate: elenco clienti e dettaglio (ingresso/uscita)
   function timMostra(s){
     document.getElementById("tim-schermo-lista").classList.toggle("hidden", s !== "lista");
@@ -4092,6 +4138,8 @@
     const it = timItems[idx];
     if (!it) return;
     timSelIndex = idx;
+    // mostra solo gli avvisi di questo cliente (gli altri restano, ma nascosti, finché non vengono toccati)
+    document.querySelectorAll("#tim-messaggi .tim-msg").forEach((b) => { b.hidden = b.dataset.cliente !== String(it.A19CLIEN); });
     timRagione.textContent = it.G19DESC || "";
     timNote.value = "";
     timPanReq.textContent = "(nessuna chiamata effettuata)";
@@ -4230,20 +4278,23 @@
       });
       const txt = await resp.text();
       timPanResp.textContent = deepDecode(txt);
-      const senzaGeo = pos ? "" : " (posizione non disponibile)";
-      if (!resp.ok){ timToast("Errore HTTP " + resp.status + " " + resp.statusText); return; }
+      const senzaGeo = pos ? "" : "Posizione non disponibile: passati 0 a latitudine, longitudine e altitudine";
+      if (!resp.ok){ timMessaggio("Errore HTTP " + resp.status + " " + resp.statusText, "err", senzaGeo, it.A19CLIEN); return; }
       let data = null;
       try { data = parseLoginResponse(txt); } catch(e){ data = null; }
-      if (data && data.okexp !== undefined && data.okexp !== null){
-        const ok = String(data.okexp).trim().toUpperCase() === "Y";
-        timToast((data.messaggio || (ok ? evento + " registrato" : "Timbratura non registrata")) + senzaGeo);
+      const okexp = (data && data.okexp !== undefined && data.okexp !== null) ? String(data.okexp).trim().toUpperCase() : "";
+      const msgWs = (data && data.messaggio !== undefined && data.messaggio !== null) ? String(data.messaggio).trim() : "";
+      if (okexp === "Y"){
+        timMessaggio(msgWs || (evento === "INGRESSO" ? "INGRESSO registrato" : "USCITA registrata"), "ok", senzaGeo, it.A19CLIEN);
+      } else if (okexp === "N"){
+        timMessaggio(msgWs || "Timbratura non registrata", "err", senzaGeo, it.A19CLIEN);
       } else {
-        timToast("Risposta ricevuta: vedi \u00abRisposta\u00bb" + senzaGeo);
+        timMessaggio(msgWs || "Risposta ricevuta: vedi \u00abRisposta\u00bb", "info", senzaGeo, it.A19CLIEN);
       }
     } catch(err){
       const msg = err && err.message ? err.message : String(err);
       timPanResp.textContent = "Chiamata non riuscita.\n\n" + msg;
-      timToast("Chiamata non riuscita: " + msg);
+      timMessaggio("Chiamata non riuscita: " + msg, "err", "", it.A19CLIEN);
     } finally {
       btn.textContent = testoBtn;
       timIngresso.disabled = false;
