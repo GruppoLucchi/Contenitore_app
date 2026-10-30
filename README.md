@@ -403,22 +403,25 @@ passerà allo stile G, andranno aggiornati insieme.
      `</bapp:bapp_tim_ws_Run>` e `</soapenv:Envelope>` che nell'esempio mancavano.
    - **Avvisi con il messaggio del web service.** Compaiono **nella videata del
      cliente, subito sotto il campo note** (sopra Chiamata/Risposta), nel flusso
-     della pagina: non sono fissi in alto e non coprono nulla. Se la risposta è JSON
-     con `okexp`: **`Y` → sfondo verde**, **`N` → sfondo rosso**, con il testo di
-     `messaggio`; se manca `messaggio` scrivono "INGRESSO registrato" / "USCITA
-     registrata" (Y) o "Timbratura non registrata" (N). Altri casi: errore HTTP e
-     chiamata non riuscita → rosso; risposta non JSON o `okexp` diverso da Y/N →
-     blu, con "Risposta ricevuta: vedi «Risposta»". Il testo è inserito come testo
-     semplice (mai interpretato come HTML).
-   - **Non si chiudono da soli: scompaiono solo quando l'utente li tocca** (hanno
-     una ×). Si impilano (il più recente in alto). Ogni avviso è legato al
-     **cliente della timbratura** (`data-cliente`): si vede solo nella videata di
-     quel cliente, così l'esito di un cliente non compare su un altro. Gli avvisi
-     degli altri clienti non vengono cancellati, restano nascosti e riappaiono
-     riaprendo quel cliente. Si azzerano solo al logout. Se non ce ne sono, il
-     contenitore `#tim-messaggi` non occupa spazio. Funzione `timMessaggio`. La
-     risposta completa è sempre nel pannello **Risposta**. Le notifiche
-     temporanee in basso (`timToast`) restano solo per la ricerca vocale.
+     della pagina. Se la risposta è JSON con `okexp`: **`Y` → sfondo verde**,
+     **`N` → sfondo rosso**, con il testo di `messaggio`; se manca `messaggio`
+     scrivono "INGRESSO registrato" / "USCITA registrata" (Y) o "Timbratura non
+     registrata" (N). Altri casi: errore HTTP e chiamata non riuscita → rosso;
+     risposta non JSON o `okexp` diverso da Y/N → blu, con "Risposta ricevuta: vedi
+     «Risposta»". Il testo è inserito come testo semplice (mai interpretato come
+     HTML). Funzione `timMessaggio`, contenitore `#tim-messaggi` (se è vuoto non
+     occupa spazio).
+   - **Quando scompaiono.** Non si chiudono da soli. Scompaiono quando l'utente
+     **tocca un punto qualunque dello schermo, anche un altro bottone** (compreso
+     l'avviso stesso, il campo note o Menu): il tocco chiude gli avvisi e il bottone
+     toccato fa comunque il suo lavoro (per esempio USCITA parte e il suo avviso
+     compare alla risposta). Il gestore è un listener `click` sul documento in fase
+     di cattura, attivo solo mentre la vista Timbrature è visibile; si usa `click`
+     (non l'inizio del tocco) così **scorrere la pagina non li chiude**. Poiché ogni
+     azione richiede un tocco, di norma c'è un solo avviso alla volta. Gli avvisi si
+     azzerano anche al logout. Le notifiche temporanee in basso (`timToast`) restano
+     solo per la ricerca vocale. La risposta completa è sempre nel pannello
+     **Risposta**.
    - Se manca la posizione, l'avviso ha una seconda riga "Posizione non
      disponibile: passati 0 a latitudine, longitudine e altitudine".
 4. **Debug.** I pulsanti Chiamata/Risposta hanno più spazio per il tocco rispetto
