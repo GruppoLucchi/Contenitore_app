@@ -671,7 +671,7 @@
   #riscexcelView .empty-state svg { margin-bottom: 16px; opacity: 0.4; }
   #riscexcelView .empty-state p { font-size: 15px; }
   /* ===== RISCTABELLE (stessa grafica di riscexcel) ===== */
-  :is(#risctabelleView,#cliforupdateView){
+  :is(#risctabelleView,#cliforupdateView,#timbratureView){
     --blu:#1A3A5C; --blu-chiaro:#2C5F8A; --accento:#E8A020; --accento-chiaro:#FFF3DC;
     --verde:#1E7A4A; --grigio-bg:#F2F4F7; --grigio-bordo:#D8DCE4;
     --testo:#1C2B3A; --testo-secondario:#5A6A7A; --bianco:#FFFFFF;
@@ -679,33 +679,33 @@
     font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
     background:var(--grigio-bg); color:var(--testo); min-height:100vh;
   }
-  :is(#risctabelleView,#cliforupdateView) *{ box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
-  :is(#risctabelleView,#cliforupdateView) .top-bar{ display:flex; align-items:center; justify-content:flex-start; gap:14px; padding:12px 16px; background:var(--ink); }
-  :is(#risctabelleView,#cliforupdateView) .header{ background:var(--blu); color:#fff; padding:16px 20px; position:sticky; top:0; z-index:10; }
-  :is(#risctabelleView,#cliforupdateView) .header h1{ font-size:18px; font-weight:600; }
-  :is(#risctabelleView,#cliforupdateView) .header-sub{ font-size:12px; color:rgba(255,255,255,0.7); margin-top:2px; font-weight:400; }
-  :is(#risctabelleView,#cliforupdateView) .rt-toolbar{ padding:12px 16px; background:var(--bianco); border-bottom:1px solid var(--grigio-bordo); display:flex; gap:8px; align-items:center; }
-  :is(#risctabelleView,#cliforupdateView) .rt-search{ flex:1; min-width:0; padding:12px 14px; border:1px solid var(--grigio-bordo); border-radius:var(--raggio-sm); font-size:15px; color:var(--testo); background:var(--bianco); font-family:inherit; }
-  :is(#risctabelleView,#cliforupdateView) .rt-search:focus{ outline:none; border-color:var(--blu-chiaro); }
-  :is(#risctabelleView,#cliforupdateView) .rt-mic{ flex:0 0 auto; width:44px; height:44px; border:1px solid var(--grigio-bordo); border-radius:var(--raggio-sm); background:var(--bianco); color:var(--blu); cursor:pointer; display:flex; align-items:center; justify-content:center; }
-  :is(#risctabelleView,#cliforupdateView) .rt-mic svg{ width:20px; height:20px; }
-  :is(#risctabelleView,#cliforupdateView) .rt-mic.rec{ background:var(--accento); color:#fff; border-color:var(--accento); animation:rt-pulse 1s infinite; }
-  :is(#risctabelleView,#cliforupdateView) .rt-mic[hidden]{ display:none; }
+  :is(#risctabelleView,#cliforupdateView,#timbratureView) *{ box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+  :is(#risctabelleView,#cliforupdateView,#timbratureView) .top-bar{ display:flex; align-items:center; justify-content:flex-start; gap:14px; padding:12px 16px; background:var(--ink); }
+  :is(#risctabelleView,#cliforupdateView,#timbratureView) .header{ background:var(--blu); color:#fff; padding:16px 20px; position:sticky; top:0; z-index:10; }
+  :is(#risctabelleView,#cliforupdateView,#timbratureView) .header h1{ font-size:18px; font-weight:600; }
+  :is(#risctabelleView,#cliforupdateView,#timbratureView) .header-sub{ font-size:12px; color:rgba(255,255,255,0.7); margin-top:2px; font-weight:400; }
+  :is(#risctabelleView,#cliforupdateView,#timbratureView) .rt-toolbar{ padding:12px 16px; background:var(--bianco); border-bottom:1px solid var(--grigio-bordo); display:flex; gap:8px; align-items:center; }
+  :is(#risctabelleView,#cliforupdateView,#timbratureView) .rt-search{ flex:1; min-width:0; padding:12px 14px; border:1px solid var(--grigio-bordo); border-radius:var(--raggio-sm); font-size:15px; color:var(--testo); background:var(--bianco); font-family:inherit; }
+  :is(#risctabelleView,#cliforupdateView,#timbratureView) .rt-search:focus{ outline:none; border-color:var(--blu-chiaro); }
+  :is(#risctabelleView,#cliforupdateView,#timbratureView) .rt-mic{ flex:0 0 auto; width:44px; height:44px; border:1px solid var(--grigio-bordo); border-radius:var(--raggio-sm); background:var(--bianco); color:var(--blu); cursor:pointer; display:flex; align-items:center; justify-content:center; }
+  :is(#risctabelleView,#cliforupdateView,#timbratureView) .rt-mic svg{ width:20px; height:20px; }
+  :is(#risctabelleView,#cliforupdateView,#timbratureView) .rt-mic.rec{ background:var(--accento); color:#fff; border-color:var(--accento); animation:rt-pulse 1s infinite; }
+  :is(#risctabelleView,#cliforupdateView,#timbratureView) .rt-mic[hidden]{ display:none; }
   @keyframes rt-pulse{ 0%,100%{opacity:1} 50%{opacity:.5} }
-  :is(#risctabelleView,#cliforupdateView) .rt-head{ display:grid; grid-template-columns:1fr 1fr 1.6fr; gap:10px; padding:10px 16px; font-size:11px; font-weight:700; color:var(--testo-secondario); text-transform:uppercase; letter-spacing:.03em; background:var(--grigio-bg); border-bottom:1px solid var(--grigio-bordo); }
-  :is(#risctabelleView,#cliforupdateView) .rt-scroll{ max-height:min(300px,55vh); overflow-y:auto; }
+  :is(#risctabelleView,#cliforupdateView,#timbratureView) .rt-head{ display:grid; grid-template-columns:1fr 1fr 1.6fr; gap:10px; padding:10px 16px; font-size:11px; font-weight:700; color:var(--testo-secondario); text-transform:uppercase; letter-spacing:.03em; background:var(--grigio-bg); border-bottom:1px solid var(--grigio-bordo); }
+  :is(#risctabelleView,#cliforupdateView,#timbratureView) .rt-scroll{ max-height:min(300px,55vh); overflow-y:auto; }
   .tb-welcome{ flex:1 1 auto; min-width:0; text-align:left; font-size:13px; font-weight:600; color:rgba(255,255,255,0.92); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  :is(#risctabelleView,#cliforupdateView) .rt-row{ display:grid; grid-template-columns:1fr 1fr 1.6fr; gap:10px; padding:14px 16px; border-bottom:1px solid var(--grigio-bordo); cursor:pointer; background:var(--bianco); font-size:13px; align-items:center; }
-  :is(#risctabelleView,#cliforupdateView) .rt-row span{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; min-width:0; }
-  :is(#risctabelleView,#cliforupdateView) .rt-row:active{ background:var(--grigio-bg); }
-  :is(#risctabelleView,#cliforupdateView) .rt-row.sel{ background:var(--accento-chiaro); border-left:4px solid var(--accento); padding-left:12px; }
-  :is(#risctabelleView,#cliforupdateView) .rt-row .conto{ font-weight:700; color:var(--blu); }
-  :is(#risctabelleView,#cliforupdateView) .rt-row .rag{ color:var(--testo); }
-  :is(#risctabelleView,#cliforupdateView) .rt-vuoto{ padding:30px 16px; text-align:center; color:var(--testo-secondario); font-size:14px; }
-  :is(#risctabelleView,#cliforupdateView) .rt-fault{ margin-top:12px; text-align:left; white-space:pre-wrap; word-break:break-word; font-size:11px; font-family:ui-monospace,Menlo,Consolas,monospace; line-height:1.4; background:#0f1b26; color:#d7e2ec; padding:10px 12px; border-radius:var(--raggio-sm); max-height:40vh; overflow:auto; }
-  :is(#risctabelleView,#cliforupdateView) .rt-footer{ background:var(--bianco); border-top:1px solid var(--grigio-bordo); padding:14px 16px calc(14px + env(safe-area-inset-bottom)); }
-  :is(#risctabelleView,#cliforupdateView) .btn-primario{ background:var(--blu); color:#fff; border:none; border-radius:var(--raggio-sm); padding:15px; font-size:16px; font-weight:600; width:100%; cursor:pointer; font-family:inherit; }
-  :is(#risctabelleView,#cliforupdateView) .btn-primario:disabled{ opacity:.5; cursor:default; }
+  :is(#risctabelleView,#cliforupdateView,#timbratureView) .rt-row{ display:grid; grid-template-columns:1fr 1fr 1.6fr; gap:10px; padding:14px 16px; border-bottom:1px solid var(--grigio-bordo); cursor:pointer; background:var(--bianco); font-size:13px; align-items:center; }
+  :is(#risctabelleView,#cliforupdateView,#timbratureView) .rt-row span{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; min-width:0; }
+  :is(#risctabelleView,#cliforupdateView,#timbratureView) .rt-row:active{ background:var(--grigio-bg); }
+  :is(#risctabelleView,#cliforupdateView,#timbratureView) .rt-row.sel{ background:var(--accento-chiaro); border-left:4px solid var(--accento); padding-left:12px; }
+  :is(#risctabelleView,#cliforupdateView,#timbratureView) .rt-row .conto{ font-weight:700; color:var(--blu); }
+  :is(#risctabelleView,#cliforupdateView,#timbratureView) .rt-row .rag{ color:var(--testo); }
+  :is(#risctabelleView,#cliforupdateView,#timbratureView) .rt-vuoto{ padding:30px 16px; text-align:center; color:var(--testo-secondario); font-size:14px; }
+  :is(#risctabelleView,#cliforupdateView,#timbratureView) .rt-fault{ margin-top:12px; text-align:left; white-space:pre-wrap; word-break:break-word; font-size:11px; font-family:ui-monospace,Menlo,Consolas,monospace; line-height:1.4; background:#0f1b26; color:#d7e2ec; padding:10px 12px; border-radius:var(--raggio-sm); max-height:40vh; overflow:auto; }
+  :is(#risctabelleView,#cliforupdateView,#timbratureView) .rt-footer{ background:var(--bianco); border-top:1px solid var(--grigio-bordo); padding:14px 16px calc(14px + env(safe-area-inset-bottom)); }
+  :is(#risctabelleView,#cliforupdateView,#timbratureView) .btn-primario{ background:var(--blu); color:#fff; border:none; border-radius:var(--raggio-sm); padding:15px; font-size:16px; font-weight:600; width:100%; cursor:pointer; font-family:inherit; }
+  :is(#risctabelleView,#cliforupdateView,#timbratureView) .btn-primario:disabled{ opacity:.5; cursor:default; }
   /* Debug box (chiamata/risposta query e WS) dentro la vista RiscEXCEL */
   .rt-debug-box{ padding:12px 16px; background:var(--bianco); border-bottom:1px solid var(--grigio-bordo); }
   .rt-debug-row{ display:flex; gap:8px; margin-top:8px; }
@@ -714,8 +714,8 @@
   .rt-dbg:active{ background:var(--grigio-bordo); }
   .rt-panel{ display:none; margin-top:8px; background:#0f1b26; color:#d7e2ec; border-radius:var(--raggio-sm); padding:10px 12px; font-size:11px; white-space:pre-wrap; word-break:break-word; max-height:40vh; overflow:auto; font-family:ui-monospace,Menlo,Consolas,monospace; line-height:1.4; }
   .rt-panel.show{ display:block; }
-  :is(#risctabelleView,#cliforupdateView) .rt-toast{ position:fixed; left:50%; bottom:84px; transform:translateX(-50%) translateY(10px); background:var(--testo); color:#fff; padding:11px 18px; border-radius:20px; font-size:13px; opacity:0; pointer-events:none; transition:opacity .2s, transform .2s; z-index:30; max-width:90%; text-align:center; }
-  :is(#risctabelleView,#cliforupdateView) .rt-toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+  :is(#risctabelleView,#cliforupdateView,#timbratureView) .rt-toast{ position:fixed; left:50%; bottom:84px; transform:translateX(-50%) translateY(10px); background:var(--testo); color:#fff; padding:11px 18px; border-radius:20px; font-size:13px; opacity:0; pointer-events:none; transition:opacity .2s, transform .2s; z-index:30; max-width:90%; text-align:center; }
+  :is(#risctabelleView,#cliforupdateView,#timbratureView) .rt-toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
   #cliforupdateView .rt-head{ grid-template-columns:1fr 1.8fr; }
   #cliforupdateView .rt-row{ grid-template-columns:1fr 1.8fr; }
   #cliforupdateView .cu-form{ padding:14px 16px; display:flex; flex-direction:column; max-height:min(58vh,520px); overflow-y:auto; }
@@ -1716,6 +1716,174 @@
     font-size:15px;
     font-weight:600;
   }
+
+  /* ===== RISCOSSIONE CON ESTRAZIONE DATI (stile G) =====
+     Vale SOLO mentre la schermata è visibile (body.risctabelle-mode, attivata dal JS che
+     osserva #risctabelleView) e solo per #risctabelleView: le regole di base sono condivise
+     con Aggiornamento Clienti, che per ora non cambia. Il bottone resta dove sta, con la
+     stessa scritta; la testata con il logo e il titolo "Tabelle Riscossione" non compaiono. */
+  body.risctabelle-mode{
+    background:#f3f6fa;
+    padding:0;
+  }
+  body.risctabelle-mode .brand{ display:none; }
+  body.risctabelle-mode #risctabelleView{ background:#f3f6fa; padding-bottom:24px; }
+
+  /* barra in alto = riga superiore della fascia scura */
+  body.risctabelle-mode #risctabelleView .top-bar{
+    padding:calc(32px + env(safe-area-inset-top, 0px)) 20px 0;
+    gap:12px;
+  }
+  body.risctabelle-mode #risctabelleView .tb-welcome{
+    white-space:normal;
+    font-size:16px;
+    font-weight:600;
+    color:#ffffff;
+  }
+  body.risctabelle-mode #risctabelleView .tb-welcome .mh-label{
+    display:block;
+    font-size:13px;
+    font-weight:400;
+    line-height:1.4;
+    color:#c3cfda;
+  }
+  body.risctabelle-mode #risctabelleView .tb-welcome .mh-name{
+    display:block;
+    line-height:1.3;
+  }
+  body.risctabelle-mode #risctabelleView .top-bar .btn-link{
+    flex:none;
+    min-height:44px;
+    padding:0 18px;
+    display:inline-flex;
+    align-items:center;
+    border:1px solid rgba(255,255,255,.35);
+    border-radius:22px;
+    background:transparent;
+    font-size:14px;
+    font-weight:600;
+    color:#ffffff;
+    text-decoration:none;
+  }
+  body.risctabelle-mode #risctabelleView .header{
+    position:static;
+    z-index:auto;
+    padding:18px 20px 72px;
+    background:var(--ink);
+  }
+  body.risctabelle-mode #risctabelleView .header-sub{
+    margin-top:0;
+    font-size:15px;
+    line-height:1.45;
+    color:#e5ecf2;
+  }
+
+  /* scheda bianca con ricerca, elenco e pulsante */
+  body.risctabelle-mode #risctabelleView .rt-card{
+    margin:-44px 20px 0;
+    background:#ffffff;
+    border:1px solid #e1e6ec;
+    border-radius:22px;
+    box-shadow:0 4px 14px rgba(28,43,57,.12);
+    overflow:hidden;
+  }
+  body.risctabelle-mode #risctabelleView .rt-toolbar{
+    padding:14px;
+    background:#ffffff;
+    border-bottom:0;
+    gap:8px;
+  }
+  body.risctabelle-mode #risctabelleView .rt-search{
+    height:46px;
+    padding:0 14px;
+    border:1px solid #cdd5de;
+    border-radius:12px;
+    font-size:14px;
+  }
+  body.risctabelle-mode #risctabelleView .rt-search:focus{
+    border-color:#1f4e79;
+    box-shadow:0 0 0 3px rgba(31,78,121,.15);
+  }
+  body.risctabelle-mode #risctabelleView .rt-mic{
+    width:46px;
+    height:46px;
+    border:0;
+    border-radius:12px;
+    background:#2a6aa3;
+    color:#ffffff;
+  }
+  body.risctabelle-mode #risctabelleView .rt-mic.rec{ background:#d9663f; }
+  body.risctabelle-mode #risctabelleView .rt-head{
+    padding:10px 16px;
+    background:#eef2f6;
+    border-top:1px solid #e1e6ec;
+    border-bottom:1px solid #e1e6ec;
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:.4px;
+    text-transform:uppercase;
+    color:#4a5a69;
+  }
+  body.risctabelle-mode #risctabelleView .rt-row{
+    padding:14px 16px;
+    border-bottom:1px solid #eef1f5;
+    font-size:13px;
+  }
+  body.risctabelle-mode #risctabelleView .rt-row .conto{ color:#2a6aa3; }
+  body.risctabelle-mode #risctabelleView .rt-row.sel{
+    background:#dcebf8;
+    border-left:0;
+    padding-left:16px;
+    border-bottom-color:#bcd7ee;
+  }
+  body.risctabelle-mode #risctabelleView .rt-row.sel span{ font-weight:600; }
+  body.risctabelle-mode #risctabelleView .rt-row.sel .conto{ color:#1f4f7d; }
+  body.risctabelle-mode #risctabelleView .rt-footer{
+    padding:16px 20px 20px;
+    background:#ffffff;
+    border-top:1px solid #eef1f5;
+  }
+  body.risctabelle-mode #risctabelleView .rt-footer .btn-primario{
+    height:52px;
+    padding:0 16px;
+    border-radius:14px;
+    background:var(--ink);
+    font-size:16px;
+    font-weight:600;
+  }
+  body.risctabelle-mode #risctabelleView .rt-footer .btn-primario:disabled{
+    opacity:1;
+    background:#d5dbe3;
+    color:#5b6877;
+  }
+
+  /* "Invia Report" non attivo finché nessuna fattura è stata segnata come pagata
+     (vale per Riscossione da file Excel e da estrazione dati, che condividono la schermata) */
+  body.riscexcel-mode #s-lista .fab:disabled{
+    background:#d5dbe3;
+    color:#5b6877;
+    box-shadow:none;
+    cursor:not-allowed;
+  }
+
+  /* ===== TIMBRATURE =====
+     Stessa grafica di CLIFORUPDATE (le regole di base sono condivise con :is(...)). */
+  #timbratureView .rt-head{ grid-template-columns:1fr 1.8fr; }
+  #timbratureView .rt-row{ grid-template-columns:1fr 1.8fr; }
+  #timbratureView .tim-header h1{ text-align:center; }
+  #timbratureView .tim-body{ padding:16px; display:flex; flex-direction:column; background:var(--bianco); }
+  #timbratureView .tim-azioni{ display:flex; gap:10px; }
+  #timbratureView .tim-azioni .btn-primario{ flex:1; }
+  #timbratureView .tim-azioni .tim-ingresso{ background:var(--verde); }
+  #timbratureView .tim-body label{ font-size:12px; font-weight:600; color:var(--testo-secondario); margin:16px 0 4px; }
+  #timbratureView .tim-note{ width:100%; min-height:110px; padding:11px 12px; border:1px solid var(--grigio-bordo); border-radius:var(--raggio-sm); font-size:15px; font-family:inherit; color:var(--testo); background:var(--bianco); resize:vertical; }
+  #timbratureView .tim-note:focus{ outline:none; border-color:var(--blu-chiaro); }
+  #timbratureView .tim-body .rt-debug-row{ margin-top:16px; }
+  #timbratureView .rt-dbg{ padding:11px 9px; }  /* come in CLIFORUPDATE ma con spazio per il tocco (lì l'azzeramento generale li riduce a 16 px) */
+  #timbratureView .cu-form-footer{ padding:14px 16px calc(14px + env(safe-area-inset-bottom)); background:var(--bianco); border-top:1px solid var(--grigio-bordo); display:flex; flex-direction:column; gap:10px; }
+  #timbratureView .btn-secondario{ background:var(--grigio-bg); color:var(--blu); border:1px solid var(--grigio-bordo); border-radius:var(--raggio-sm); padding:14px; font-size:15px; font-weight:600; width:100%; cursor:pointer; font-family:inherit; }
+  /* icona del bottone nel menu */
+  body.menu-mode .app-ico-timbrature{ background:#0f766e; }
 </style>
 </head>
 <body class="login-mode">
@@ -1817,6 +1985,11 @@
         <span class="app-ico app-ico-clienti" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg></span>
         <span class="app-card-title">Aggiornamento Clienti</span>
         <span class="app-card-desc">Aggiornamento anagrafiche clienti.</span>
+      </button>
+      <button type="button" class="app-card hidden" id="btnTimbrature">
+        <span class="app-ico app-ico-timbrature" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
+        <span class="app-card-title">Timbrature</span>
+        <span class="app-card-desc">Timbrature di ingresso e uscita presso i clienti.</span>
       </button>
     </div>
     <div id="menuEmpty" class="login-error hidden">Nessuna applicazione disponibile per questo utente.</div>
@@ -2046,9 +2219,9 @@
       <button type="button" class="btn-link btn-link-light hidden" id="risctabelleLogoutBtn">Cambia utente</button>
     </div>
     <div class="header">
-      <h1>Tabelle Riscossione</h1>
       <div class="header-sub">Seleziona un cliente per estrarre le partite aperte</div>
     </div>
+    <div class="rt-card">
     <div class="rt-toolbar">
       <input type="text" id="rt-cerca" class="rt-search" placeholder="Cerca per cliente o ragione sociale&hellip;" autocomplete="off">
       <button type="button" class="rt-mic" id="rt-mic" title="Cerca a voce" aria-label="Cerca a voce">
@@ -2065,6 +2238,7 @@
     </div>
     <div class="rt-footer">
       <button type="button" class="btn-primario" id="rt-estrai" disabled>Estrai partite aperte</button>
+    </div>
     </div>
   </div>
 
@@ -2161,6 +2335,55 @@
     </div>
   </div>
 
+  <!-- TIMBRATURE VIEW (elenco clienti + ingresso/uscita) -->
+  <div id="timbratureView" class="hidden">
+    <div class="top-bar">
+      <span class="tb-welcome" id="timbratureWelcome"></span>
+      <button type="button" class="btn-link btn-link-light" id="timbratureBackBtn">Menu</button>
+      <button type="button" class="btn-link btn-link-light hidden" id="timbratureLogoutBtn">Cambia utente</button>
+    </div>
+    <div id="tim-schermo-lista">
+    <div class="header">
+      <h1>Timbrature</h1>
+      <div class="header-sub">Seleziona un cliente per registrare la timbratura</div>
+    </div>
+    <div class="rt-toolbar">
+      <input type="text" id="tim-cerca" class="rt-search" placeholder="Cerca per cliente o ragione sociale&hellip;" autocomplete="off">
+      <button type="button" class="rt-mic" id="tim-mic" title="Cerca a voce" aria-label="Cerca a voce">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"></rect><path d="M5 10a7 7 0 0 0 14 0"></path><path d="M12 17v4"></path><path d="M8 21h8"></path></svg>
+      </button>
+    </div>
+    <div class="rt-head">
+      <span>Cliente</span>
+      <span>Ragione sociale</span>
+    </div>
+    <div class="rt-scroll" id="tim-lista">
+      <div class="rt-vuoto">Caricamento&hellip;</div>
+    </div>
+    </div><!-- /tim-schermo-lista -->
+
+    <div id="tim-schermo-dettaglio" class="hidden">
+      <div class="header tim-header"><h1 id="tim-ragione"></h1></div>
+      <div class="tim-body">
+        <div class="tim-azioni">
+          <button type="button" class="btn-primario tim-ingresso" id="tim-ingresso">INGRESSO</button>
+          <button type="button" class="btn-primario" id="tim-uscita">USCITA</button>
+        </div>
+        <label for="note">Note</label>
+        <textarea id="note" name="note" class="tim-note" rows="4" placeholder="Note"></textarea>
+        <div class="rt-debug-row">
+          <button type="button" class="rt-dbg" id="tim-btn-req">Chiamata</button>
+          <button type="button" class="rt-dbg" id="tim-btn-resp">Risposta</button>
+        </div>
+        <pre class="rt-panel" id="tim-pan-req"></pre>
+        <pre class="rt-panel" id="tim-pan-resp"></pre>
+      </div>
+      <div class="cu-form-footer">
+        <button type="button" class="btn-secondario" id="tim-torna">Torna all'elenco</button>
+      </div>
+    </div>
+  </div>
+
   <details class="install-card">
     <summary>Istruzioni per l'installazione <span class="chev">&#9656;</span></summary>
     <div class="install-body">
@@ -2206,6 +2429,8 @@
   let WS_CLI_QUERY_URL = "https://www.lucchi.com:448/wigest617/servlet/" + WS_CLI_QUERY_NAME;
   // Web service CLIFORUPDATE (bapp_cli_ws)
   let WS_CLI_URL = "https://www.lucchi.com:448/wigest617/servlet/bapp_cli_ws";
+  // Web service TIMBRATURE (bapp_tim_ws): come bapp_cli_ws (senza SQLDataProviderServer)
+  let WS_TIM_URL = "https://www.lucchi.com:448/wigest617/servlet/bapp_tim_ws";
   // Parametro di bapp_cli_ws che contiene la firma: PNG in base64, senza prefisso data:.
   // È presente in ogni chiamata (come gli altri parametri): vuoto in estrazione (E)
   // e in aggiornamento senza firma, valorizzato in aggiornamento (U) con firma.
@@ -2243,6 +2468,7 @@
     WS_RISC_URL = base + "bapp_risc_ws";
     WS_CLI_QUERY_URL = base + WS_CLI_QUERY_NAME;
     WS_CLI_URL = base + "bapp_cli_ws";
+    WS_TIM_URL = base + "bapp_tim_ws";
   }
 
   // ---- shared helpers ----------------------------------------------------
@@ -2373,6 +2599,11 @@
   const riscexcelFileBtn = document.getElementById("riscexcelFileBtn");
   const riscexcelWelcome = document.getElementById("riscexcelWelcome");
   const risctabelleView = document.getElementById("risctabelleView");
+
+  // Modalità grafica di Riscossione con estrazione dati (body.risctabelle-mode).
+  new MutationObserver(() => {
+    document.body.classList.toggle("risctabelle-mode", !risctabelleView.classList.contains("hidden"));
+  }).observe(risctabelleView, { attributes: true, attributeFilter: ["class"] });
   const risctabelleBackBtn = document.getElementById("risctabelleBackBtn");
   const risctabelleLogoutBtn = document.getElementById("risctabelleLogoutBtn");
   const risctabelleWelcome = document.getElementById("risctabelleWelcome");
@@ -2437,12 +2668,14 @@
     const hasRiscexcel = apps.includes("RISCEXCEL");
     const hasRiscTabelle = apps.includes("RISCTABELLE");
     const hasCliforupdate = apps.includes("CLIFORUPDATE");
+    const hasTimbrature = apps.includes("TIMBRATURE");
 
     btnScontrini.classList.toggle("hidden", !hasScontrini);
     btnRiscexcel.classList.toggle("hidden", !hasRiscexcel);
     btnRiscTabelle.classList.toggle("hidden", !hasRiscTabelle);
     btnCliforupdate.classList.toggle("hidden", !hasCliforupdate);
-    menuEmpty.classList.toggle("hidden", hasScontrini || hasRiscexcel || hasRiscTabelle || hasCliforupdate);
+    btnTimbrature.classList.toggle("hidden", !hasTimbrature);
+    menuEmpty.classList.toggle("hidden", hasScontrini || hasRiscexcel || hasRiscTabelle || hasCliforupdate || hasTimbrature);
 
     document.body.classList.remove("login-mode");
     loginView.classList.add("hidden");
@@ -2450,6 +2683,7 @@
     riscexcelView.classList.add("hidden");
     risctabelleView.classList.add("hidden");
     cliforupdateView.classList.add("hidden");
+    timbratureView.classList.add("hidden");
     menuView.classList.remove("hidden");
   }
 
@@ -3715,6 +3949,7 @@
     riscexcelView.classList.add("hidden");
     risctabelleView.classList.add("hidden");
     cliforupdateView.classList.add("hidden");
+    timbratureView.classList.add("hidden");
     loginView.classList.remove("hidden");
     document.body.classList.add("login-mode");
     userInput.value = "";
@@ -3777,7 +4012,7 @@
   btnRiscTabelle.addEventListener("click", () => {
     menuView.classList.add("hidden");
     risctabelleView.classList.remove("hidden");
-    risctabelleWelcome.textContent = utenteCorrente ? ("Benvenuto " + utenteCorrente) : "";
+    risctabelleWelcome.innerHTML = utenteCorrente ? ('<span class="mh-label">Benvenuto</span> <span class="mh-name">' + escapeXml(utenteCorrente) + '</span>') : "";
     caricaRiscTabelle();
   });
 
@@ -3792,6 +4027,275 @@
     cliforupdateView.classList.add("hidden");
     menuView.classList.remove("hidden");
   });
+
+  // ---- TIMBRATURE: elenco clienti (qapp_cli_ws, come CLIFORUPDATE) + ingresso/uscita (bapp_tim_ws) ----
+  const btnTimbrature = document.getElementById("btnTimbrature");
+  const timbratureView = document.getElementById("timbratureView");
+  const timbratureBackBtn = document.getElementById("timbratureBackBtn");
+  const timbratureLogoutBtn = document.getElementById("timbratureLogoutBtn");
+  const timbratureWelcome = document.getElementById("timbratureWelcome");
+  const timCerca = document.getElementById("tim-cerca");
+  const timLista = document.getElementById("tim-lista");
+  const timMic = document.getElementById("tim-mic");
+  const timRagione = document.getElementById("tim-ragione");
+  const timNote = document.getElementById("note");
+  const timIngresso = document.getElementById("tim-ingresso");
+  const timUscita = document.getElementById("tim-uscita");
+  const timPanReq = document.getElementById("tim-pan-req");
+  const timPanResp = document.getElementById("tim-pan-resp");
+
+  let timItems = [];
+  let timSelIndex = -1;
+
+  function timToast(msg){
+    let t = document.getElementById("tim-toast");
+    if (!t){ t = document.createElement("div"); t.id = "tim-toast"; t.className = "rt-toast"; timbratureView.appendChild(t); }
+    t.textContent = msg;
+    t.classList.add("show");
+    clearTimeout(timToast._h);
+    timToast._h = setTimeout(() => t.classList.remove("show"), 3200);
+  }
+
+  // Due schermate: elenco clienti e dettaglio (ingresso/uscita)
+  function timMostra(s){
+    document.getElementById("tim-schermo-lista").classList.toggle("hidden", s !== "lista");
+    document.getElementById("tim-schermo-dettaglio").classList.toggle("hidden", s !== "dettaglio");
+    window.scrollTo(0, 0);
+  }
+
+  function renderTim(){
+    const q = (timCerca.value || "").trim().toLowerCase();
+    const filtrati = timItems.filter((it) =>
+      !q ||
+      String(it.A19CLIEN || "").toLowerCase().includes(q) ||
+      String(it.G19DESC || "").toLowerCase().includes(q)
+    );
+    if (!filtrati.length){
+      timLista.innerHTML = '<div class="rt-vuoto">Nessun risultato.</div>';
+      return filtrati;
+    }
+    timLista.innerHTML = filtrati.map((it) => {
+      const idx = timItems.indexOf(it);
+      return `<div class="rt-row" data-idx="${idx}">` +
+        `<span>${escapeXml(it.A19CLIEN)}</span>` +
+        `<span class="rag">${escapeXml(it.G19DESC)}</span>` +
+      `</div>`;
+    }).join("");
+    timLista.querySelectorAll(".rt-row").forEach((el) => {
+      el.addEventListener("click", () => timApriCliente(Number(el.getAttribute("data-idx"))));
+    });
+    return filtrati;
+  }
+
+  // Selezione di un cliente: si apre la videata con Ragione Sociale, INGRESSO / USCITA, note
+  function timApriCliente(idx){
+    const it = timItems[idx];
+    if (!it) return;
+    timSelIndex = idx;
+    timRagione.textContent = it.G19DESC || "";
+    timNote.value = "";
+    timPanReq.textContent = "(nessuna chiamata effettuata)";
+    timPanResp.textContent = "(nessuna risposta dal web service)";
+    timPanReq.classList.remove("show");
+    timPanResp.classList.remove("show");
+    timMostra("dettaglio");
+  }
+
+  // Stessa query di CLIFORUPDATE: buildCliQueryEnvelope / WS_CLI_QUERY_URL
+  // (…/servlet/SQLDataProviderServer/qapp_cli_ws) e stessa lettura delle righe (parseCli).
+  async function caricaTimbrature(){
+    timMostra("lista");
+    timItems = [];
+    timSelIndex = -1;
+    timCerca.value = "";
+    timLista.innerHTML = '<div class="rt-vuoto">Caricamento&hellip;</div>';
+    if (!selezione.istanza){
+      timLista.innerHTML = '<div class="rt-vuoto">Sessione non valida: rientra dal login.</div>';
+      return;
+    }
+    try {
+      const xml = buildCliQueryEnvelope();
+      const resp = await fetch(WS_CLI_QUERY_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/xml; charset=utf-8" },
+        body: xml
+      });
+      const txt = await resp.text();
+      if (!resp.ok){
+        const body = deepDecode(txt).trim();
+        timLista.innerHTML =
+          '<div class="rt-vuoto">Errore HTTP ' + resp.status + ' ' + resp.statusText + '.' +
+          (body ? '<div class="rt-fault">' + escapeXml(body) + '</div>' : '') + '</div>';
+        return;
+      }
+      timItems = parseCli(txt);
+      if (!timItems.length){
+        timLista.innerHTML = '<div class="rt-vuoto">Nessun cliente disponibile.</div>';
+        return;
+      }
+      renderTim();
+    } catch (err){
+      timLista.innerHTML = '<div class="rt-vuoto">Chiamata non riuscita. ' +
+        escapeXml(err && err.message ? err.message : String(err)) + '</div>';
+    }
+  }
+
+  timCerca.addEventListener("input", renderTim);
+
+  // ---- geolocalizzazione e data/ora della timbratura ----
+  function timDataOra(d){
+    const p = (n) => String(n).padStart(2, "0");
+    return d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate()) + " " +
+           p(d.getHours()) + ":" + p(d.getMinutes()) + ":" + p(d.getSeconds());
+  }
+
+  // Posizione del telefono: null se non disponibile, negata o scaduta (10 s).
+  function timPosizione(){
+    return new Promise((resolve) => {
+      if (!navigator.geolocation){ resolve(null); return; }
+      navigator.geolocation.getCurrentPosition(
+        (pos) => resolve(pos),
+        () => resolve(null),
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+      );
+    });
+  }
+
+  // Envelope di bapp_tim_ws; evento = "INGRESSO" oppure "USCITA"
+  function buildTimWsEnvelope(evento, cliente, geo, note){
+    return `<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:bapp="http://bapp_tim_ws.ws.localhost/">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <bapp:bapp_tim_ws_Run>
+         <bapp:m_UserName>ws</bapp:m_UserName>
+         <bapp:m_Password>ws_1234!</bapp:m_Password>
+         <bapp:m_Company>${escapeXml(selezione.mCompany)}</bapp:m_Company>
+         <bapp:m_Instance>${escapeXml(selezione.istanza)}</bapp:m_Instance>
+         <bapp:p_user>${escapeXml(selezione.pUser)}</bapp:p_user>
+         <bapp:p_ws_call>Y</bapp:p_ws_call>
+         <bapp:p_Subs>${escapeXml(selezione.pSubs)}</bapp:p_Subs>
+         <bapp:p_Branc>${escapeXml(selezione.pBranc)}</bapp:p_Branc>
+         <bapp:p_Sect>${escapeXml(selezione.pSect)}</bapp:p_Sect>
+         <bapp:p_Curr>${escapeXml(selezione.pCurr)}</bapp:p_Curr>
+         <bapp:p_PhiSite>${escapeXml(selezione.pPhiSite)}</bapp:p_PhiSite>
+         <bapp:p_PaySite></bapp:p_PaySite>
+         <bapp:p_PaySubs></bapp:p_PaySubs>
+         <bapp:p_Wareh></bapp:p_Wareh>
+         <bapp:p_DefaYearS></bapp:p_DefaYearS>
+         <bapp:p_DefaSess></bapp:p_DefaSess>
+         <bapp:p_UL></bapp:p_UL>
+         <bapp:p_cliente>${escapeXml(cliente)}</bapp:p_cliente>
+         <bapp:p_evento>${escapeXml(evento)}</bapp:p_evento>
+         <bapp:p_latit>${escapeXml(geo.latit)}</bapp:p_latit>
+         <bapp:p_longit>${escapeXml(geo.longit)}</bapp:p_longit>
+         <bapp:p_altit>${escapeXml(geo.altit)}</bapp:p_altit>
+         <bapp:p_datageo>${escapeXml(geo.datageo)}</bapp:p_datageo>
+         <bapp:p_note>${escapeXml(note)}</bapp:p_note>
+      </bapp:bapp_tim_ws_Run>
+   </soapenv:Body>
+</soapenv:Envelope>`;
+  }
+
+  async function timTimbra(evento){
+    const it = timItems[timSelIndex];
+    if (!it) return;
+    const btn = evento === "INGRESSO" ? timIngresso : timUscita;
+    const testoBtn = btn.textContent;
+    timIngresso.disabled = true;
+    timUscita.disabled = true;
+    btn.textContent = "Rilevo la posizione\u2026";
+    try {
+      // 1) geolocalizzazione e data/ora del momento in cui viene definita
+      const pos = await timPosizione();
+      const geo = { latit: "", longit: "", altit: "", datageo: "" };
+      if (pos){
+        const c = pos.coords;
+        geo.latit = c.latitude.toFixed(6);
+        geo.longit = c.longitude.toFixed(6);
+        geo.altit = (c.altitude === null || c.altitude === undefined) ? "" : c.altitude.toFixed(1);
+        geo.datageo = timDataOra(new Date(pos.timestamp));
+      }
+      // 2) chiamata a bapp_tim_ws
+      btn.textContent = "Invio in corso\u2026";
+      const xml = buildTimWsEnvelope(evento, it.A19CLIEN, geo, timNote.value);
+      timPanReq.textContent = xml;
+      timPanResp.textContent = "(in attesa di risposta\u2026)";
+      const resp = await fetch(WS_TIM_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/xml; charset=utf-8" },
+        body: xml
+      });
+      const txt = await resp.text();
+      timPanResp.textContent = deepDecode(txt);
+      const senzaGeo = pos ? "" : " (posizione non disponibile)";
+      if (!resp.ok){ timToast("Errore HTTP " + resp.status + " " + resp.statusText); return; }
+      let data = null;
+      try { data = parseLoginResponse(txt); } catch(e){ data = null; }
+      if (data && data.okexp !== undefined && data.okexp !== null){
+        const ok = String(data.okexp).trim().toUpperCase() === "Y";
+        timToast((data.messaggio || (ok ? evento + " registrato" : "Timbratura non registrata")) + senzaGeo);
+      } else {
+        timToast("Risposta ricevuta: vedi \u00abRisposta\u00bb" + senzaGeo);
+      }
+    } catch(err){
+      const msg = err && err.message ? err.message : String(err);
+      timPanResp.textContent = "Chiamata non riuscita.\n\n" + msg;
+      timToast("Chiamata non riuscita: " + msg);
+    } finally {
+      btn.textContent = testoBtn;
+      timIngresso.disabled = false;
+      timUscita.disabled = false;
+    }
+  }
+
+  timIngresso.addEventListener("click", () => timTimbra("INGRESSO"));
+  timUscita.addEventListener("click", () => timTimbra("USCITA"));
+  document.getElementById("tim-btn-req").addEventListener("click", () => timPanReq.classList.toggle("show"));
+  document.getElementById("tim-btn-resp").addEventListener("click", () => timPanResp.classList.toggle("show"));
+  document.getElementById("tim-torna").addEventListener("click", () => timMostra("lista"));
+
+  // Ricerca a voce per TIMBRATURE
+  const SpeechRecTim = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (SpeechRecTim && timMic){
+    const recogTim = new SpeechRecTim();
+    recogTim.lang = "it-IT";
+    recogTim.interimResults = false;
+    recogTim.maxAlternatives = 1;
+    recogTim.addEventListener("result", (e) => {
+      const t = (e.results[0][0].transcript || "").trim().replace(/[.,;:!?\u2026]+$/, "").trim();
+      timCerca.value = t;
+      const match = renderTim();
+      if (match && match.length === 1) timApriCliente(timItems.indexOf(match[0]));
+    });
+    recogTim.addEventListener("end", () => timMic.classList.remove("rec"));
+    recogTim.addEventListener("error", (e) => {
+      timMic.classList.remove("rec");
+      const err = (e && e.error) || "sconosciuto";
+      if (err === "aborted") return;
+      const mappa = { "no-speech":"Non ho sentito nulla, riprova", "audio-capture":"Nessun microfono disponibile", "not-allowed":"Microfono non autorizzato" };
+      timToast(mappa[err] || ("Riconoscimento vocale non riuscito (" + err + ")"));
+    });
+    timMic.addEventListener("click", () => {
+      if (timMic.classList.contains("rec")){ try { recogTim.stop(); } catch(e){} return; }
+      try { timMic.classList.add("rec"); recogTim.start(); } catch(e){ timMic.classList.remove("rec"); }
+    });
+  } else if (timMic){
+    timMic.hidden = true;
+  }
+
+  btnTimbrature.addEventListener("click", () => {
+    menuView.classList.add("hidden");
+    timbratureView.classList.remove("hidden");
+    timbratureWelcome.textContent = utenteCorrente ? ("Benvenuto " + utenteCorrente) : "";
+    caricaTimbrature();
+  });
+
+  timbratureBackBtn.addEventListener("click", () => {
+    timbratureView.classList.add("hidden");
+    menuView.classList.remove("hidden");
+  });
+  timbratureLogoutBtn.addEventListener("click", resetToLogin);
 
   // ---- PRIMANOTA CASSA (dopo login) ---------------------------------------
 
@@ -4243,6 +4747,7 @@ function vaiLista() {
 }
 
 function vaiReport() {
+  if (!Object.keys(dati.pagamenti).length) return; // il report richiede almeno una fattura pagata
   aggiornaReport();
   mostraSchermo('s-report');
 }
@@ -4261,6 +4766,9 @@ function aggiornaLista() {
 
   document.getElementById('stat-incassato').textContent = '€ ' + formatImporto(totalePagato);
   document.getElementById('stat-fatture').textContent = `${fatturePagate}/${fattureTot}`;
+  // "Invia Report" è attivo solo se almeno una fattura è stata segnata come pagata
+  const btnInviaReport = document.querySelector('#s-lista .fab');
+  if (btnInviaReport) btnInviaReport.disabled = (fatturePagate === 0);
 
   const container = document.getElementById('lista-clienti');
   container.innerHTML = '';

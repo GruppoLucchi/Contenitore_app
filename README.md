@@ -2,7 +2,7 @@
 
 PWA installabile e multi-cliente. Dopo il login mostra un menu con le
 applicazioni disponibili per l'utente (Scontrini, Riscossione con file Excel,
-Riscossione con estrazione dati, Aggiornamento Clienti). Tutte le
+Riscossione con estrazione dati, Aggiornamento Clienti, Timbrature). Tutte le
 chiamate ai dati passano dai web service Wigest su `www.lucchi.com:448`.
 
 ## File
@@ -171,7 +171,11 @@ comportamenti.
   badge "✓ n/N pagate". Il pulsante **Report →** in testata è stato tolto: resta
   solo **Invia Report** (scuro), **centrato sulla riga e subito sotto l'ultimo
   cliente**, a 16 px dalla scheda; non è più flottante, quindi la lista non lascia
-  margine in fondo.
+  margine in fondo. **Invia Report è attivo solo se almeno una fattura è stata
+  segnata come pagata**: altrimenti è grigio e non cliccabile (anche `vaiReport()`
+  ignora la chiamata). Si riattiva/disattiva a ogni ritorno all'elenco, quindi anche
+  dopo un "Annulla pagamento". Vale anche per Riscossione con estrazione dati, che
+  usa la stessa schermata.
 - **Dettaglio cliente**: fascia scura con "Benvenuto", la freccia **‹** in un
   cerchio a sinistra del codice cliente, ragione sociale e "città (prov) · n
   fatture"; le fatture sono schede bianche (verdi se pagate) che sovrappongono la
@@ -198,6 +202,29 @@ sovrappongono e ne coprirebbe la parte alta.
 "Benvenuto" è scritto in due `span` (`mh-label`, `mh-name`); il testo letto resta
 "Benvenuto <utente>".
 
+### Aspetto di Riscossione con estrazione dati (stile G)
+
+Stile G sulla pagina con l'elenco dei clienti (dopo l'estrazione si prosegue nelle
+schermate di Riscossione con file Excel, già in stile G). Il bottone non è stato
+spostato né rinominato: **Estrai partite aperte** resta sotto l'elenco, disattivo
+finché non si sceglie un cliente.
+
+- **Tolti** dalla testata il logo con "WIGEST 5.5" e "Sistema Informativo
+  Gestionale sul Web" e la scritta **"Tabelle Riscossione"** (rimossa dall'HTML). Resta
+  il sottotitolo "Seleziona un cliente per estrarre le partite aperte".
+- Fascia scura con "Benvenuto" e il nome utente su due righe e il pulsante **Menu** a
+  destra.
+- **Scheda bianca** che sovrappone la fascia, con ricerca (e microfono, se il
+  browser lo supporta), intestazione Conto / Cliente / Ragione sociale, elenco con
+  scorrimento (la riga scelta è azzurra) e, in fondo alla scheda, **Estrai partite
+  aperte** (scuro).
+- Le regole valgono solo per `#risctabelleView` e solo con `body.risctabelle-mode`
+  (stesso `MutationObserver` delle altre schermate): le regole di base di questa
+  vista sono condivise con Aggiornamento Clienti, che non cambia (verificato
+  confrontando le schermate a pixel prima e dopo). Il blocco è "RISCOSSIONE CON
+  ESTRAZIONE DATI (stile G)" in fondo al `<style>`. Ricerca, microfono e righe sono
+  state raggruppate nella scheda `.rt-card`; gli id non sono cambiati.
+
 ## Applicazioni
 
 - **Scontrini** — carica un file/foto e lo invia a `bapp_cassa_ws`.
@@ -214,6 +241,7 @@ sovrappongono e ne coprirebbe la parte alta.
   "Partita" è data da `Anno\Prefisso\No`.
 - **Aggiornamento Clienti (CLIFORUPDATE)** — tre sotto-schermate:
   elenco, maschera anagrafica, conferma.
+- **Timbrature (TIMBRATURE)** — vedi la sezione "Timbrature" più sotto.
 
   1. *Elenco*: chiama la query `qapp_cli_ws`
      (`…/servlet/SQLDataProviderServer/qapp_cli_ws`, namespace
@@ -313,10 +341,74 @@ migliaia (`.`) e decimali (`,`), indipendentemente dal locale del dispositivo.
 
 Nota: le query (`SQLDataProviderServer/...`) portano l'istanza nel namespace e
 nel percorso; i web service (`bgla_chkpwd_ai_ws`, `bapp_cassa_ws`,
-`bapp_risc_ws`, `bapp_cli_ws`) usano il namespace generico e instradano
+`bapp_risc_ws`, `bapp_cli_ws`, `bapp_tim_ws`) usano il namespace generico e instradano
 tramite `m_Instance`. Gli `url` nel `config.json` contengono solo il percorso del
 servlet: il nome del web service (o `SQLDataProviderServer/<query>`) viene
 aggiunto dall'app.
+
+### Timbrature (TIMBRATURE)
+
+Nuova applicazione, chiamata dal bottone **Timbrature** del menu. Il bottone compare
+solo se `listapp` (risposta di `bgla_chkpwd_ai_ws`) contiene il codice
+**`TIMBRATURE`**: va quindi abilitato lato Wigest, come gli altri codici
+(`SCONTRINI`, `RISCEXCEL`, `RISCTABELLE`, `CLIFORUPDATE`). L'icona è un orologio.
+
+La grafica è **la stessa di Aggiornamento Clienti** (stesso schema: barra con
+*Benvenuto* e il pulsante **Menu** per tornare al menu, testata, ricerca con
+microfono, elenco): le regole di base sono condivise con CLIFORUPDATE e RISCTABELLE
+tramite `:is(#risctabelleView,#cliforupdateView,#timbratureView)`. Quando si
+passerà allo stile G, andranno aggiornati insieme.
+
+1. **Elenco clienti.** All'ingresso chiama **la stessa query di CLIFORUPDATE**:
+   `qapp_cli_ws` all'indirizzo `…/servlet/SQLDataProviderServer/qapp_cli_ws`
+   (SQLDataProviderServer tra servlet e nome della query), con lo stesso envelope
+   (`buildCliQueryEnvelope`), la stessa costante `WS_CLI_QUERY_URL` e la stessa
+   lettura (`parseCli`). Mostra Cliente (`A19CLIEN`) e Ragione sociale (`G19DESC`),
+   con ricerca testuale e vocale. **Toccando un cliente si apre subito la
+   videata successiva** (nessun pulsante intermedio).
+2. **Videata del cliente.** In alto, **centrata, la sola Ragione Sociale**. Sotto i
+   due bottoni **INGRESSO** e **USCITA**; sotto uno spazio per digitare le **note**
+   (`<textarea id="note" name="note">`); sotto i pulsanti **Chiamata** e **Risposta**,
+   che mostrano/nascondono la chiamata inviata al web service e la sua risposta
+   (si aggiornano a ogni timbratura; ripartono vuoti quando si apre un altro
+   cliente). Aggiunto, come in CLIFORUPDATE, **Torna all'elenco** in fondo.
+3. **Timbratura.** Premendo INGRESSO o USCITA l'app: (a) rileva la posizione del
+   telefono (`navigator.geolocation`, precisione alta, attesa massima 10 s; al
+   primo utilizzo il browser chiede il permesso); (b) chiama **`bapp_tim_ws`**
+   (`…/servlet/bapp_tim_ws`, namespace `http://bapp_tim_ws.ws.localhost/`,
+   operazione `bapp_tim_ws_Run`) con questi parametri, nell'ordine:
+   `m_UserName`, `m_Password`, `m_Company`, `m_Instance`, `p_user`, `p_ws_call`=`Y`,
+   `p_Subs`, `p_Branc`, `p_Sect`, `p_Curr`, `p_PhiSite` (valorizzati dalla
+   selezione fatta al login), `p_PaySite`, `p_PaySubs`, `p_Wareh`, `p_DefaYearS`,
+   `p_DefaSess`, `p_UL` (vuoti), **`p_cliente`** = codice
+   del cliente scelto (`A19CLIEN`), **`p_evento`** = `INGRESSO` o `USCITA`,
+   **`p_latit`**, **`p_longit`**, **`p_altit`**, **`p_datageo`**, **`p_note`** = testo
+   delle note.
+   - `p_latit` e `p_longit`: gradi decimali con 6 decimali e punto (es.
+     `40.640123`); `p_altit`: metri con 1 decimale, vuoto se il telefono non
+     fornisce l'altitudine; `p_datageo`: data e ora **in cui la posizione è stata
+     rilevata**, formato `AAAA-MM-GG HH:MM:SS` (ora locale del telefono).
+   - Se la posizione non è disponibile (permesso negato, GPS spento, tempo
+     scaduto) **la chiamata parte lo stesso con i quattro campi geo vuoti** e il
+     messaggio a video lo segnala ("posizione non disponibile").
+   - Il testo delle note è passato con i caratteri speciali (`&`, `<`, `>`, `"`)
+     codificati in XML.
+   - **USCITA** usa lo stesso web service e gli stessi parametri, con
+     `p_evento` = `USCITA` (la specifica riportava solo l'esempio INGRESSO).
+   - L'envelope è quello indicato, **completato** con le chiusure
+     `</bapp:bapp_tim_ws_Run>` e `</soapenv:Envelope>` che nell'esempio mancavano.
+   - Risposta: se è JSON con `okexp` (`Y`/`N`) mostra `messaggio` a video; se non
+     c'è `messaggio` scrive "INGRESSO registrato"/"USCITA registrata" oppure
+     "Timbratura non registrata". Se non è JSON mostra "Risposta ricevuta: vedi
+     «Risposta»". La risposta completa è sempre nel pannello **Risposta**.
+   - Le note non vengono svuotate dopo l'invio.
+4. **Debug.** I pulsanti Chiamata/Risposta hanno più spazio per il tocco rispetto
+   a quelli di CLIFORUPDATE (lì un azzeramento generale delle spaziature li riduce
+   a 16 px di altezza).
+
+Lato Wigest/Tomcat: pubblicare il web service `bapp_tim_ws` (e la query
+`qapp_cli_ws`, già usata da CLIFORUPDATE) su ogni istanza interessata, con CORS
+su `/servlet/*` come per gli altri.
 
 ## Pubblicazione su GitHub Pages
 
