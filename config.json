@@ -56,7 +56,7 @@
         {
           "nome": "Demo AI",
           "url": "https://www.lucchi.com:448/wigest617/servlet/",
-          "istanze": ["WIGEST_AI"]
+          "istanze": ["SERVLET_WIGEST_AI"]
         }
       ]
     }

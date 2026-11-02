@@ -44,7 +44,7 @@ Profili attuali del `config.json`:
 | 3 | ANARB | `SERVLET_WIGEST_ANARB_15062026` |
 | 4 | Multicliente | (aziende dei profili 1 e 2) |
 | 5 | WIGEST Amici di Gigi multi istanza | `SERVLET_WIGEST_AMICIGIGI_1105`, `SERVLET_WIGEST_AMICIGIGI_1009` |
-| 6 | Demo AI | `WIGEST_AI` |
+| 6 | Demo AI | `SERVLET_WIGEST_AI` |
 
 Il profilo 6 (**Demo AI**) usa lo stesso servlet degli altri
 (`https://www.lucchi.com:448/wigest617/servlet/`) e si apre con `?cfg=6`. Come ogni
