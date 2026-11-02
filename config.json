@@ -48,6 +48,17 @@
           "istanze": ["SERVLET_WIGEST_AMICIGIGI_1105", "SERVLET_WIGEST_AMICIGIGI_1009"]
         }
       ]
+    },
+    {
+      "id": 6,
+      "nome": "Demo AI",
+      "aziende": [
+        {
+          "nome": "Demo AI",
+          "url": "https://www.lucchi.com:448/wigest617/servlet/",
+          "istanze": ["WIGEST_AI"]
+        }
+      ]
     }
   ]
 }

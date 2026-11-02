@@ -35,6 +35,22 @@ selezionabili). Un profilo può anche referenziare altri profili con
 }
 ```
 
+Profili attuali del `config.json`:
+
+| id | Nome | Istanza/e |
+|----|------|-----------|
+| 1 | WIGEST Amici di GIGI | `SERVLET_WIGEST_AMICIGIGI_1105` |
+| 2 | WIGEST MDB 7 Agosto | `SERVLET_WIGEST_MDB_07082026` |
+| 3 | ANARB | `SERVLET_WIGEST_ANARB_15062026` |
+| 4 | Multicliente | (aziende dei profili 1 e 2) |
+| 5 | WIGEST Amici di Gigi multi istanza | `SERVLET_WIGEST_AMICIGIGI_1105`, `SERVLET_WIGEST_AMICIGIGI_1009` |
+| 6 | Demo AI | `WIGEST_AI` |
+
+Il profilo 6 (**Demo AI**) usa lo stesso servlet degli altri
+(`https://www.lucchi.com:448/wigest617/servlet/`) e si apre con `?cfg=6`. Come ogni
+profilo con `aziende` proprio (non `aziende_ref`), compare anche nella combo
+**Cliente** quando si apre l'app senza `cfg`.
+
 Il cliente si sceglie con il parametro `?cfg=<id>` nell'URL (es.
 `…/Contenitore_app/?cfg=1`). Il valore viene memorizzato in `localStorage`, così
 l'app installata riapre sempre lo stesso cliente. Aprendo l'URL **senza** `cfg`
