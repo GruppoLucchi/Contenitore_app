@@ -246,7 +246,9 @@ finché non si sceglie un cliente.
 - **Scontrini** — carica un file/foto e lo invia a `bapp_cassa_ws`.
 - **Riscossione con file Excel (RISCEXCEL)** — importa il tracciato Excel del
   partitario, mostra clienti e fatture, permette di marcare gli incassi ed
-  esporta un report Excel (`report_incassi_<codice cliente>_<data-ora>.xlsx`).
+  esporta un report Excel (`report_incassi_<codice cliente>_<data-ora>.xlsx`, con il
+  codice cliente — campo `Cli-For` della prima riga — **scritto senza spazi**, anche
+  interni; se non resta nulla si usa `ND`; data e ora nel formato `AAAA-MM-GG_HH-MM-SS`).
 - **Riscossione con estrazione dati (RISCTABELLE)** — chiama la query
   `qapp_risc_ws` (`…/servlet/SQLDataProviderServer/qapp_risc_ws`, namespace
   `http://qapp_risc_ws.<istanza>.ws.localhost/`) e mostra l'elenco clienti

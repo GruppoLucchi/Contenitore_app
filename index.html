@@ -5014,10 +5014,12 @@ function aggiornaReport() {
 }
 
 // ---- EXCEL EXPORT ----
-// Nome file: report_incassi_<codice cliente Cli-For>_<data-ora>.xlsx
+// Nome file: report_incassi_<codice cliente Cli-For senza spazi>_<data-ora>.xlsx
 function nomeFileReport() {
   const r0 = dati.righe && dati.righe[0];
-  const codice = (r0 && r0['Cli-For']) ? String(r0['Cli-For']) : 'ND';
+  // Il codice cliente viene scritto senza spazi (anche quelli interni e i non separabili);
+  // se non resta nulla si usa ND.
+  const codice = (r0 && r0['Cli-For']) ? (String(r0['Cli-For']).replace(/\s+/g, '') || 'ND') : 'ND';
   const o = new Date();
   const dataora = `${o.getFullYear()}-${pad(o.getMonth()+1)}-${pad(o.getDate())}_${pad(o.getHours())}-${pad(o.getMinutes())}-${pad(o.getSeconds())}`;
   return `report_incassi_${codice}_${dataora}.xlsx`;
