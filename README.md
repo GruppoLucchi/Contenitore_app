@@ -106,31 +106,6 @@ Accedi (`loginBtn`) e la riga di configurazione (`clienteCorrenteLabel`,
 `cambiaConfigLink`) stanno ora nel contenitore `.login-footer`, fuori dalla
 scheda; gli id e la logica JavaScript non sono cambiati.
 
-### Pulsanti Chiamata e Risposta nel login
-
-In fondo alla scheda del login (sotto Password) ci sono due pulsanti, **Chiamata** e
-**Risposta**, che aprono o chiudono due pannelli con le chiamate fatte da questa
-pagina e le relative risposte, nell'ordine in cui avvengono:
-
-1. **Query aziende** (`start_login_companies_user_app`): parte all'uscita dal campo
-   password;
-2. **Login** (`bgla_chkpwd_ai_ws`): parte su **Accedi**.
-
-Ogni blocco ha un'intestazione col nome del servizio. Se non è ancora partita
-nessuna chiamata, il pannello dice "(nessuna chiamata effettuata)" / "(nessuna
-risposta ricevuta)". I pannelli aperti si aggiornano da soli quando arriva una
-nuova chiamata o risposta, e si azzerano a ogni logout (le chiamate della sessione
-precedente non restano a video).
-
-**La password digitata (`p_Password`) è mostrata oscurata** (`••••••`) nel pannello;
-la chiamata inviata al server contiene quella vera. Restano visibili le credenziali
-tecniche `ws` / `ws_1234!`, già presenti nel codice.
-
-Nel codice i pulsanti sono `login-dbg-btn-req` / `login-dbg-btn-resp` e leggono i
-dati che le funzioni `setQueryReqPanel`, `setQueryRespPanel`, `setLoginReqPanel` e
-`setLoginRespPanel` già salvavano. I quattro pulsanti "Visualizza chiamata/risposta
-query/login" che esistevano nel login restano nel codice ma nascosti, come prima.
-
 ### Aspetto del menu delle applicazioni (stile G)
 
 Anche la schermata con i bottoni che aprono le app usa lo stile G (le schermate

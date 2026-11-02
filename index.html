@@ -812,35 +812,6 @@
     border-color:#1f4e79;
     box-shadow:0 0 0 3px rgba(31,78,121,.15);
   }
-  /* Pulsanti Chiamata / Risposta del login */
-  body.login-mode .login-dbg-row{ display:flex; gap:10px; }
-  body.login-mode .login-dbg{
-    flex:1;
-    min-height:44px;
-    background:#ffffff;
-    border:1px solid #cdd5de;
-    border-radius:12px;
-    color:var(--ink);
-    font-family:inherit;
-    font-size:14px;
-    font-weight:600;
-    cursor:pointer;
-  }
-  body.login-mode .login-dbg[aria-expanded="true"]{ background:#eef2f6; }
-  body.login-mode .login-dbg-panel{
-    margin:0;
-    max-height:260px;
-    overflow:auto;
-    padding:12px;
-    background:#0f1b27;
-    color:#e5ecf2;
-    border-radius:12px;
-    font-family:var(--mono);
-    font-size:12px;
-    line-height:1.5;
-    white-space:pre-wrap;
-    word-break:break-all;
-  }
   body.login-mode .login-footer{
     margin:16px 20px 0;
     background:var(--ink);
@@ -1985,12 +1956,6 @@
           <pre id="loginRespPanelText"></pre>
         </div>
       </div>
-      <div class="login-dbg-row">
-        <button type="button" class="login-dbg" id="login-dbg-btn-req" aria-expanded="false">Chiamata</button>
-        <button type="button" class="login-dbg" id="login-dbg-btn-resp" aria-expanded="false">Risposta</button>
-      </div>
-      <pre class="login-dbg-panel hidden" id="login-dbg-req"></pre>
-      <pre class="login-dbg-panel hidden" id="login-dbg-resp"></pre>
     </div>
 
     <div class="login-footer">
@@ -2982,71 +2947,22 @@
   function setLoginReqPanel(text){
     loginReqPanelText.textContent = text;
     toggleLoginReqBtn.disabled = false;
-    aggiornaLoginDebug();
   }
 
   function setLoginRespPanel(text){
     loginRespPanelText.textContent = text || "(risposta vuota)";
     toggleLoginRespBtn.disabled = false;
-    aggiornaLoginDebug();
   }
 
   function setQueryReqPanel(text){
     queryReqPanelText.textContent = text;
     toggleQueryReqBtn.disabled = false;
-    aggiornaLoginDebug();
   }
 
   function setQueryRespPanel(text){
     queryRespPanelText.textContent = text || "(risposta vuota)";
     toggleQueryRespBtn.disabled = false;
-    aggiornaLoginDebug();
   }
-
-  // ---- Pulsanti "Chiamata" e "Risposta" del login ----
-  // Mostrano le chiamate fatte da questa pagina, nell'ordine in cui avvengono: prima la query delle
-  // aziende (start_login_companies_user_app, all'uscita dal campo password), poi il login
-  // (bgla_chkpwd_ai_ws, su Accedi). La password dell'utente (p_Password) è mostrata oscurata:
-  // la chiamata inviata al server resta quella vera.
-  const loginDbgReq = document.getElementById("login-dbg-req");
-  const loginDbgResp = document.getElementById("login-dbg-resp");
-  const loginDbgBtnReq = document.getElementById("login-dbg-btn-req");
-  const loginDbgBtnResp = document.getElementById("login-dbg-btn-resp");
-
-  function loginDbgTesto(tipo){
-    const q = (tipo === "Req" ? queryReqPanelText : queryRespPanelText).textContent.trim();
-    const l = (tipo === "Req" ? loginReqPanelText : loginRespPanelText).textContent.trim();
-    const parti = [];
-    if (q) parti.push("\u2014 QUERY AZIENDE (start_login_companies_user_app) \u2014\n" + q);
-    if (l) parti.push("\u2014 LOGIN (bgla_chkpwd_ai_ws) \u2014\n" + l);
-    let testo = parti.join("\n\n");
-    if (tipo === "Req") testo = testo.replace(/(<bgla:p_Password>)[\s\S]*?(<\/bgla:p_Password>)/g, "$1\u2022\u2022\u2022\u2022\u2022\u2022$2");
-    return testo || (tipo === "Req" ? "(nessuna chiamata effettuata)" : "(nessuna risposta ricevuta)");
-  }
-
-  // Tiene aggiornati i pannelli aperti quando arriva una nuova chiamata o risposta
-  function aggiornaLoginDebug(){
-    if (!loginDbgReq.classList.contains("hidden")) loginDbgReq.textContent = loginDbgTesto("Req");
-    if (!loginDbgResp.classList.contains("hidden")) loginDbgResp.textContent = loginDbgTesto("Resp");
-  }
-
-  function azzeraLoginDebug(){
-    [queryReqPanelText, queryRespPanelText, loginReqPanelText, loginRespPanelText].forEach((e) => { e.textContent = ""; });
-    [[loginDbgReq, loginDbgBtnReq], [loginDbgResp, loginDbgBtnResp]].forEach(([pan, btn]) => {
-      pan.classList.add("hidden"); pan.textContent = ""; btn.setAttribute("aria-expanded", "false");
-    });
-  }
-
-  function loginDbgToggle(tipo){
-    const pan = tipo === "Req" ? loginDbgReq : loginDbgResp;
-    const btn = tipo === "Req" ? loginDbgBtnReq : loginDbgBtnResp;
-    const apri = pan.classList.contains("hidden");
-    pan.classList.toggle("hidden", !apri);
-    btn.setAttribute("aria-expanded", apri ? "true" : "false");
-    if (apri) pan.textContent = loginDbgTesto(tipo);
-  }
-  loginDbgBtnReq.addEventListener("click", () => loginDbgToggle("Req"));
-  loginDbgBtnResp.addEventListener("click", () => loginDbgToggle("Resp"));
 
   toggleLoginReqBtn.addEventListener("click", () => {
     loginReqPanel.classList.toggle("hidden");
@@ -4052,7 +3968,6 @@
     userInput.value = "";
     passInput.value = "";
     hideLoginError();
-    azzeraLoginDebug();   // le chiamate della sessione precedente non restano a video
     handleFileSelected(null);
     descrizioneInput.value = "";
     resultWrap.classList.add("hidden");
