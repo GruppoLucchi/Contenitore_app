@@ -971,6 +971,7 @@
     line-height:1.3;
     color:var(--ink);
     margin:0;
+    overflow-wrap:anywhere;   /* una parola molto lunga va a capo solo se non entra in una riga intera */
   }
   body.menu-mode .app-card-desc{ display:none; }
   body.menu-mode .app-ico{
@@ -2007,7 +2008,7 @@
       </button>
       <button type="button" class="app-card hidden" id="btnCliforupdate">
         <span class="app-ico app-ico-clienti" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg></span>
-        <span class="app-card-title">Aggiornamento Clienti</span>
+        <span class="app-card-title">Aggiornamento autorizzazioni Clienti</span>
         <span class="app-card-desc">Aggiornamento anagrafiche clienti.</span>
       </button>
       <button type="button" class="app-card hidden" id="btnTimbrature">

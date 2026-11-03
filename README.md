@@ -117,8 +117,10 @@ delle singole app hanno ancora lo stile precedente):
 - **Bottoni delle app** bianchi, in griglia 2×2, che sovrappongono la testata.
   Ognuno ha un'icona in un cerchio colorato (Scontrini ambra, Riscossione con
   file Excel verde, Riscossione con estrazione dati azzurro, Aggiornamento
-  Clienti viola) e, **subito sotto l'icona**, il titolo: i riquadri sono compatti
-  (altezza data dal contenuto). Il testo descrittivo secondario è nascosto ma
+  autorizzazioni Clienti viola) e, **subito sotto l'icona**, il titolo: i riquadri sono compatti
+  (altezza data dal contenuto). Un titolo lungo può occupare tre righe; `overflow-wrap:anywhere`
+  evita che una parola troppo lunga, come "autorizzazioni" su uno schermo molto stretto,
+  esca dal riquadro. Il testo descrittivo secondario è nascosto ma
   resta nel codice. Compaiono solo le app abilitate all'utente (`listapp`),
   come prima.
 - **Blocco scuro subito sotto i riquadri** con **Azienda** e **Istanza** (in
@@ -261,7 +263,8 @@ finché non si sceglie un cliente.
   JSON: se `okexp` = `N` mostra `messaggio`; se `okexp` = `Y` trasforma `dati`
   (array o Excel base64) e prosegue nello stesso flusso di RISCEXCEL. La
   "Partita" è data da `Anno\Prefisso\No`.
-- **Aggiornamento Clienti (CLIFORUPDATE)** — tre sotto-schermate:
+- **Aggiornamento Clienti (CLIFORUPDATE)** (nel menu il bottone si chiama
+  **Aggiornamento autorizzazioni Clienti**) — tre sotto-schermate:
   elenco, maschera anagrafica, conferma.
 - **Timbrature (TIMBRATURE)** — vedi la sezione "Timbrature" più sotto.
 
