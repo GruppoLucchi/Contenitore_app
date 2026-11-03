@@ -1340,9 +1340,23 @@
   body.riscexcel-mode #s-lista .header{
     position:static;
     z-index:auto;
-    padding:22px 20px 72px;
+    padding:14px 20px 72px;
     background:var(--ink);
     gap:12px;
+  }
+  body.riscexcel-mode #s-lista .header .btn-link{
+    flex:none;
+    min-height:44px;
+    padding:0 18px;
+    display:inline-flex;
+    align-items:center;
+    border:1px solid rgba(255,255,255,.35);
+    border-radius:22px;
+    background:transparent;
+    font-size:14px;
+    font-weight:600;
+    color:#ffffff;
+    text-decoration:none;
   }
   body.riscexcel-mode #s-lista .header h1{
     font-size:22px;
@@ -2072,7 +2086,6 @@
     <div class="top-bar">
       <span class="tb-welcome" id="riscexcelWelcome"></span>
       <button type="button" class="btn-link btn-link-light" id="riscexcelBackBtn">Menu</button>
-      <button type="button" class="btn-link btn-link-light hidden" id="riscexcelFileBtn">Nuovo file</button>
       <button type="button" class="btn-link btn-link-light hidden" id="riscexcelLogoutBtn">Cambia utente</button>
     </div>
 
@@ -2118,6 +2131,7 @@
           <h1>Clienti</h1>
           <div class="header-sub" id="lista-sub"></div>
         </div>
+        <button type="button" class="btn-link btn-link-light hidden" id="riscexcelFileBtn">Nuovo file</button>
       </div>
       <div class="lista-stats">
         <div class="stat-box">
@@ -4805,8 +4819,9 @@ function mostraSchermo(id) {
   document.getElementById(id).classList.add('attivo');
   document.getElementById('riscexcelView').dataset.schermo = id; // lo stile dipende dalla schermata attiva
   window.scrollTo(0, 0);
-  // Top-bar per schermo: Menu solo su s-carica; "torna indietro" solo su s-lista;
-  // "Cambia utente" sempre nascosto (si cambia utente dal menu).
+  // Pulsanti per schermo: Menu (barra in alto) su s-carica e su s-lista; "Nuovo file" / "Clienti"
+  // solo su s-lista, nell'intestazione, subito sotto il Menu; "Cambia utente" sempre nascosto
+  // (si cambia utente dal menu).
   const bMenu = document.getElementById('riscexcelBackBtn');
   const bFile = document.getElementById('riscexcelFileBtn');
   const bLogout = document.getElementById('riscexcelLogoutBtn');
@@ -4816,7 +4831,7 @@ function mostraSchermo(id) {
       bMenu.classList.remove('hidden');
       bFile.classList.add('hidden');
     } else if (id === 's-lista'){
-      bMenu.classList.add('hidden');
+      bMenu.classList.remove('hidden');
       bFile.classList.remove('hidden');
       bFile.innerHTML = (window.__origineDati === 'tabelle') ? 'Clienti' : 'Nuovo file';
     } else {

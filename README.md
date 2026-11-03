@@ -179,9 +179,13 @@ comportamenti.
   giornalieri"; scheda bianca con il testo, **Carica file Excel** (scuro) e, se c'è
   una sessione salvata, il riquadro verde con **Riprendi sessione**, **centrato
   sulla riga** e largo quanto il testo.
-- **Elenco clienti**: fascia scura con "Benvenuto", **Nuovo file** (o **Clienti**,
-  se si arriva da RISCTABELLE) a destra e il titolo "Clienti" con il sottotitolo
-  (numero clienti e nome file); riepilogo "Incassato oggi" e "Fatture pagate" in
+- **Elenco clienti**: fascia scura con "Benvenuto" e, a destra in alto, il pulsante
+  **Menu** (riporta all'elenco delle app); **subito sotto il Menu**, allineato a
+  destra, **Nuovo file** (o **Clienti**, se si arriva da RISCTABELLE), accanto al
+  titolo "Clienti" con il sottotitolo (numero clienti e nome file). Nel codice
+  `riscexcelFileBtn` sta ora nell'intestazione dell'elenco e non più nella barra in
+  alto; `mostraSchermo` mostra il Menu sia su Carica file sia sull'elenco (nelle
+  altre schermate nessuno dei due, come prima); riepilogo "Incassato oggi" e "Fatture pagate" in
   due schede bianche che sovrappongono la fascia; schede cliente bianche,
   **verdi** se tutte le fatture sono pagate, **ambre** se solo alcune, con il
   badge "✓ n/N pagate". Il pulsante **Report →** in testata è stato tolto: resta
