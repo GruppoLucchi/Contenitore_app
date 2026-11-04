@@ -374,6 +374,27 @@ tramite `m_Instance`. Gli `url` nel `config.json` contengono solo il percorso de
 servlet: il nome del web service (o `SQLDataProviderServer/<query>`) viene
 aggiunto dall'app.
 
+### Pulsante "Menu"
+
+In tutte le schermate in cui compare, il pulsante **Menu** è **circondato** (bordo
+bianco semitrasparente, angoli molto arrotondati, altezza 44 px), come nella
+schermata Scontrini; non è più un testo sottolineato. Le schermate sono:
+
+- Scontrini
+- Riscossione con file Excel: caricamento file ed elenco clienti
+- Riscossione con estrazione dati: elenco clienti
+- **Aggiornamento Clienti**: elenco, maschera anagrafica e conferma (la barra in
+  alto è la stessa per le tre) — *ultimo cambiamento: prima era sottolineato*
+- **Timbrature**: elenco clienti e videata del cliente — *ultimo cambiamento: prima
+  era sottolineato*
+
+Dettaglio cliente e report di Riscossione con file Excel non hanno il Menu. Nelle
+tre viste già in stile G (Scontrini, Riscossione file Excel, Riscossione estrazione
+dati) il pulsante è stilato dalla loro modalità grafica; in Aggiornamento Clienti e
+Timbrature, ancora nello stile precedente, dalla regola
+`#cliforupdateView #cliforupdateBackBtn, #timbratureView #timbratureBackBtn` in fondo
+al `<style>`.
+
 ### Timbrature (TIMBRATURE)
 
 Nuova applicazione, chiamata dal bottone **Timbrature** del menu. Il bottone compare

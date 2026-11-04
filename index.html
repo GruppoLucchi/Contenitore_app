@@ -1918,6 +1918,30 @@
   #timbratureView .tim-msg-x{ flex:none; font-size:20px; line-height:1; font-weight:400; opacity:.85; }
   /* icona del bottone nel menu */
   body.menu-mode .app-ico-timbrature{ background:#0f766e; }
+
+  /* Pulsante "Menu" come nella schermata Scontrini: circondato, non più sottolineato.
+     Vale per le due viste ancora nello stile precedente: Aggiornamento Clienti e Timbrature. */
+  #cliforupdateView #cliforupdateBackBtn,
+  #timbratureView #timbratureBackBtn{
+    min-height:44px;
+    padding:0 18px;
+    display:inline-flex;
+    align-items:center;
+    border:1px solid rgba(255,255,255,.35);
+    border-radius:22px;
+    background:transparent;
+    font-size:14px;
+    font-weight:600;
+    color:#ffffff;
+    text-decoration:none;
+    cursor:pointer;
+  }
+  #cliforupdateView #cliforupdateBackBtn:hover,
+  #timbratureView #timbratureBackBtn:hover{
+    background:rgba(255,255,255,.08);
+    color:#ffffff;
+    text-decoration:none;
+  }
 </style>
 </head>
 <body class="login-mode">
