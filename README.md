@@ -181,20 +181,23 @@ comportamenti.
   giornalieri"; scheda bianca con il testo, **Carica file Excel** (scuro) e, se c'è
   una sessione salvata, il riquadro verde con **Riprendi sessione**, **centrato
   sulla riga** e largo quanto il testo.
-- **Elenco clienti**: fascia scura con "Benvenuto" e, a destra in alto, il pulsante
-  **Menu** (riporta all'elenco delle app); **subito sotto il Menu**, allineato a
-  destra, **Nuovo file** (o **Clienti**, se si arriva da RISCTABELLE), accanto al
-  titolo "Clienti" con il sottotitolo (numero clienti e nome file). Nel codice
-  `riscexcelFileBtn` sta ora nell'intestazione dell'elenco e non più nella barra in
-  alto; `mostraSchermo` mostra il Menu sia su Carica file sia sull'elenco (nelle
-  altre schermate nessuno dei due, come prima); riepilogo "Incassato oggi" e "Fatture pagate" in
+- **Elenco clienti**: fascia scura con "Benvenuto" e, in alto a destra, i pulsanti
+  **Menu** (che riporta all'elenco delle app) **a sinistra** di **Nuovo file** (o
+  **Clienti**, se si arriva da RISCTABELLE), che è il più a destra. Nella riga sotto, accanto al titolo
+  "Clienti" con il sottotitolo (numero clienti e nome file), **Invia Report**, a
+  destra e sotto Nuovo file. Un nome utente molto lungo termina con i puntini (la riga è
+  condivisa dai due pulsanti). Nel codice `riscexcelBackBtn` (Menu) precede
+  `riscexcelFileBtn` (Nuovo file) nella barra in alto; sulla schermata di
+  caricamento il Menu è l'unico pulsante e resta all'estrema destra; il pulsante `.fab` ("Invia Report") sta
+  nell'intestazione dell'elenco e non più sotto l'ultimo cliente; `mostraSchermo`
+  mostra il Menu sia su Carica file sia sull'elenco (nelle altre schermate nessuno
+  dei due, come prima); riepilogo "Incassato oggi" e "Fatture pagate" in
   due schede bianche che sovrappongono la fascia; schede cliente bianche,
   **verdi** se tutte le fatture sono pagate, **ambre** se solo alcune, con il
   badge "✓ n/N pagate". Il pulsante **Report →** in testata è stato tolto: resta
-  solo **Invia Report** (scuro), **centrato sulla riga e subito sotto l'ultimo
-  cliente**, a 16 px dalla scheda; non è più flottante, quindi la lista non lascia
-  margine in fondo. **Invia Report è attivo solo se almeno una fattura è stata
-  segnata come pagata**: altrimenti è grigio e non cliccabile (anche `vaiReport()`
+  solo **Invia Report**, nell'intestazione (bianco quando è attivo). **Invia Report
+  è attivo solo se almeno una fattura è stata segnata come pagata**: altrimenti è
+  attenuato (bianco trasparente sulla fascia scura) e non cliccabile (anche `vaiReport()`
   ignora la chiamata). Si riattiva/disattiva a ogni ritorno all'elenco, quindi anche
   dopo un "Annulla pagamento". Vale anche per Riscossione con estrazione dati, che
   usa la stessa schermata.
