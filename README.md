@@ -2,7 +2,7 @@
 
 PWA installabile e multi-cliente. Dopo il login mostra un menu con le
 applicazioni disponibili per l'utente (Scontrini, Riscossione con file Excel,
-Riscossione con estrazione dati, Aggiornamento Clienti, Timbrature). Tutte le
+Riscossione con estrazione dati, Aggiornamento Clienti, Timbrature, Piani di rientro). Tutte le
 chiamate ai dati passano dai web service Wigest su `www.lucchi.com:448`.
 
 ## File
@@ -270,6 +270,7 @@ finché non si sceglie un cliente.
   **Aggiornamento autorizzazioni Clienti**) — tre sotto-schermate:
   elenco, maschera anagrafica, conferma.
 - **Timbrature (TIMBRATURE)** — vedi la sezione "Timbrature" più sotto.
+- **Piani di rientro (PIANIRIENTRO)** — vedi la sezione "Piani di rientro" più sotto.
 
   1. *Elenco*: chiama la query `qapp_cli_ws`
      (`…/servlet/SQLDataProviderServer/qapp_cli_ws`, namespace
@@ -369,7 +370,7 @@ migliaia (`.`) e decimali (`,`), indipendentemente dal locale del dispositivo.
 
 Nota: le query (`SQLDataProviderServer/...`) portano l'istanza nel namespace e
 nel percorso; i web service (`bgla_chkpwd_ai_ws`, `bapp_cassa_ws`,
-`bapp_risc_ws`, `bapp_cli_ws`, `bapp_tim_ws`) usano il namespace generico e instradano
+`bapp_risc_ws`, `bapp_cli_ws`, `bapp_tim_ws`, `bapp_piano_ws`) usano il namespace generico e instradano
 tramite `m_Instance`. Gli `url` nel `config.json` contengono solo il percorso del
 servlet: il nome del web service (o `SQLDataProviderServer/<query>`) viene
 aggiunto dall'app.
@@ -394,6 +395,63 @@ dati) il pulsante è stilato dalla loro modalità grafica; in Aggiornamento Clie
 Timbrature, ancora nello stile precedente, dalla regola
 `#cliforupdateView #cliforupdateBackBtn, #timbratureView #timbratureBackBtn` in fondo
 al `<style>`.
+
+### Piani di rientro (PIANIRIENTRO)
+
+Bottone **Piani di rientro** nel menu (icona calendario, colore terracotta), visibile
+se la lista `listapp` dell'utente contiene **`PIANIRIENTRO`** (nome del codice scelto
+da me: va abilitato lato Wigest, come gli altri; se ne serve un altro basta cambiare
+una stringa, `apps.includes("PIANIRIENTRO")` in `showMenu`). Vista `#pianoView`,
+tre pagine; stile G come RISCTABELLE.
+
+1. **Elenco clienti — identico a RISCTABELLE.** Stessa grafica (le regole della
+   modalità `risctabelle-mode` sono estese a `#pianoView` con `:is()`; l'elenco è
+   identico pixel per pixel), stesso Menu in alto, stessa ricerca (anche a voce),
+   stesso elenco Conto / Cliente / Ragione sociale e stesso bottone **Estrai partite
+   aperte**. La query è **la stessa funzione di RISCTABELLE**: `buildRiscQueryEnvelope`
+   verso `WS_RISC_QUERY_URL` = `…/servlet/SQLDataProviderServer/qapp_risc_ws`, letta
+   con `parseRiscTabelle` (verificato: stesso indirizzo e stesso corpo).
+2. **Partite aperte.** *Estrai partite aperte* chiama **`bapp_piano_ws`** (vedi sotto)
+   e apre la pagina: in alto la freccia ‹, il **codice** cliente e, a destra, il
+   bottone **PIANO DI RIENTRO**; sotto la **ragione sociale** e "Città (Prov) · N
+   fatture" (come il dettaglio cliente di Riscossione); poi l'elenco delle partite
+   con le **stesse informazioni** di Riscossione (Partita `Anno\Prefisso\No`, Data
+   Doc, Scadenza, importo) **senza "Segna come pagata"** e con un **check a sinistra**
+   di ogni partita (tutta la scheda è cliccabile; la scheda spuntata diventa azzurra).
+   Ogni partita sta su **due righe**: nella prima la **partita** (a sinistra) e
+   l'**importo** (a destra), nella seconda **Data Doc** e **Scadenza**. Fino a 380 px di
+   larghezza i margini si stringono un po' (`@media (max-width:380px)`) perché le due
+   date restino su una riga; sotto i 340 px circa vanno a capo.
+   **PIANO DI RIENTRO è attivo solo se è spuntata almeno una partita** (scelta mia: la
+   specifica non lo diceva). Il Menu in alto non c'è in questa pagina né nella
+   successiva, come nelle schermate successive di Riscossione; ‹ torna indietro.
+3. **Piano di rientro.** In alto ‹, codice, ragione sociale e il bottone **CONFERMA**,
+   **attivo solo quando c'è la firma** (almeno un tratto nel riquadro; si disattiva
+   di nuovo con "Cancella firma"). Sotto i dati dell'incaricato, nell'ordine:
+   **Numero scadenze**, **Data prima scadenza**, **Nr giorni tra le scadenze**,
+   **Tasso di interesse**, **Data di decorrenza del Tasso di interesse** (numeri e
+   date con la tastiera/selettore adatti; nessun controllo di obbligatorietà, perché
+   la specifica non lo chiedeva). Sotto, **Firma del cliente** (stesso riquadro
+   di CLIFORUPDATE: disegno con dito o penna, PNG in base64, "Cancella firma"). I campi
+   e la firma si azzerano a ogni apertura della pagina; le spunte delle partite si
+   conservano tornando indietro con ‹.
+
+**Cosa è ancora PROVVISORIO** (in attesa delle specifiche):
+- `bapp_piano_ws` (partite aperte): `buildPianoWsEnvelope` **ricalca `bapp_risc_ws`**
+  (namespace `http://bapp_piano_ws.ws.localhost/`, operazione `bapp_piano_ws_Run`,
+  stessi parametri, `p_conto` e `p_cliente`) e la risposta è letta come quella di
+  RISCTABELLE (JSON con `okexp`/`messaggio`/`dati`, righe nel tracciato Cli-For,
+  Ragione Sociale, Città, Provincia, Anno, Prefisso, No, Data_Doc, Scadenza, Saldo).
+  Quando arrivano le specifiche vanno aggiornate `buildPianoWsEnvelope` e, se cambia,
+  la lettura in `piEstraiPartite`.
+- **CONFERMA** non chiama ancora nessun web service: mostra "Web service di conferma
+  non ancora configurato: nessun dato inviato". I dati sono già pronti in
+  `piDatiConferma()` (cliente, conto, partite spuntate, i cinque dati del piano e la
+  firma PNG in base64), così basterà costruire la chiamata.
+
+Lato Wigest/Tomcat: pubblicare `bapp_piano_ws` (e il web service di conferma) su ogni
+istanza interessata, con CORS su `/servlet/*`; la query `qapp_risc_ws` è la stessa
+già usata da RISCTABELLE.
 
 ### Timbrature (TIMBRATURE)
 

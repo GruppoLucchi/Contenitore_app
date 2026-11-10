@@ -671,7 +671,7 @@
   #riscexcelView .empty-state svg { margin-bottom: 16px; opacity: 0.4; }
   #riscexcelView .empty-state p { font-size: 15px; }
   /* ===== RISCTABELLE (stessa grafica di riscexcel) ===== */
-  :is(#risctabelleView,#cliforupdateView,#timbratureView){
+  :is(#risctabelleView,#cliforupdateView,#timbratureView,#pianoView){
     --blu:#1A3A5C; --blu-chiaro:#2C5F8A; --accento:#E8A020; --accento-chiaro:#FFF3DC;
     --verde:#1E7A4A; --grigio-bg:#F2F4F7; --grigio-bordo:#D8DCE4;
     --testo:#1C2B3A; --testo-secondario:#5A6A7A; --bianco:#FFFFFF;
@@ -679,33 +679,33 @@
     font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
     background:var(--grigio-bg); color:var(--testo); min-height:100vh;
   }
-  :is(#risctabelleView,#cliforupdateView,#timbratureView) *{ box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
-  :is(#risctabelleView,#cliforupdateView,#timbratureView) .top-bar{ display:flex; align-items:center; justify-content:flex-start; gap:14px; padding:12px 16px; background:var(--ink); }
-  :is(#risctabelleView,#cliforupdateView,#timbratureView) .header{ background:var(--blu); color:#fff; padding:16px 20px; position:sticky; top:0; z-index:10; }
-  :is(#risctabelleView,#cliforupdateView,#timbratureView) .header h1{ font-size:18px; font-weight:600; }
-  :is(#risctabelleView,#cliforupdateView,#timbratureView) .header-sub{ font-size:12px; color:rgba(255,255,255,0.7); margin-top:2px; font-weight:400; }
-  :is(#risctabelleView,#cliforupdateView,#timbratureView) .rt-toolbar{ padding:12px 16px; background:var(--bianco); border-bottom:1px solid var(--grigio-bordo); display:flex; gap:8px; align-items:center; }
-  :is(#risctabelleView,#cliforupdateView,#timbratureView) .rt-search{ flex:1; min-width:0; padding:12px 14px; border:1px solid var(--grigio-bordo); border-radius:var(--raggio-sm); font-size:15px; color:var(--testo); background:var(--bianco); font-family:inherit; }
-  :is(#risctabelleView,#cliforupdateView,#timbratureView) .rt-search:focus{ outline:none; border-color:var(--blu-chiaro); }
-  :is(#risctabelleView,#cliforupdateView,#timbratureView) .rt-mic{ flex:0 0 auto; width:44px; height:44px; border:1px solid var(--grigio-bordo); border-radius:var(--raggio-sm); background:var(--bianco); color:var(--blu); cursor:pointer; display:flex; align-items:center; justify-content:center; }
-  :is(#risctabelleView,#cliforupdateView,#timbratureView) .rt-mic svg{ width:20px; height:20px; }
-  :is(#risctabelleView,#cliforupdateView,#timbratureView) .rt-mic.rec{ background:var(--accento); color:#fff; border-color:var(--accento); animation:rt-pulse 1s infinite; }
-  :is(#risctabelleView,#cliforupdateView,#timbratureView) .rt-mic[hidden]{ display:none; }
+  :is(#risctabelleView,#cliforupdateView,#timbratureView,#pianoView) *{ box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+  :is(#risctabelleView,#cliforupdateView,#timbratureView,#pianoView) .top-bar{ display:flex; align-items:center; justify-content:flex-start; gap:14px; padding:12px 16px; background:var(--ink); }
+  :is(#risctabelleView,#cliforupdateView,#timbratureView,#pianoView) .header{ background:var(--blu); color:#fff; padding:16px 20px; position:sticky; top:0; z-index:10; }
+  :is(#risctabelleView,#cliforupdateView,#timbratureView,#pianoView) .header h1{ font-size:18px; font-weight:600; }
+  :is(#risctabelleView,#cliforupdateView,#timbratureView,#pianoView) .header-sub{ font-size:12px; color:rgba(255,255,255,0.7); margin-top:2px; font-weight:400; }
+  :is(#risctabelleView,#cliforupdateView,#timbratureView,#pianoView) .rt-toolbar{ padding:12px 16px; background:var(--bianco); border-bottom:1px solid var(--grigio-bordo); display:flex; gap:8px; align-items:center; }
+  :is(#risctabelleView,#cliforupdateView,#timbratureView,#pianoView) .rt-search{ flex:1; min-width:0; padding:12px 14px; border:1px solid var(--grigio-bordo); border-radius:var(--raggio-sm); font-size:15px; color:var(--testo); background:var(--bianco); font-family:inherit; }
+  :is(#risctabelleView,#cliforupdateView,#timbratureView,#pianoView) .rt-search:focus{ outline:none; border-color:var(--blu-chiaro); }
+  :is(#risctabelleView,#cliforupdateView,#timbratureView,#pianoView) .rt-mic{ flex:0 0 auto; width:44px; height:44px; border:1px solid var(--grigio-bordo); border-radius:var(--raggio-sm); background:var(--bianco); color:var(--blu); cursor:pointer; display:flex; align-items:center; justify-content:center; }
+  :is(#risctabelleView,#cliforupdateView,#timbratureView,#pianoView) .rt-mic svg{ width:20px; height:20px; }
+  :is(#risctabelleView,#cliforupdateView,#timbratureView,#pianoView) .rt-mic.rec{ background:var(--accento); color:#fff; border-color:var(--accento); animation:rt-pulse 1s infinite; }
+  :is(#risctabelleView,#cliforupdateView,#timbratureView,#pianoView) .rt-mic[hidden]{ display:none; }
   @keyframes rt-pulse{ 0%,100%{opacity:1} 50%{opacity:.5} }
-  :is(#risctabelleView,#cliforupdateView,#timbratureView) .rt-head{ display:grid; grid-template-columns:1fr 1fr 1.6fr; gap:10px; padding:10px 16px; font-size:11px; font-weight:700; color:var(--testo-secondario); text-transform:uppercase; letter-spacing:.03em; background:var(--grigio-bg); border-bottom:1px solid var(--grigio-bordo); }
-  :is(#risctabelleView,#cliforupdateView,#timbratureView) .rt-scroll{ max-height:min(300px,55vh); overflow-y:auto; }
+  :is(#risctabelleView,#cliforupdateView,#timbratureView,#pianoView) .rt-head{ display:grid; grid-template-columns:1fr 1fr 1.6fr; gap:10px; padding:10px 16px; font-size:11px; font-weight:700; color:var(--testo-secondario); text-transform:uppercase; letter-spacing:.03em; background:var(--grigio-bg); border-bottom:1px solid var(--grigio-bordo); }
+  :is(#risctabelleView,#cliforupdateView,#timbratureView,#pianoView) .rt-scroll{ max-height:min(300px,55vh); overflow-y:auto; }
   .tb-welcome{ flex:1 1 auto; min-width:0; text-align:left; font-size:13px; font-weight:600; color:rgba(255,255,255,0.92); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  :is(#risctabelleView,#cliforupdateView,#timbratureView) .rt-row{ display:grid; grid-template-columns:1fr 1fr 1.6fr; gap:10px; padding:14px 16px; border-bottom:1px solid var(--grigio-bordo); cursor:pointer; background:var(--bianco); font-size:13px; align-items:center; }
-  :is(#risctabelleView,#cliforupdateView,#timbratureView) .rt-row span{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; min-width:0; }
-  :is(#risctabelleView,#cliforupdateView,#timbratureView) .rt-row:active{ background:var(--grigio-bg); }
-  :is(#risctabelleView,#cliforupdateView,#timbratureView) .rt-row.sel{ background:var(--accento-chiaro); border-left:4px solid var(--accento); padding-left:12px; }
-  :is(#risctabelleView,#cliforupdateView,#timbratureView) .rt-row .conto{ font-weight:700; color:var(--blu); }
-  :is(#risctabelleView,#cliforupdateView,#timbratureView) .rt-row .rag{ color:var(--testo); }
-  :is(#risctabelleView,#cliforupdateView,#timbratureView) .rt-vuoto{ padding:30px 16px; text-align:center; color:var(--testo-secondario); font-size:14px; }
-  :is(#risctabelleView,#cliforupdateView,#timbratureView) .rt-fault{ margin-top:12px; text-align:left; white-space:pre-wrap; word-break:break-word; font-size:11px; font-family:ui-monospace,Menlo,Consolas,monospace; line-height:1.4; background:#0f1b26; color:#d7e2ec; padding:10px 12px; border-radius:var(--raggio-sm); max-height:40vh; overflow:auto; }
-  :is(#risctabelleView,#cliforupdateView,#timbratureView) .rt-footer{ background:var(--bianco); border-top:1px solid var(--grigio-bordo); padding:14px 16px calc(14px + env(safe-area-inset-bottom)); }
-  :is(#risctabelleView,#cliforupdateView,#timbratureView) .btn-primario{ background:var(--blu); color:#fff; border:none; border-radius:var(--raggio-sm); padding:15px; font-size:16px; font-weight:600; width:100%; cursor:pointer; font-family:inherit; }
-  :is(#risctabelleView,#cliforupdateView,#timbratureView) .btn-primario:disabled{ opacity:.5; cursor:default; }
+  :is(#risctabelleView,#cliforupdateView,#timbratureView,#pianoView) .rt-row{ display:grid; grid-template-columns:1fr 1fr 1.6fr; gap:10px; padding:14px 16px; border-bottom:1px solid var(--grigio-bordo); cursor:pointer; background:var(--bianco); font-size:13px; align-items:center; }
+  :is(#risctabelleView,#cliforupdateView,#timbratureView,#pianoView) .rt-row span{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; min-width:0; }
+  :is(#risctabelleView,#cliforupdateView,#timbratureView,#pianoView) .rt-row:active{ background:var(--grigio-bg); }
+  :is(#risctabelleView,#cliforupdateView,#timbratureView,#pianoView) .rt-row.sel{ background:var(--accento-chiaro); border-left:4px solid var(--accento); padding-left:12px; }
+  :is(#risctabelleView,#cliforupdateView,#timbratureView,#pianoView) .rt-row .conto{ font-weight:700; color:var(--blu); }
+  :is(#risctabelleView,#cliforupdateView,#timbratureView,#pianoView) .rt-row .rag{ color:var(--testo); }
+  :is(#risctabelleView,#cliforupdateView,#timbratureView,#pianoView) .rt-vuoto{ padding:30px 16px; text-align:center; color:var(--testo-secondario); font-size:14px; }
+  :is(#risctabelleView,#cliforupdateView,#timbratureView,#pianoView) .rt-fault{ margin-top:12px; text-align:left; white-space:pre-wrap; word-break:break-word; font-size:11px; font-family:ui-monospace,Menlo,Consolas,monospace; line-height:1.4; background:#0f1b26; color:#d7e2ec; padding:10px 12px; border-radius:var(--raggio-sm); max-height:40vh; overflow:auto; }
+  :is(#risctabelleView,#cliforupdateView,#timbratureView,#pianoView) .rt-footer{ background:var(--bianco); border-top:1px solid var(--grigio-bordo); padding:14px 16px calc(14px + env(safe-area-inset-bottom)); }
+  :is(#risctabelleView,#cliforupdateView,#timbratureView,#pianoView) .btn-primario{ background:var(--blu); color:#fff; border:none; border-radius:var(--raggio-sm); padding:15px; font-size:16px; font-weight:600; width:100%; cursor:pointer; font-family:inherit; }
+  :is(#risctabelleView,#cliforupdateView,#timbratureView,#pianoView) .btn-primario:disabled{ opacity:.5; cursor:default; }
   /* Debug box (chiamata/risposta query e WS) dentro la vista RiscEXCEL */
   .rt-debug-box{ padding:12px 16px; background:var(--bianco); border-bottom:1px solid var(--grigio-bordo); }
   .rt-debug-row{ display:flex; gap:8px; margin-top:8px; }
@@ -714,8 +714,8 @@
   .rt-dbg:active{ background:var(--grigio-bordo); }
   .rt-panel{ display:none; margin-top:8px; background:#0f1b26; color:#d7e2ec; border-radius:var(--raggio-sm); padding:10px 12px; font-size:11px; white-space:pre-wrap; word-break:break-word; max-height:40vh; overflow:auto; font-family:ui-monospace,Menlo,Consolas,monospace; line-height:1.4; }
   .rt-panel.show{ display:block; }
-  :is(#risctabelleView,#cliforupdateView,#timbratureView) .rt-toast{ position:fixed; left:50%; bottom:84px; transform:translateX(-50%) translateY(10px); background:var(--testo); color:#fff; padding:11px 18px; border-radius:20px; font-size:13px; opacity:0; pointer-events:none; transition:opacity .2s, transform .2s; z-index:30; max-width:90%; text-align:center; }
-  :is(#risctabelleView,#cliforupdateView,#timbratureView) .rt-toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+  :is(#risctabelleView,#cliforupdateView,#timbratureView,#pianoView) .rt-toast{ position:fixed; left:50%; bottom:84px; transform:translateX(-50%) translateY(10px); background:var(--testo); color:#fff; padding:11px 18px; border-radius:20px; font-size:13px; opacity:0; pointer-events:none; transition:opacity .2s, transform .2s; z-index:30; max-width:90%; text-align:center; }
+  :is(#risctabelleView,#cliforupdateView,#timbratureView,#pianoView) .rt-toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
   #cliforupdateView .rt-head{ grid-template-columns:1fr 1.8fr; }
   #cliforupdateView .rt-row{ grid-template-columns:1fr 1.8fr; }
   #cliforupdateView .cu-form{ padding:14px 16px; display:flex; flex-direction:column; max-height:min(58vh,520px); overflow-y:auto; }
@@ -1752,31 +1752,31 @@
     padding:0;
   }
   body.risctabelle-mode .brand{ display:none; }
-  body.risctabelle-mode #risctabelleView{ background:#f3f6fa; padding-bottom:24px; }
+  body.risctabelle-mode :is(#risctabelleView,#pianoView){ background:#f3f6fa; padding-bottom:24px; }
 
   /* barra in alto = riga superiore della fascia scura */
-  body.risctabelle-mode #risctabelleView .top-bar{
+  body.risctabelle-mode :is(#risctabelleView,#pianoView) .top-bar{
     padding:calc(32px + env(safe-area-inset-top, 0px)) 20px 0;
     gap:12px;
   }
-  body.risctabelle-mode #risctabelleView .tb-welcome{
+  body.risctabelle-mode :is(#risctabelleView,#pianoView) .tb-welcome{
     white-space:normal;
     font-size:16px;
     font-weight:600;
     color:#ffffff;
   }
-  body.risctabelle-mode #risctabelleView .tb-welcome .mh-label{
+  body.risctabelle-mode :is(#risctabelleView,#pianoView) .tb-welcome .mh-label{
     display:block;
     font-size:13px;
     font-weight:400;
     line-height:1.4;
     color:#c3cfda;
   }
-  body.risctabelle-mode #risctabelleView .tb-welcome .mh-name{
+  body.risctabelle-mode :is(#risctabelleView,#pianoView) .tb-welcome .mh-name{
     display:block;
     line-height:1.3;
   }
-  body.risctabelle-mode #risctabelleView .top-bar .btn-link{
+  body.risctabelle-mode :is(#risctabelleView,#pianoView) .top-bar .btn-link{
     flex:none;
     min-height:44px;
     padding:0 18px;
@@ -1790,13 +1790,13 @@
     color:#ffffff;
     text-decoration:none;
   }
-  body.risctabelle-mode #risctabelleView .header{
+  body.risctabelle-mode :is(#risctabelleView,#pianoView) .header{
     position:static;
     z-index:auto;
     padding:18px 20px 72px;
     background:var(--ink);
   }
-  body.risctabelle-mode #risctabelleView .header-sub{
+  body.risctabelle-mode :is(#risctabelleView,#pianoView) .header-sub{
     margin-top:0;
     font-size:15px;
     line-height:1.45;
@@ -1804,7 +1804,7 @@
   }
 
   /* scheda bianca con ricerca, elenco e pulsante */
-  body.risctabelle-mode #risctabelleView .rt-card{
+  body.risctabelle-mode :is(#risctabelleView,#pianoView) .rt-card{
     margin:-44px 20px 0;
     background:#ffffff;
     border:1px solid #e1e6ec;
@@ -1812,24 +1812,24 @@
     box-shadow:0 4px 14px rgba(28,43,57,.12);
     overflow:hidden;
   }
-  body.risctabelle-mode #risctabelleView .rt-toolbar{
+  body.risctabelle-mode :is(#risctabelleView,#pianoView) .rt-toolbar{
     padding:14px;
     background:#ffffff;
     border-bottom:0;
     gap:8px;
   }
-  body.risctabelle-mode #risctabelleView .rt-search{
+  body.risctabelle-mode :is(#risctabelleView,#pianoView) .rt-search{
     height:46px;
     padding:0 14px;
     border:1px solid #cdd5de;
     border-radius:12px;
     font-size:14px;
   }
-  body.risctabelle-mode #risctabelleView .rt-search:focus{
+  body.risctabelle-mode :is(#risctabelleView,#pianoView) .rt-search:focus{
     border-color:#1f4e79;
     box-shadow:0 0 0 3px rgba(31,78,121,.15);
   }
-  body.risctabelle-mode #risctabelleView .rt-mic{
+  body.risctabelle-mode :is(#risctabelleView,#pianoView) .rt-mic{
     width:46px;
     height:46px;
     border:0;
@@ -1837,8 +1837,8 @@
     background:#2a6aa3;
     color:#ffffff;
   }
-  body.risctabelle-mode #risctabelleView .rt-mic.rec{ background:#d9663f; }
-  body.risctabelle-mode #risctabelleView .rt-head{
+  body.risctabelle-mode :is(#risctabelleView,#pianoView) .rt-mic.rec{ background:#d9663f; }
+  body.risctabelle-mode :is(#risctabelleView,#pianoView) .rt-head{
     padding:10px 16px;
     background:#eef2f6;
     border-top:1px solid #e1e6ec;
@@ -1849,26 +1849,26 @@
     text-transform:uppercase;
     color:#4a5a69;
   }
-  body.risctabelle-mode #risctabelleView .rt-row{
+  body.risctabelle-mode :is(#risctabelleView,#pianoView) .rt-row{
     padding:14px 16px;
     border-bottom:1px solid #eef1f5;
     font-size:13px;
   }
-  body.risctabelle-mode #risctabelleView .rt-row .conto{ color:#2a6aa3; }
-  body.risctabelle-mode #risctabelleView .rt-row.sel{
+  body.risctabelle-mode :is(#risctabelleView,#pianoView) .rt-row .conto{ color:#2a6aa3; }
+  body.risctabelle-mode :is(#risctabelleView,#pianoView) .rt-row.sel{
     background:#dcebf8;
     border-left:0;
     padding-left:16px;
     border-bottom-color:#bcd7ee;
   }
-  body.risctabelle-mode #risctabelleView .rt-row.sel span{ font-weight:600; }
-  body.risctabelle-mode #risctabelleView .rt-row.sel .conto{ color:#1f4f7d; }
-  body.risctabelle-mode #risctabelleView .rt-footer{
+  body.risctabelle-mode :is(#risctabelleView,#pianoView) .rt-row.sel span{ font-weight:600; }
+  body.risctabelle-mode :is(#risctabelleView,#pianoView) .rt-row.sel .conto{ color:#1f4f7d; }
+  body.risctabelle-mode :is(#risctabelleView,#pianoView) .rt-footer{
     padding:16px 20px 20px;
     background:#ffffff;
     border-top:1px solid #eef1f5;
   }
-  body.risctabelle-mode #risctabelleView .rt-footer .btn-primario{
+  body.risctabelle-mode :is(#risctabelleView,#pianoView) .rt-footer .btn-primario{
     height:52px;
     padding:0 16px;
     border-radius:14px;
@@ -1876,7 +1876,7 @@
     font-size:16px;
     font-weight:600;
   }
-  body.risctabelle-mode #risctabelleView .rt-footer .btn-primario:disabled{
+  body.risctabelle-mode :is(#risctabelleView,#pianoView) .rt-footer .btn-primario:disabled{
     opacity:1;
     background:#d5dbe3;
     color:#5b6877;
@@ -1942,6 +1942,215 @@
     color:#ffffff;
     text-decoration:none;
   }
+
+  /* ===== PIANI DI RIENTRO =====
+     Pagina 1 (elenco clienti): identica a RISCTABELLE, con le stesse regole (estese a #pianoView).
+     Pagine 2 e 3: stile G come il dettaglio cliente di Riscossione con file Excel. */
+  body.risctabelle-mode #pianoView .pi-header{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:18px 20px 0;
+  }
+  body.risctabelle-mode #pianoView .pi-back{
+    flex:none;
+    width:44px;
+    height:44px;
+    padding:0 0 3px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border:1px solid rgba(255,255,255,.35);
+    border-radius:50%;
+    background:transparent;
+    color:#ffffff;
+    font-family:inherit;
+    font-size:28px;
+    line-height:1;
+    cursor:pointer;
+  }
+  body.risctabelle-mode #pianoView .pi-header h1{
+    flex:1;
+    min-width:0;
+    font-size:22px;
+    font-weight:600;
+    line-height:1.25;
+    color:#ffffff;
+  }
+  body.risctabelle-mode #pianoView .pi-azione{
+    flex:none;
+    min-height:44px;
+    padding:0 16px;
+    border:0;
+    border-radius:22px;
+    background:#ffffff;
+    color:var(--ink);
+    font-family:inherit;
+    font-size:13px;
+    font-weight:700;
+    letter-spacing:.2px;
+    cursor:pointer;
+  }
+  body.risctabelle-mode #pianoView .pi-azione:not(:disabled):active{ background:#e5ecf2; }
+  body.risctabelle-mode #pianoView .pi-azione:disabled{
+    background:rgba(255,255,255,.16);
+    color:rgba(255,255,255,.55);
+    cursor:not-allowed;
+  }
+  body.risctabelle-mode #pianoView .pi-info{
+    padding:12px 20px 72px;
+    background:var(--ink);
+  }
+  body.risctabelle-mode #pianoView .pi-ragione{
+    font-size:15px;
+    font-weight:600;
+    line-height:1.3;
+    color:#ffffff;
+  }
+  body.risctabelle-mode #pianoView .pi-dettagli{
+    margin-top:2px;
+    font-size:12.5px;
+    line-height:1.4;
+    color:#c3cfda;
+  }
+  /* partite con check a sinistra */
+  body.risctabelle-mode #pianoView .pi-partite{
+    margin-top:-44px;
+    padding:0 20px 28px;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+  body.risctabelle-mode #pianoView .pi-partita{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:14px;
+    background:#ffffff;
+    border:1px solid #e1e6ec;
+    border-radius:18px;
+    box-shadow:0 4px 14px rgba(28,43,57,.10);
+    cursor:pointer;
+  }
+  body.risctabelle-mode #pianoView .pi-partita.sel{
+    background:#dcebf8;
+    border-color:#bcd7ee;
+  }
+  body.risctabelle-mode #pianoView .pi-partita input[type=checkbox]{
+    flex:none;
+    width:24px;
+    height:24px;
+    accent-color:#2a6aa3;
+    cursor:pointer;
+  }
+  body.risctabelle-mode #pianoView .pi-corpo{ flex:1; min-width:0; display:block; }
+  /* riga 1: partita a sinistra e importo a destra; riga 2: data doc e scadenza */
+  body.risctabelle-mode #pianoView .pi-riga1{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:12px;
+  }
+  body.risctabelle-mode #pianoView .pi-doc{
+    min-width:0;
+    font-size:15px;
+    font-weight:600;
+    line-height:1.3;
+    color:var(--ink);
+  }
+  body.risctabelle-mode #pianoView .pi-importo{
+    flex:none;
+    font-size:17px;
+    font-weight:700;
+    line-height:1.3;
+    color:var(--ink);
+  }
+  body.risctabelle-mode #pianoView .pi-meta{
+    display:flex;
+    flex-wrap:wrap;
+    gap:2px 10px;
+    margin-top:4px;
+    font-size:12px;
+    line-height:1.5;
+    color:#5b6877;
+  }
+  /* schermi stretti (fino a 380 px): margini un po' più piccoli, così data doc e scadenza restano su una riga */
+  @media (max-width:380px){
+    body.risctabelle-mode #pianoView .pi-partite{ padding:0 16px 28px; }
+    body.risctabelle-mode #pianoView .pi-partita{ gap:10px; padding:14px 12px; }
+    body.risctabelle-mode #pianoView .pi-partita input[type=checkbox]{ width:22px; height:22px; }
+    body.risctabelle-mode #pianoView .pi-meta{ font-size:11.5px; gap:2px 8px; }
+  }
+  /* dati del piano */
+  body.risctabelle-mode #pianoView .pi-form{
+    margin:-44px 20px 0;
+    padding:20px;
+    background:#ffffff;
+    border:1px solid #e1e6ec;
+    border-radius:22px;
+    box-shadow:0 4px 14px rgba(28,43,57,.12);
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+  }
+  body.risctabelle-mode #pianoView .pi-campo{ display:flex; flex-direction:column; gap:6px; }
+  body.risctabelle-mode #pianoView .pi-campo label{
+    font-size:12.5px;
+    font-weight:600;
+    color:#3c4c5c;
+  }
+  body.risctabelle-mode #pianoView .pi-campo input{
+    width:100%;
+    height:48px;
+    padding:0 14px;
+    border:1px solid #cdd5de;
+    border-radius:12px;
+    background:#ffffff;
+    font-family:inherit;
+    font-size:15px;
+    color:var(--ink);
+  }
+  body.risctabelle-mode #pianoView .pi-campo input:focus{
+    outline:none;
+    border-color:#1f4e79;
+    box-shadow:0 0 0 3px rgba(31,78,121,.15);
+  }
+  /* firma del cliente */
+  body.risctabelle-mode #pianoView .pi-firma{
+    margin:12px 20px 28px;
+    padding:16px 20px 8px;
+    background:#ffffff;
+    border:1px solid #e1e6ec;
+    border-radius:22px;
+    box-shadow:0 4px 14px rgba(28,43,57,.10);
+  }
+  body.risctabelle-mode #pianoView .pi-firma-label{
+    margin-bottom:8px;
+    font-size:12.5px;
+    font-weight:600;
+    color:#3c4c5c;
+  }
+  body.risctabelle-mode #pianoView #pi-firma-canvas{
+    display:block;
+    width:100%;
+    height:160px;
+    border:1.5px dashed #9bb3c9;
+    border-radius:14px;
+    background:#ffffff;
+    touch-action:none;
+  }
+  body.risctabelle-mode #pianoView .pi-firma .btn-link{
+    min-height:44px;
+    display:inline-flex;
+    align-items:center;
+    color:var(--ink);
+    font-size:13px;
+    font-weight:600;
+    text-decoration:underline;
+    text-underline-offset:3px;
+  }
+  /* il Menu come pulsante circondato (lo stile G di RISCTABELLE lo copre già); icona nel menu */
+  body.menu-mode .app-ico-piani{ background:#b4532a; }
 </style>
 </head>
 <body class="login-mode">
@@ -2048,6 +2257,11 @@
         <span class="app-ico app-ico-timbrature" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
         <span class="app-card-title">Timbrature</span>
         <span class="app-card-desc">Timbrature di ingresso e uscita presso i clienti.</span>
+      </button>
+      <button type="button" class="app-card hidden" id="btnPiano">
+        <span class="app-ico app-ico-piani" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18"/><path d="M8 3v4"/><path d="M16 3v4"/></svg></span>
+        <span class="app-card-title">Piani di rientro</span>
+        <span class="app-card-desc">Piani di rientro delle partite aperte dei clienti.</span>
       </button>
     </div>
     <div id="menuEmpty" class="login-error hidden">Nessuna applicazione disponibile per questo utente.</div>
@@ -2441,6 +2655,95 @@
     </div>
   </div>
 
+  <!-- PIANI DI RIENTRO VIEW (elenco clienti come RISCTABELLE, partite aperte, piano con firma) -->
+  <div id="pianoView" class="hidden">
+    <div class="top-bar">
+      <span class="tb-welcome" id="pianoWelcome"></span>
+      <button type="button" class="btn-link btn-link-light" id="pianoBackBtn">Menu</button>
+      <button type="button" class="btn-link btn-link-light hidden" id="pianoLogoutBtn">Cambia utente</button>
+    </div>
+
+    <!-- 1) elenco clienti: identico a RISCTABELLE -->
+    <div id="pi-schermo-lista">
+    <div class="header">
+      <div class="header-sub">Seleziona un cliente per estrarre le partite aperte</div>
+    </div>
+    <div class="rt-card">
+    <div class="rt-toolbar">
+      <input type="text" id="pi-cerca" class="rt-search" placeholder="Cerca per cliente o ragione sociale&hellip;" autocomplete="off">
+      <button type="button" class="rt-mic" id="pi-mic" title="Cerca a voce" aria-label="Cerca a voce">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"></rect><path d="M5 10a7 7 0 0 0 14 0"></path><path d="M12 17v4"></path><path d="M8 21h8"></path></svg>
+      </button>
+    </div>
+    <div class="rt-head">
+      <span>Conto</span>
+      <span>Cliente</span>
+      <span>Ragione sociale</span>
+    </div>
+    <div class="rt-scroll" id="pi-lista">
+      <div class="rt-vuoto">Caricamento&hellip;</div>
+    </div>
+    <div class="rt-footer">
+      <button type="button" class="btn-primario" id="pi-estrai" disabled>Estrai partite aperte</button>
+    </div>
+    </div>
+    </div><!-- /pi-schermo-lista -->
+
+    <!-- 2) partite aperte del cliente, con check di selezione -->
+    <div id="pi-schermo-partite" class="hidden">
+      <div class="header pi-header">
+        <button type="button" class="pi-back" id="pi-back-partite" aria-label="Indietro">&lsaquo;</button>
+        <h1 id="pi-codice"></h1>
+        <button type="button" class="pi-azione" id="pi-piano-btn" disabled>PIANO DI RIENTRO</button>
+      </div>
+      <div class="pi-info">
+        <div class="pi-ragione" id="pi-ragione"></div>
+        <div class="pi-dettagli" id="pi-dettagli"></div>
+      </div>
+      <div class="pi-partite" id="pi-partite"></div>
+    </div>
+
+    <!-- 3) piano di rientro: dati dell'incaricato e firma del cliente -->
+    <div id="pi-schermo-piano" class="hidden">
+      <div class="header pi-header">
+        <button type="button" class="pi-back" id="pi-back-piano" aria-label="Indietro">&lsaquo;</button>
+        <h1 id="pi-codice-piano"></h1>
+        <button type="button" class="pi-azione" id="pi-conferma" disabled>CONFERMA</button>
+      </div>
+      <div class="pi-info">
+        <div class="pi-ragione" id="pi-ragione-piano"></div>
+        <div class="pi-dettagli" id="pi-dettagli-piano"></div>
+      </div>
+      <div class="pi-form">
+        <div class="pi-campo">
+          <label for="pi-n-scadenze">Numero scadenze</label>
+          <input type="number" id="pi-n-scadenze" inputmode="numeric" min="1" step="1">
+        </div>
+        <div class="pi-campo">
+          <label for="pi-data-prima">Data prima scadenza</label>
+          <input type="date" id="pi-data-prima">
+        </div>
+        <div class="pi-campo">
+          <label for="pi-giorni">Nr giorni tra le scadenze</label>
+          <input type="number" id="pi-giorni" inputmode="numeric" min="0" step="1">
+        </div>
+        <div class="pi-campo">
+          <label for="pi-tasso">Tasso di interesse</label>
+          <input type="number" id="pi-tasso" inputmode="decimal" min="0" step="any">
+        </div>
+        <div class="pi-campo">
+          <label for="pi-data-tasso">Data di decorrenza del Tasso di interesse</label>
+          <input type="date" id="pi-data-tasso">
+        </div>
+      </div>
+      <div class="pi-firma">
+        <div class="pi-firma-label">Firma del cliente</div>
+        <canvas id="pi-firma-canvas"></canvas>
+        <button type="button" class="btn-link" id="pi-firma-clear">Cancella firma</button>
+      </div>
+    </div>
+  </div>
+
   <details class="install-card">
     <summary>Istruzioni per l'installazione <span class="chev">&#9656;</span></summary>
     <div class="install-body">
@@ -2488,6 +2791,9 @@
   let WS_CLI_URL = "https://www.lucchi.com:448/wigest617/servlet/bapp_cli_ws";
   // Web service TIMBRATURE (bapp_tim_ws): come bapp_cli_ws (senza SQLDataProviderServer)
   let WS_TIM_URL = "https://www.lucchi.com:448/wigest617/servlet/bapp_tim_ws";
+  // Web service PIANI DI RIENTRO (bapp_piano_ws): elenco delle partite aperte. SPECIFICHE IN ARRIVO:
+  // per ora la chiamata (buildPianoWsEnvelope) ricalca quella di bapp_risc_ws.
+  let WS_PIANO_URL = "https://www.lucchi.com:448/wigest617/servlet/bapp_piano_ws";
   // Parametro di bapp_cli_ws che contiene la firma: PNG in base64, senza prefisso data:.
   // È presente in ogni chiamata (come gli altri parametri): vuoto in estrazione (E)
   // e in aggiornamento senza firma, valorizzato in aggiornamento (U) con firma.
@@ -2526,6 +2832,7 @@
     WS_CLI_QUERY_URL = base + WS_CLI_QUERY_NAME;
     WS_CLI_URL = base + "bapp_cli_ws";
     WS_TIM_URL = base + "bapp_tim_ws";
+    WS_PIANO_URL = base + "bapp_piano_ws";
   }
 
   // ---- shared helpers ----------------------------------------------------
@@ -2726,13 +3033,15 @@
     const hasRiscTabelle = apps.includes("RISCTABELLE");
     const hasCliforupdate = apps.includes("CLIFORUPDATE");
     const hasTimbrature = apps.includes("TIMBRATURE");
+    const hasPiano = apps.includes("PIANIRIENTRO");
 
     btnScontrini.classList.toggle("hidden", !hasScontrini);
     btnRiscexcel.classList.toggle("hidden", !hasRiscexcel);
     btnRiscTabelle.classList.toggle("hidden", !hasRiscTabelle);
     btnCliforupdate.classList.toggle("hidden", !hasCliforupdate);
     btnTimbrature.classList.toggle("hidden", !hasTimbrature);
-    menuEmpty.classList.toggle("hidden", hasScontrini || hasRiscexcel || hasRiscTabelle || hasCliforupdate || hasTimbrature);
+    btnPiano.classList.toggle("hidden", !hasPiano);
+    menuEmpty.classList.toggle("hidden", hasScontrini || hasRiscexcel || hasRiscTabelle || hasCliforupdate || hasTimbrature || hasPiano);
 
     document.body.classList.remove("login-mode");
     loginView.classList.add("hidden");
@@ -2741,6 +3050,7 @@
     risctabelleView.classList.add("hidden");
     cliforupdateView.classList.add("hidden");
     timbratureView.classList.add("hidden");
+    pianoView.classList.add("hidden");
     menuView.classList.remove("hidden");
   }
 
@@ -4007,6 +4317,7 @@
     risctabelleView.classList.add("hidden");
     cliforupdateView.classList.add("hidden");
     timbratureView.classList.add("hidden");
+    pianoView.classList.add("hidden");
     document.getElementById("tim-messaggi").innerHTML = "";   // gli avvisi non passano a un'altra sessione
     loginView.classList.remove("hidden");
     document.body.classList.add("login-mode");
@@ -4426,6 +4737,412 @@
     menuView.classList.remove("hidden");
   });
   timbratureLogoutBtn.addEventListener("click", resetToLogin);
+
+  // ======== PIANI DI RIENTRO ================================================================
+  // Pagina 1: elenco clienti IDENTICO a RISCTABELLE (stessa query qapp_risc_ws, stesso envelope,
+  //           stessa lettura, stesso elenco e bottone "Estrai partite aperte").
+  // Pagina 2: partite aperte del cliente (chiamata a bapp_piano_ws), con check di selezione.
+  // Pagina 3: dati del piano e firma del cliente; CONFERMA attivo solo con la firma presente.
+  const btnPiano = document.getElementById("btnPiano");
+  const pianoView = document.getElementById("pianoView");
+  const pianoBackBtn = document.getElementById("pianoBackBtn");
+  const pianoLogoutBtn = document.getElementById("pianoLogoutBtn");
+  const pianoWelcome = document.getElementById("pianoWelcome");
+  const piCerca = document.getElementById("pi-cerca");
+  const piLista = document.getElementById("pi-lista");
+  const piEstrai = document.getElementById("pi-estrai");
+  const piMic = document.getElementById("pi-mic");
+  const piPianoBtn = document.getElementById("pi-piano-btn");
+  const piConfermaBtn = document.getElementById("pi-conferma");
+
+  let piItems = [];      // clienti (qapp_risc_ws)
+  let piSelIndex = -1;   // cliente scelto nell'elenco
+  let piCliente = null;  // { codice, ragione, citta, provincia, conto }
+  let piRighe = [];      // partite aperte del cliente (righe nel tracciato RiscEXCEL)
+  let piSelPartite = new Set();   // indici delle partite spuntate
+
+  // La modalità grafica di RISCTABELLE (body.risctabelle-mode) vale anche qui
+  new MutationObserver(() => {
+    document.body.classList.toggle("risctabelle-mode",
+      !risctabelleView.classList.contains("hidden") || !pianoView.classList.contains("hidden"));
+  }).observe(pianoView, { attributes: true, attributeFilter: ["class"] });
+
+  function piToast(msg){
+    let t = document.getElementById("pi-toast");
+    if (!t){ t = document.createElement("div"); t.id = "pi-toast"; t.className = "rt-toast"; pianoView.appendChild(t); }
+    t.textContent = msg;
+    t.classList.add("show");
+    clearTimeout(piToast._h);
+    piToast._h = setTimeout(() => t.classList.remove("show"), 3200);
+  }
+
+  // Tre pagine. Il Menu in alto c'è solo sull'elenco clienti (come in RISCTABELLE, dove le
+  // schermate successive hanno solo la freccia di ritorno).
+  function piMostra(s){
+    document.getElementById("pi-schermo-lista").classList.toggle("hidden", s !== "lista");
+    document.getElementById("pi-schermo-partite").classList.toggle("hidden", s !== "partite");
+    document.getElementById("pi-schermo-piano").classList.toggle("hidden", s !== "piano");
+    pianoBackBtn.classList.toggle("hidden", s !== "lista");
+    if (s === "piano") piFirmaDimensiona();   // il canvas va dimensionato a pagina visibile
+    window.scrollTo(0, 0);
+  }
+
+  // ---- Pagina 1: elenco clienti (come RISCTABELLE) ----
+  function renderPiano(){
+    const q = (piCerca.value || "").trim().toLowerCase();
+    const filtrati = piItems.filter((it) =>
+      !q ||
+      String(it.A19CLIEN || "").toLowerCase().includes(q) ||
+      String(it.G19DESC || "").toLowerCase().includes(q)
+    );
+    if (!filtrati.length){
+      piLista.innerHTML = '<div class="rt-vuoto">Nessun risultato.</div>';
+      return filtrati;
+    }
+    piLista.innerHTML = filtrati.map((it) => {
+      const idx = piItems.indexOf(it);
+      const sel = idx === piSelIndex ? " sel" : "";
+      return `<div class="rt-row${sel}" data-idx="${idx}">` +
+        `<span class="conto">${escapeXml(it.G20GEACC)}</span>` +
+        `<span>${escapeXml(it.A19CLIEN)}</span>` +
+        `<span class="rag">${escapeXml(it.G19DESC)}</span>` +
+      `</div>`;
+    }).join("");
+    piLista.querySelectorAll(".rt-row").forEach((el) => {
+      el.addEventListener("click", () => {
+        piSelIndex = Number(el.getAttribute("data-idx"));
+        piEstrai.disabled = false;
+        renderPiano();
+      });
+    });
+    return filtrati;
+  }
+
+  // Stessa query di RISCTABELLE: buildRiscQueryEnvelope / WS_RISC_QUERY_URL
+  // (…/servlet/SQLDataProviderServer/qapp_risc_ws) e stessa lettura delle righe (parseRiscTabelle).
+  async function caricaPiano(){
+    piMostra("lista");
+    piItems = [];
+    piSelIndex = -1;
+    piEstrai.disabled = true;
+    piCerca.value = "";
+    piLista.innerHTML = '<div class="rt-vuoto">Caricamento&hellip;</div>';
+    if (!selezione.istanza){
+      piLista.innerHTML = '<div class="rt-vuoto">Sessione non valida: rientra dal login.</div>';
+      return;
+    }
+    try {
+      const xml = buildRiscQueryEnvelope();
+      const resp = await fetch(WS_RISC_QUERY_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/xml; charset=utf-8" },
+        body: xml
+      });
+      const txt = await resp.text();
+      if (!resp.ok){
+        const body = deepDecode(txt).trim();
+        piLista.innerHTML =
+          '<div class="rt-vuoto">Errore HTTP ' + resp.status + ' ' + resp.statusText + '.' +
+          (body ? '<div class="rt-fault">' + escapeXml(body) + '</div>' : '') + '</div>';
+        return;
+      }
+      piItems = parseRiscTabelle(txt);
+      if (!piItems.length){
+        piLista.innerHTML = '<div class="rt-vuoto">Nessun cliente disponibile.</div>';
+        return;
+      }
+      renderPiano();
+    } catch (err){
+      const msg = err && err.message ? err.message : String(err);
+      piLista.innerHTML = '<div class="rt-vuoto">Chiamata non riuscita. ' + escapeXml(msg) + '</div>';
+    }
+  }
+
+  piCerca.addEventListener("input", renderPiano);
+
+  // Ricerca a voce, come in RISCTABELLE
+  const SpeechRecPi = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (SpeechRecPi && piMic){
+    const recogPi = new SpeechRecPi();
+    recogPi.lang = "it-IT";
+    recogPi.interimResults = false;
+    recogPi.maxAlternatives = 1;
+    recogPi.addEventListener("result", (e) => {
+      const t = (e.results[0][0].transcript || "").trim().replace(/[.,;:!?\u2026]+$/, "").trim();
+      piCerca.value = t;
+      const match = renderPiano();
+      if (match && match.length === 1){
+        piSelIndex = piItems.indexOf(match[0]);
+        piEstrai.disabled = false;
+        renderPiano();
+      }
+    });
+    recogPi.addEventListener("end", () => piMic.classList.remove("rec"));
+    recogPi.addEventListener("error", (e) => {
+      piMic.classList.remove("rec");
+      const err = (e && e.error) || "sconosciuto";
+      if (err === "aborted") return;
+      const mappa = { "no-speech":"Non ho sentito nulla, riprova", "audio-capture":"Nessun microfono disponibile", "not-allowed":"Microfono non autorizzato" };
+      piToast(mappa[err] || ("Riconoscimento vocale non riuscito (" + err + ")"));
+    });
+    piMic.addEventListener("click", () => {
+      if (piMic.classList.contains("rec")){ try { recogPi.stop(); } catch(e){} return; }
+      try { piMic.classList.add("rec"); recogPi.start(); } catch(e){ piMic.classList.remove("rec"); }
+    });
+  } else if (piMic){
+    piMic.hidden = true;
+  }
+
+  // ---- Chiamata a bapp_piano_ws: elenco delle partite aperte del cliente ----
+  // *** PROVVISORIA *** Le specifiche di bapp_piano_ws non sono ancora state fornite: per ora
+  // ricalca la chiamata di bapp_risc_ws (stessi parametri, p_conto e p_cliente). Quando arrivano
+  // le specifiche vanno aggiornati SOLO questa funzione e, se cambia, la lettura in piEstraiPartite.
+  function buildPianoWsEnvelope(item){
+    return `<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:bapp="http://bapp_piano_ws.ws.localhost/">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <bapp:bapp_piano_ws_Run>
+         <bapp:m_UserName>ws</bapp:m_UserName>
+         <bapp:m_Password>ws_1234!</bapp:m_Password>
+         <bapp:m_Company>${escapeXml(selezione.mCompany)}</bapp:m_Company>
+         <bapp:m_Instance>${escapeXml(selezione.istanza)}</bapp:m_Instance>
+         <bapp:p_user>${escapeXml(selezione.pUser)}</bapp:p_user>
+         <bapp:p_ws_call>Y</bapp:p_ws_call>
+         <bapp:p_Subs>${escapeXml(selezione.pSubs)}</bapp:p_Subs>
+         <bapp:p_Branc>${escapeXml(selezione.pBranc)}</bapp:p_Branc>
+         <bapp:p_Sect>${escapeXml(selezione.pSect)}</bapp:p_Sect>
+         <bapp:p_Curr>${escapeXml(selezione.pCurr)}</bapp:p_Curr>
+         <bapp:p_PhiSite>${escapeXml(selezione.pPhiSite)}</bapp:p_PhiSite>
+         <bapp:p_PaySite></bapp:p_PaySite>
+         <bapp:p_PaySubs></bapp:p_PaySubs>
+         <bapp:p_Wareh></bapp:p_Wareh>
+         <bapp:p_DefaYearS></bapp:p_DefaYearS>
+         <bapp:p_DefaSess></bapp:p_DefaSess>
+         <bapp:p_UL></bapp:p_UL>
+         <bapp:p_conto>${escapeXml(item.G20GEACC)}</bapp:p_conto>
+         <bapp:p_cliente>${escapeXml(item.A19CLIEN)}</bapp:p_cliente>
+      </bapp:bapp_piano_ws_Run>
+   </soapenv:Body>
+</soapenv:Envelope>`;
+  }
+
+  async function piEstraiPartite(){
+    if (piSelIndex < 0) return;
+    const item = piItems[piSelIndex];
+    const testoBtn = piEstrai.textContent;
+    piEstrai.disabled = true;
+    piEstrai.textContent = "Estrazione in corso\u2026";
+    try {
+      const resp = await fetch(WS_PIANO_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/xml; charset=utf-8" },
+        body: buildPianoWsEnvelope(item)
+      });
+      const txt = await resp.text();
+      if (!resp.ok){ piToast("Errore HTTP " + resp.status + " " + resp.statusText); return; }
+      let data;
+      try { data = parseLoginResponse(txt); }
+      catch(e){ piToast("Risposta del web service non riconosciuta come JSON"); return; }
+      const ok = String(data.okexp == null ? "" : data.okexp).trim().toUpperCase() === "Y";
+      if (!ok){ piToast(data.messaggio || "Nessuna partita da estrarre."); return; }
+      const righe = datiInRighe(data.dati).filter((r) => r && r["Cli-For"]);
+      if (!righe.length){ piToast("Nessuna partita aperta per questo cliente."); return; }
+      piApriPartite(item, righe);
+    } catch(err){
+      piToast("Chiamata non riuscita: " + (err && err.message ? err.message : String(err)));
+    } finally {
+      piEstrai.textContent = testoBtn;
+      piEstrai.disabled = (piSelIndex < 0);
+    }
+  }
+  piEstrai.addEventListener("click", piEstraiPartite);
+
+  // ---- Pagina 2: partite aperte con check ----
+  function piIntestazione(idCodice, idRagione, idDettagli){
+    document.getElementById(idCodice).textContent = piCliente.codice;
+    document.getElementById(idRagione).textContent = piCliente.ragione;
+    document.getElementById(idDettagli).textContent =
+      piCliente.citta + " (" + piCliente.provincia + ") \u00b7 " + piRighe.length + " fatture";
+  }
+
+  function piApriPartite(item, righe){
+    const r0 = righe[0];
+    piRighe = righe;
+    piSelPartite = new Set();
+    piCliente = {
+      conto: item.G20GEACC,
+      codice: String(r0["Cli-For"] || item.A19CLIEN || "").trim(),
+      ragione: String(r0["Ragione Sociale"] || item.G19DESC || "").trim(),
+      citta: String(r0["Città"] || "").trim(),
+      provincia: String(r0["Provincia"] || "").trim()
+    };
+    piIntestazione("pi-codice", "pi-ragione", "pi-dettagli");
+    piRenderPartite();
+    piAggiornaPiano();
+    piMostra("partite");
+  }
+
+  function piRenderPartite(){
+    const cont = document.getElementById("pi-partite");
+    cont.innerHTML = piRighe.map((r, i) => {
+      const importo = parseImporto(r["Saldo"]);
+      return `<label class="pi-partita" for="pi-chk-${i}">` +
+        `<input type="checkbox" id="pi-chk-${i}" data-i="${i}">` +
+        `<span class="pi-corpo">` +
+          `<span class="pi-riga1">` +
+            `<span class="pi-doc">Partita ${escapeXml(partitaDi(r))}</span>` +
+            `<span class="pi-importo">\u20ac ${formatImporto(importo)}</span>` +
+          `</span>` +
+          `<span class="pi-meta"><span>Data Doc: ${escapeXml(formatData(r["Data_Doc"]))}</span>` +
+          `<span>Scadenza: ${escapeXml(formatData(r["Scadenza"]))}</span></span>` +
+        `</span>` +
+      `</label>`;
+    }).join("");
+    cont.querySelectorAll("input[type=checkbox]").forEach((chk) => {
+      chk.addEventListener("change", () => {
+        const i = Number(chk.getAttribute("data-i"));
+        if (chk.checked) piSelPartite.add(i); else piSelPartite.delete(i);
+        chk.closest(".pi-partita").classList.toggle("sel", chk.checked);
+        piAggiornaPiano();
+      });
+    });
+  }
+
+  // PIANO DI RIENTRO è attivo solo se è stata spuntata almeno una partita
+  function piAggiornaPiano(){
+    piPianoBtn.disabled = piSelPartite.size === 0;
+  }
+
+  document.getElementById("pi-back-partite").addEventListener("click", () => piMostra("lista"));
+  document.getElementById("pi-back-piano").addEventListener("click", () => piMostra("partite"));
+
+  // ---- Pagina 3: dati del piano e firma ----
+  const piFirmaCanvas = document.getElementById("pi-firma-canvas");
+  let piFirmaCtx = piFirmaCanvas.getContext("2d");
+  let piFirmaInchiostro = false;   // true se sul canvas c'è almeno un tratto
+  let piFirmaDisegno = false;      // true mentre il dito/penna è appoggiato
+
+  function piFirmaDimensiona(){
+    const dpr = window.devicePixelRatio || 1;
+    const w = piFirmaCanvas.clientWidth;
+    const h = piFirmaCanvas.clientHeight;
+    if (!w || !h) return;
+    const pw = Math.round(w * dpr), ph = Math.round(h * dpr);
+    if (piFirmaCanvas.width !== pw || piFirmaCanvas.height !== ph){
+      piFirmaCanvas.width = pw;
+      piFirmaCanvas.height = ph;
+      piFirmaCtx = piFirmaCanvas.getContext("2d");
+      piFirmaCtx.scale(dpr, dpr);
+      piFirmaCtx.lineWidth = 2.4;
+      piFirmaCtx.lineCap = "round";
+      piFirmaCtx.lineJoin = "round";
+      piFirmaCtx.strokeStyle = "#111111";
+      piFirmaInchiostro = false;
+    }
+  }
+
+  // CONFERMA è attivo solo quando la firma è presente
+  function piAggiornaConferma(){
+    piConfermaBtn.disabled = !piFirmaInchiostro;
+  }
+
+  function piFirmaPulisci(){
+    piFirmaCtx.save();
+    piFirmaCtx.setTransform(1, 0, 0, 1, 0, 0);
+    piFirmaCtx.clearRect(0, 0, piFirmaCanvas.width, piFirmaCanvas.height);
+    piFirmaCtx.restore();
+    piFirmaInchiostro = false;
+    piAggiornaConferma();
+  }
+
+  function piFirmaPunto(e){
+    const r = piFirmaCanvas.getBoundingClientRect();
+    return { x: e.clientX - r.left, y: e.clientY - r.top };
+  }
+
+  piFirmaCanvas.addEventListener("pointerdown", (e) => {
+    e.preventDefault();
+    piFirmaDimensiona();
+    piFirmaDisegno = true;
+    try { piFirmaCanvas.setPointerCapture(e.pointerId); } catch(_){}
+    const p = piFirmaPunto(e);
+    piFirmaCtx.beginPath();
+    piFirmaCtx.moveTo(p.x, p.y);
+    piFirmaCtx.lineTo(p.x + 0.01, p.y + 0.01);   // anche un tocco singolo lascia un punto
+    piFirmaCtx.stroke();
+    piFirmaCtx.beginPath();
+    piFirmaCtx.moveTo(p.x, p.y);
+    piFirmaInchiostro = true;
+    piAggiornaConferma();
+  });
+  piFirmaCanvas.addEventListener("pointermove", (e) => {
+    if (!piFirmaDisegno) return;
+    e.preventDefault();
+    const p = piFirmaPunto(e);
+    piFirmaCtx.lineTo(p.x, p.y);
+    piFirmaCtx.stroke();
+    piFirmaCtx.beginPath();
+    piFirmaCtx.moveTo(p.x, p.y);
+  });
+  ["pointerup", "pointercancel", "pointerleave"].forEach((ev) =>
+    piFirmaCanvas.addEventListener(ev, () => { piFirmaDisegno = false; })
+  );
+  document.getElementById("pi-firma-clear").addEventListener("click", piFirmaPulisci);
+
+  // PNG della firma in base64 (senza prefisso data:), sfondo trasparente
+  function piFirmaBase64(){
+    return piFirmaCanvas.toDataURL("image/png").replace(/^data:image\/png;base64,/, "");
+  }
+
+  function piApriPiano(){
+    if (piSelPartite.size === 0) return;
+    ["pi-n-scadenze", "pi-data-prima", "pi-giorni", "pi-tasso", "pi-data-tasso"].forEach((id) => {
+      document.getElementById(id).value = "";
+    });
+    piIntestazione("pi-codice-piano", "pi-ragione-piano", "pi-dettagli-piano");
+    piMostra("piano");
+    piFirmaDimensiona();
+    piFirmaPulisci();
+  }
+  piPianoBtn.addEventListener("click", piApriPiano);
+
+  // Dati pronti per il web service di conferma (specifiche in arrivo)
+  function piDatiConferma(){
+    return {
+      cliente: piCliente.codice,
+      conto: piCliente.conto,
+      partite: [...piSelPartite].sort((a, b) => a - b).map((i) => piRighe[i]),
+      numeroScadenze: document.getElementById("pi-n-scadenze").value,
+      dataPrimaScadenza: document.getElementById("pi-data-prima").value,
+      giorniTraScadenze: document.getElementById("pi-giorni").value,
+      tassoInteresse: document.getElementById("pi-tasso").value,
+      dataDecorrenzaTasso: document.getElementById("pi-data-tasso").value,
+      firma: piFirmaBase64()
+    };
+  }
+
+  // *** DA COMPLETARE *** CONFERMA chiamerà un web service di cui non sono ancora state fornite le
+  // specifiche. Per ora non invia nulla: prepara i dati (piDatiConferma) e lo segnala a video.
+  function piConferma(){
+    if (piConfermaBtn.disabled) return;
+    window.__ultimoPianoDaConfermare = piDatiConferma();
+    piToast("Web service di conferma non ancora configurato: nessun dato inviato");
+  }
+  piConfermaBtn.addEventListener("click", piConferma);
+
+  btnPiano.addEventListener("click", () => {
+    menuView.classList.add("hidden");
+    pianoView.classList.remove("hidden");
+    pianoWelcome.innerHTML = utenteCorrente ? ('<span class="mh-label">Benvenuto</span> <span class="mh-name">' + escapeXml(utenteCorrente) + '</span>') : "";
+    caricaPiano();
+  });
+
+  pianoBackBtn.addEventListener("click", () => {
+    pianoView.classList.add("hidden");
+    menuView.classList.remove("hidden");
+  });
+  pianoLogoutBtn.addEventListener("click", resetToLogin);
 
   // ---- PRIMANOTA CASSA (dopo login) ---------------------------------------
 
