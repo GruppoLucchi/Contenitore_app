@@ -2149,6 +2149,28 @@
     text-decoration:underline;
     text-underline-offset:3px;
   }
+
+  /* Chiamata / Risposta in fondo all'elenco di Piani di rientro */
+  body.risctabelle-mode #pianoView .pi-dbg{ margin:16px 20px 28px; }
+  body.risctabelle-mode #pianoView .pi-dbg .rt-debug-row{ display:flex; gap:10px; margin:0; }
+  body.risctabelle-mode #pianoView .pi-dbg .rt-dbg{
+    flex:1;
+    min-height:44px;
+    padding:0 12px;
+    background:#ffffff;
+    color:var(--ink);
+    border:1px solid #cdd5de;
+    border-radius:12px;
+    font-size:14px;
+    font-weight:600;
+  }
+  body.risctabelle-mode #pianoView .pi-dbg .rt-dbg[aria-expanded="true"]{ background:#eef2f6; }
+  body.risctabelle-mode #pianoView .pi-dbg .rt-panel{
+    margin-top:12px;
+    padding:12px;
+    border-radius:12px;
+    max-height:260px;
+  }
   /* il Menu come pulsante circondato (lo stile G di RISCTABELLE lo copre già); icona nel menu */
   body.menu-mode .app-ico-piani{ background:#b4532a; }
 </style>
@@ -2686,6 +2708,14 @@
     <div class="rt-footer">
       <button type="button" class="btn-primario" id="pi-estrai" disabled>Estrai partite aperte</button>
     </div>
+    </div>
+    <div class="pi-dbg">
+      <div class="rt-debug-row">
+        <button type="button" class="rt-dbg" id="pi-btn-req" aria-expanded="false">Chiamata</button>
+        <button type="button" class="rt-dbg" id="pi-btn-resp" aria-expanded="false">Risposta</button>
+      </div>
+      <pre class="rt-panel" id="pi-pan-req"></pre>
+      <pre class="rt-panel" id="pi-pan-resp"></pre>
     </div>
     </div><!-- /pi-schermo-lista -->
 
@@ -4756,6 +4786,11 @@
   const piPianoBtn = document.getElementById("pi-piano-btn");
   const piConfermaBtn = document.getElementById("pi-conferma");
 
+  const piPanReq = document.getElementById("pi-pan-req");
+  const piPanResp = document.getElementById("pi-pan-resp");
+  const piBtnReq = document.getElementById("pi-btn-req");
+  const piBtnResp = document.getElementById("pi-btn-resp");
+
   let piItems = [];      // clienti (qapp_risc_ws)
   let piSelIndex = -1;   // cliente scelto nell'elenco
   let piCliente = null;  // { codice, ragione, citta, provincia, conto }
@@ -4776,6 +4811,24 @@
     clearTimeout(piToast._h);
     piToast._h = setTimeout(() => t.classList.remove("show"), 3200);
   }
+
+  // Pulsanti Chiamata / Risposta in fondo all'elenco: mostrano la chiamata a bapp_piano_ws (Estrai
+  // partite aperte) e la risposta ricevuta. Si azzerano a ogni apertura di Piani di rientro.
+  function piDbgReset(){
+    piPanReq.textContent = "(nessuna chiamata effettuata)";
+    piPanResp.textContent = "(nessuna risposta ricevuta)";
+    [[piPanReq, piBtnReq], [piPanResp, piBtnResp]].forEach(([pan, btn]) => {
+      pan.classList.remove("show");
+      btn.setAttribute("aria-expanded", "false");
+    });
+  }
+  function piDbgToggle(pan, btn){
+    const apri = !pan.classList.contains("show");
+    pan.classList.toggle("show", apri);
+    btn.setAttribute("aria-expanded", apri ? "true" : "false");
+  }
+  piBtnReq.addEventListener("click", () => piDbgToggle(piPanReq, piBtnReq));
+  piBtnResp.addEventListener("click", () => piDbgToggle(piPanResp, piBtnResp));
 
   // Tre pagine. Il Menu in alto c'è solo sull'elenco clienti (come in RISCTABELLE, dove le
   // schermate successive hanno solo la freccia di ritorno).
@@ -4823,6 +4876,7 @@
   // (…/servlet/SQLDataProviderServer/qapp_risc_ws) e stessa lettura delle righe (parseRiscTabelle).
   async function caricaPiano(){
     piMostra("lista");
+    piDbgReset();
     piItems = [];
     piSelIndex = -1;
     piEstrai.disabled = true;
@@ -4932,13 +4986,17 @@
     const testoBtn = piEstrai.textContent;
     piEstrai.disabled = true;
     piEstrai.textContent = "Estrazione in corso\u2026";
+    piPanResp.textContent = "(in attesa della risposta\u2026)";
     try {
+      const xml = buildPianoWsEnvelope(item);
+      piPanReq.textContent = xml;
       const resp = await fetch(WS_PIANO_URL, {
         method: "POST",
         headers: { "Content-Type": "text/xml; charset=utf-8" },
-        body: buildPianoWsEnvelope(item)
+        body: xml
       });
       const txt = await resp.text();
+      piPanResp.textContent = deepDecode(txt) || "(risposta vuota)";
       if (!resp.ok){ piToast("Errore HTTP " + resp.status + " " + resp.statusText); return; }
       let data;
       try { data = parseLoginResponse(txt); }
@@ -4958,7 +5016,9 @@
       }
       piApriPartite(item, righe);
     } catch(err){
-      piToast("Chiamata non riuscita: " + (err && err.message ? err.message : String(err)));
+      const msg = err && err.message ? err.message : String(err);
+      piPanResp.textContent = "Chiamata non riuscita.\n\n" + msg;
+      piToast("Chiamata non riuscita: " + msg);
     } finally {
       piEstrai.textContent = testoBtn;
       piEstrai.disabled = (piSelIndex < 0);

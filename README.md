@@ -411,6 +411,18 @@ tre pagine; stile G come RISCTABELLE.
    aperte**. La query è **la stessa funzione di RISCTABELLE**: `buildRiscQueryEnvelope`
    verso `WS_RISC_QUERY_URL` = `…/servlet/SQLDataProviderServer/qapp_risc_ws`, letta
    con `parseRiscTabelle` (verificato: stesso indirizzo e stesso corpo).
+   **In fondo alla pagina** (sotto la scheda, a 16 px) ci sono due pulsanti,
+   **Chiamata** e **Risposta**, che aprono o chiudono due pannelli (si possono tenere
+   aperti insieme): il primo mostra la **chiamata a `bapp_piano_ws`** fatta con
+   *Estrai partite aperte* (la busta SOAP completa, con `p_conto` e `p_cliente`), il
+   secondo la **risposta** ricevuta (JSON, anche in caso di errore HTTP; se la rete
+   non risponde, "Chiamata non riuscita" con il motivo). Prima di qualsiasi
+   estrazione dicono "(nessuna chiamata effettuata)" / "(nessuna risposta
+   ricevuta)". Restano visibili tornando dalla pagina delle partite con ‹ e si azzerano
+   a ogni apertura di Piani di rientro. La password digitata dall'utente non compare
+   nella chiamata (ci sono solo le credenziali tecniche `ws` / `ws_1234!`). Sono gli
+   stessi pulsanti `rt-dbg` / pannelli `rt-panel` di Timbrature e Aggiornamento
+   Clienti; id `pi-btn-req`, `pi-btn-resp`, `pi-pan-req`, `pi-pan-resp`.
 2. **Partite aperte.** *Estrai partite aperte* chiama **`bapp_piano_ws`** (vedi sotto)
    e apre la pagina: in alto la freccia ‹, il **codice** cliente e, a destra, il
    bottone **PIANO DI RIENTRO**; sotto la **ragione sociale** e "Città (Prov) · N
