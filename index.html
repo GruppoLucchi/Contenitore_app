@@ -2791,8 +2791,9 @@
   let WS_CLI_URL = "https://www.lucchi.com:448/wigest617/servlet/bapp_cli_ws";
   // Web service TIMBRATURE (bapp_tim_ws): come bapp_cli_ws (senza SQLDataProviderServer)
   let WS_TIM_URL = "https://www.lucchi.com:448/wigest617/servlet/bapp_tim_ws";
-  // Web service PIANI DI RIENTRO (bapp_piano_ws): elenco delle partite aperte. SPECIFICHE IN ARRIVO:
-  // per ora la chiamata (buildPianoWsEnvelope) ricalca quella di bapp_risc_ws.
+  // Web service PIANI DI RIENTRO (bapp_piano_ws): elenco delle partite aperte del cliente scelto
+  // (p_conto = G20GEACC e p_cliente = A19CLIEN dell'elenco). Risponde con un JSON: okexp N ->
+  // si mostra messaggio; okexp Y -> dati è l'elenco (JSON) delle partite aperte, come in RISCTABELLE.
   let WS_PIANO_URL = "https://www.lucchi.com:448/wigest617/servlet/bapp_piano_ws";
   // Parametro di bapp_cli_ws che contiene la firma: PNG in base64, senza prefisso data:.
   // È presente in ogni chiamata (come gli altri parametri): vuoto in estrazione (E)
@@ -4894,9 +4895,7 @@
   }
 
   // ---- Chiamata a bapp_piano_ws: elenco delle partite aperte del cliente ----
-  // *** PROVVISORIA *** Le specifiche di bapp_piano_ws non sono ancora state fornite: per ora
-  // ricalca la chiamata di bapp_risc_ws (stessi parametri, p_conto e p_cliente). Quando arrivano
-  // le specifiche vanno aggiornati SOLO questa funzione e, se cambia, la lettura in piEstraiPartite.
+  // Come da specifica: p_conto = G20GEACC e p_cliente = A19CLIEN del cliente scelto dall'utente.
   function buildPianoWsEnvelope(item){
     return `<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:bapp="http://bapp_piano_ws.ws.localhost/">
@@ -4946,8 +4945,17 @@
       catch(e){ piToast("Risposta del web service non riconosciuta come JSON"); return; }
       const ok = String(data.okexp == null ? "" : data.okexp).trim().toUpperCase() === "Y";
       if (!ok){ piToast(data.messaggio || "Nessuna partita da estrarre."); return; }
-      const righe = datiInRighe(data.dati).filter((r) => r && r["Cli-For"]);
-      if (!righe.length){ piToast("Nessuna partita aperta per questo cliente."); return; }
+      // okexp = Y -> dati è un elenco JSON di record (nessun file Excel da leggere), come in RISCTABELLE;
+      // come lì, valgono le righe che hanno il codice cliente (Cli-For).
+      if (data.dati == null || data.dati === ""){ piToast("Nessuna partita aperta per questo cliente."); return; }
+      if (!Array.isArray(data.dati)){ piToast("Dati ricevuti in un formato non atteso: era attesa una lista di record."); return; }
+      const righe = data.dati.filter((r) => r && r["Cli-For"]);
+      if (!righe.length){
+        piToast(data.dati.length
+          ? "I dati ricevuti non hanno la colonna attesa (Cli-For)."
+          : "Nessuna partita aperta per questo cliente.");
+        return;
+      }
       piApriPartite(item, righe);
     } catch(err){
       piToast("Chiamata non riuscita: " + (err && err.message ? err.message : String(err)));

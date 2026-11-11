@@ -436,20 +436,32 @@ tre pagine; stile G come RISCTABELLE.
    e la firma si azzerano a ogni apertura della pagina; le spunte delle partite si
    conservano tornando indietro con ‹.
 
-**Cosa è ancora PROVVISORIO** (in attesa delle specifiche):
-- `bapp_piano_ws` (partite aperte): `buildPianoWsEnvelope` **ricalca `bapp_risc_ws`**
-  (namespace `http://bapp_piano_ws.ws.localhost/`, operazione `bapp_piano_ws_Run`,
-  stessi parametri, `p_conto` e `p_cliente`) e la risposta è letta come quella di
-  RISCTABELLE (JSON con `okexp`/`messaggio`/`dati`, righe nel tracciato Cli-For,
-  Ragione Sociale, Città, Provincia, Anno, Prefisso, No, Data_Doc, Scadenza, Saldo).
-  Quando arrivano le specifiche vanno aggiornate `buildPianoWsEnvelope` e, se cambia,
-  la lettura in `piEstraiPartite`.
-- **CONFERMA** non chiama ancora nessun web service: mostra "Web service di conferma
-  non ancora configurato: nessun dato inviato". I dati sono già pronti in
-  `piDatiConferma()` (cliente, conto, partite spuntate, i cinque dati del piano e la
-  firma PNG in base64), così basterà costruire la chiamata.
+**Web service `bapp_piano_ws` (partite aperte) — secondo specifica.** Si chiama con
+*Estrai partite aperte* dopo aver scelto un cliente. Chiamata
+(`buildPianoWsEnvelope`, verso `…/servlet/bapp_piano_ws`, namespace
+`http://bapp_piano_ws.ws.localhost/`, operazione `bapp_piano_ws_Run`): `m_UserName` ws,
+`m_Password` ws_1234!, `m_Company`, `m_Instance`, `p_user`, `p_ws_call` Y, `p_Subs`,
+`p_Branc`, `p_Sect`, `p_Curr`, `p_PhiSite`, `p_PaySite`/`p_PaySubs`/`p_Wareh`/
+`p_DefaYearS`/`p_DefaSess`/`p_UL` vuoti, **`p_conto` = G20GEACC** e **`p_cliente` =
+A19CLIEN** del cliente scelto (verificato riga per riga con la specifica).
+Risposta JSON: se **`okexp` = N** si mostra il contenuto di **`messaggio`**; se
+**`okexp` = Y**, **`dati`** è l'**elenco (JSON) dei record** delle partite aperte, come in
+RISCTABELLE: **non si legge nessun file Excel**. Come in RISCTABELLE valgono i record
+che hanno il codice cliente (`Cli-For`); i campi usati sono Cli-For, Ragione Sociale,
+Città, Provincia, Anno, Prefisso, No, Data_Doc, Scadenza e Saldo (le date possono essere
+`aaaa-mm-gg`, che l'app mostra come `gg/mm/aaaa`). Provato con 22 record ricavati dal
+partitario reale. Messaggi: "Nessuna partita aperta per questo cliente." se `dati` è
+vuoto o senza record; "I dati ricevuti non hanno la colonna attesa (Cli-For)." se i
+record non la contengono; "Dati ricevuti in un formato non atteso: era attesa una lista
+di record." se `dati` non è una lista (per esempio un testo).
 
-Lato Wigest/Tomcat: pubblicare `bapp_piano_ws` (e il web service di conferma) su ogni
+**Cosa è ancora DA COMPLETARE:** **CONFERMA** non chiama ancora nessun web service:
+mostra "Web service di conferma non ancora configurato: nessun dato inviato". I dati
+sono già pronti in `piDatiConferma()` (cliente, conto, partite spuntate, i cinque dati
+del piano e la firma PNG in base64), così basterà costruire la chiamata quando
+arriveranno le specifiche.
+
+Lato Wigest/Tomcat: pubblicare `bapp_piano_ws` (e, a suo tempo, il web service di conferma) su ogni
 istanza interessata, con CORS su `/servlet/*`; la query `qapp_risc_ws` è la stessa
 già usata da RISCTABELLE.
 
