@@ -430,6 +430,11 @@ tre pagine; stile G come RISCTABELLE.
    con le **stesse informazioni** di Riscossione (Partita `Anno\Prefisso\No`, Data
    Doc, Scadenza, importo) **senza "Segna come pagata"** e con un **check a sinistra**
    di ogni partita (tutta la scheda è cliccabile; la scheda spuntata diventa azzurra).
+   In alto, il **codice** cliente (18 px, 17 px sotto i 380 px) e il bottone **PIANO DI
+   RIENTRO** (38 px di altezza, carattere 11,5 px) sono più piccoli di prima, perché sul
+   telefono si sovrapponevano; il codice ha inoltre `text-overflow:ellipsis`, quindi
+   non può mai finire sotto il bottone. Lo stesso stile vale per l'intestazione della
+   pagina del piano.
    Ogni partita sta su **due righe**: nella prima la **partita** (a sinistra) e
    l'**importo** (a destra), nella seconda **Data Doc** e **Scadenza**. Fino a 380 px di
    larghezza i margini si stringono un po' (`@media (max-width:380px)`) perché le due
@@ -437,16 +442,17 @@ tre pagine; stile G come RISCTABELLE.
    **PIANO DI RIENTRO è attivo solo se è spuntata almeno una partita** (scelta mia: la
    specifica non lo diceva). Il Menu in alto non c'è in questa pagina né nella
    successiva, come nelle schermate successive di Riscossione; ‹ torna indietro.
-3. **Piano di rientro.** In alto ‹, codice, ragione sociale e il bottone **CONFERMA**,
-   **attivo solo quando c'è la firma** (almeno un tratto nel riquadro; si disattiva
-   di nuovo con "Cancella firma"). Sotto i dati dell'incaricato, nell'ordine:
-   **Numero scadenze**, **Data prima scadenza**, **Nr giorni tra le scadenze**,
-   **Tasso di interesse**, **Data di decorrenza del Tasso di interesse** (numeri e
-   date con la tastiera/selettore adatti; nessun controllo di obbligatorietà, perché
-   la specifica non lo chiedeva). Sotto, **Firma del cliente** (stesso riquadro
-   di CLIFORUPDATE: disegno con dito o penna, PNG in base64, "Cancella firma"). I campi
-   e la firma si azzerano a ogni apertura della pagina; le spunte delle partite si
-   conservano tornando indietro con ‹.
+3. **Piano di rientro.** In alto ‹, codice, ragione sociale e il bottone **VISUALIZZA**
+   (al posto di CONFERMA). Sotto la ragione sociale, "Città (Prov) · **N fatture**": qui
+   **N è il numero delle partite spuntate** nella pagina precedente, non il totale (la
+   pagina delle partite continua a mostrare il totale). Sotto i dati dell'incaricato,
+   nell'ordine: **Numero scadenze**, **Data prima scadenza**, **Nr giorni tra le
+   scadenze**, **Tasso di interesse**, **Data di decorrenza del Tasso di interesse**
+   (numeri e date con la tastiera/selettore adatti). **Non c'è più lo spazio per la
+   firma del cliente**: sarà nella videata successiva. **VISUALIZZA è attivo solo se
+   tutti e cinque i campi sono pieni** (un campo con 0 è pieno; basta svuotarne uno per
+   disattivarlo di nuovo). I campi si azzerano a ogni apertura della pagina; le spunte
+   delle partite si conservano tornando indietro con ‹.
 
 **Web service `bapp_piano_ws` (partite aperte) — secondo specifica.** Si chiama con
 *Estrai partite aperte* dopo aver scelto un cliente. Chiamata
@@ -455,7 +461,8 @@ tre pagine; stile G come RISCTABELLE.
 `m_Password` ws_1234!, `m_Company`, `m_Instance`, `p_user`, `p_ws_call` Y, `p_Subs`,
 `p_Branc`, `p_Sect`, `p_Curr`, `p_PhiSite`, `p_PaySite`/`p_PaySubs`/`p_Wareh`/
 `p_DefaYearS`/`p_DefaSess`/`p_UL` vuoti, **`p_conto` = G20GEACC** e **`p_cliente` =
-A19CLIEN** del cliente scelto (verificato riga per riga con la specifica).
+A19CLIEN** del cliente scelto, seguiti da **`p_tipo` = E** (ultimo parametro) (verificato
+riga per riga con la specifica).
 Risposta JSON: se **`okexp` = N** si mostra il contenuto di **`messaggio`**; se
 **`okexp` = Y**, **`dati`** è l'**elenco (JSON) dei record** delle partite aperte, come in
 RISCTABELLE: **non si legge nessun file Excel**. Come in RISCTABELLE valgono i record
@@ -467,13 +474,14 @@ vuoto o senza record; "I dati ricevuti non hanno la colonna attesa (Cli-For)." s
 record non la contengono; "Dati ricevuti in un formato non atteso: era attesa una lista
 di record." se `dati` non è una lista (per esempio un testo).
 
-**Cosa è ancora DA COMPLETARE:** **CONFERMA** non chiama ancora nessun web service:
-mostra "Web service di conferma non ancora configurato: nessun dato inviato". I dati
-sono già pronti in `piDatiConferma()` (cliente, conto, partite spuntate, i cinque dati
-del piano e la firma PNG in base64), così basterà costruire la chiamata quando
-arriveranno le specifiche.
+**Cosa è ancora DA COMPLETARE:** **VISUALIZZA** non chiama ancora nessun web service
+(specifiche in arrivo): mostra "Web service di visualizzazione non ancora configurato:
+nessun dato inviato". I dati sono già pronti in `piDatiPiano()` (cliente, conto,
+partite spuntate e i cinque dati del piano; la firma non c'è, perché andrà nella
+videata successiva), così basterà costruire la chiamata quando arriveranno le
+specifiche.
 
-Lato Wigest/Tomcat: pubblicare `bapp_piano_ws` (e, a suo tempo, il web service di conferma) su ogni
+Lato Wigest/Tomcat: pubblicare `bapp_piano_ws` (e, a suo tempo, il web service di VISUALIZZA) su ogni
 istanza interessata, con CORS su `/servlet/*`; la query `qapp_risc_ws` è la stessa
 già usata da RISCTABELLE.
 

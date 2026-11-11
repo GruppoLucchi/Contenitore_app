@@ -1949,13 +1949,13 @@
   body.risctabelle-mode #pianoView .pi-header{
     display:flex;
     align-items:center;
-    gap:12px;
+    gap:8px;
     padding:18px 20px 0;
   }
   body.risctabelle-mode #pianoView .pi-back{
     flex:none;
-    width:44px;
-    height:44px;
+    width:40px;
+    height:40px;
     padding:0 0 3px;
     display:flex;
     align-items:center;
@@ -1965,30 +1965,34 @@
     background:transparent;
     color:#ffffff;
     font-family:inherit;
-    font-size:28px;
+    font-size:26px;
     line-height:1;
     cursor:pointer;
   }
+  /* codice cliente e bottone più piccoli, e il codice non può più sovrapporsi al bottone */
   body.risctabelle-mode #pianoView .pi-header h1{
     flex:1;
     min-width:0;
-    font-size:22px;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    font-size:18px;
     font-weight:600;
     line-height:1.25;
     color:#ffffff;
   }
   body.risctabelle-mode #pianoView .pi-azione{
     flex:none;
-    min-height:44px;
-    padding:0 16px;
+    min-height:38px;
+    padding:0 12px;
     border:0;
-    border-radius:22px;
+    border-radius:19px;
     background:#ffffff;
     color:var(--ink);
     font-family:inherit;
-    font-size:13px;
+    font-size:11.5px;
     font-weight:700;
-    letter-spacing:.2px;
+    letter-spacing:.1px;
     cursor:pointer;
   }
   body.risctabelle-mode #pianoView .pi-azione:not(:disabled):active{ background:#e5ecf2; }
@@ -2076,6 +2080,8 @@
   }
   /* schermi stretti (fino a 380 px): margini un po' più piccoli, così data doc e scadenza restano su una riga */
   @media (max-width:380px){
+    body.risctabelle-mode #pianoView .pi-header h1{ font-size:17px; }
+    body.risctabelle-mode #pianoView .pi-azione{ padding:0 10px; font-size:11px; }
     body.risctabelle-mode #pianoView .pi-partite{ padding:0 16px 28px; }
     body.risctabelle-mode #pianoView .pi-partita{ gap:10px; padding:14px 12px; }
     body.risctabelle-mode #pianoView .pi-partita input[type=checkbox]{ width:22px; height:22px; }
@@ -2083,7 +2089,7 @@
   }
   /* dati del piano */
   body.risctabelle-mode #pianoView .pi-form{
-    margin:-44px 20px 0;
+    margin:-44px 20px 28px;
     padding:20px;
     background:#ffffff;
     border:1px solid #e1e6ec;
@@ -2115,41 +2121,6 @@
     border-color:#1f4e79;
     box-shadow:0 0 0 3px rgba(31,78,121,.15);
   }
-  /* firma del cliente */
-  body.risctabelle-mode #pianoView .pi-firma{
-    margin:12px 20px 28px;
-    padding:16px 20px 8px;
-    background:#ffffff;
-    border:1px solid #e1e6ec;
-    border-radius:22px;
-    box-shadow:0 4px 14px rgba(28,43,57,.10);
-  }
-  body.risctabelle-mode #pianoView .pi-firma-label{
-    margin-bottom:8px;
-    font-size:12.5px;
-    font-weight:600;
-    color:#3c4c5c;
-  }
-  body.risctabelle-mode #pianoView #pi-firma-canvas{
-    display:block;
-    width:100%;
-    height:160px;
-    border:1.5px dashed #9bb3c9;
-    border-radius:14px;
-    background:#ffffff;
-    touch-action:none;
-  }
-  body.risctabelle-mode #pianoView .pi-firma .btn-link{
-    min-height:44px;
-    display:inline-flex;
-    align-items:center;
-    color:var(--ink);
-    font-size:13px;
-    font-weight:600;
-    text-decoration:underline;
-    text-underline-offset:3px;
-  }
-
   /* Chiamata / Risposta in fondo all'elenco di Piani di rientro */
   body.risctabelle-mode #pianoView .pi-dbg{ margin:16px 20px 28px; }
   body.risctabelle-mode #pianoView .pi-dbg .rt-debug-row{ display:flex; gap:10px; margin:0; }
@@ -2677,7 +2648,7 @@
     </div>
   </div>
 
-  <!-- PIANI DI RIENTRO VIEW (elenco clienti come RISCTABELLE, partite aperte, piano con firma) -->
+  <!-- PIANI DI RIENTRO VIEW (elenco clienti come RISCTABELLE, partite aperte, dati del piano) -->
   <div id="pianoView" class="hidden">
     <div class="top-bar">
       <span class="tb-welcome" id="pianoWelcome"></span>
@@ -2733,12 +2704,12 @@
       <div class="pi-partite" id="pi-partite"></div>
     </div>
 
-    <!-- 3) piano di rientro: dati dell'incaricato e firma del cliente -->
+    <!-- 3) piano di rientro: dati dell'incaricato (la firma del cliente sarà nella videata successiva) -->
     <div id="pi-schermo-piano" class="hidden">
       <div class="header pi-header">
         <button type="button" class="pi-back" id="pi-back-piano" aria-label="Indietro">&lsaquo;</button>
         <h1 id="pi-codice-piano"></h1>
-        <button type="button" class="pi-azione" id="pi-conferma" disabled>CONFERMA</button>
+        <button type="button" class="pi-azione" id="pi-visualizza" disabled>VISUALIZZA</button>
       </div>
       <div class="pi-info">
         <div class="pi-ragione" id="pi-ragione-piano"></div>
@@ -2765,11 +2736,6 @@
           <label for="pi-data-tasso">Data di decorrenza del Tasso di interesse</label>
           <input type="date" id="pi-data-tasso">
         </div>
-      </div>
-      <div class="pi-firma">
-        <div class="pi-firma-label">Firma del cliente</div>
-        <canvas id="pi-firma-canvas"></canvas>
-        <button type="button" class="btn-link" id="pi-firma-clear">Cancella firma</button>
       </div>
     </div>
   </div>
@@ -4773,7 +4739,8 @@
   // Pagina 1: elenco clienti IDENTICO a RISCTABELLE (stessa query qapp_risc_ws, stesso envelope,
   //           stessa lettura, stesso elenco e bottone "Estrai partite aperte").
   // Pagina 2: partite aperte del cliente (chiamata a bapp_piano_ws), con check di selezione.
-  // Pagina 3: dati del piano e firma del cliente; CONFERMA attivo solo con la firma presente.
+  // Pagina 3: dati del piano; VISUALIZZA è attivo solo se tutti i campi sono pieni.
+  // (La firma del cliente sarà nella videata successiva.)
   const btnPiano = document.getElementById("btnPiano");
   const pianoView = document.getElementById("pianoView");
   const pianoBackBtn = document.getElementById("pianoBackBtn");
@@ -4784,7 +4751,7 @@
   const piEstrai = document.getElementById("pi-estrai");
   const piMic = document.getElementById("pi-mic");
   const piPianoBtn = document.getElementById("pi-piano-btn");
-  const piConfermaBtn = document.getElementById("pi-conferma");
+  const piVisualizzaBtn = document.getElementById("pi-visualizza");
 
   const piPanReq = document.getElementById("pi-pan-req");
   const piPanResp = document.getElementById("pi-pan-resp");
@@ -4837,7 +4804,6 @@
     document.getElementById("pi-schermo-partite").classList.toggle("hidden", s !== "partite");
     document.getElementById("pi-schermo-piano").classList.toggle("hidden", s !== "piano");
     pianoBackBtn.classList.toggle("hidden", s !== "lista");
-    if (s === "piano") piFirmaDimensiona();   // il canvas va dimensionato a pagina visibile
     window.scrollTo(0, 0);
   }
 
@@ -4949,7 +4915,8 @@
   }
 
   // ---- Chiamata a bapp_piano_ws: elenco delle partite aperte del cliente ----
-  // Come da specifica: p_conto = G20GEACC e p_cliente = A19CLIEN del cliente scelto dall'utente.
+  // Come da specifica: p_conto = G20GEACC e p_cliente = A19CLIEN del cliente scelto dall'utente;
+  // dopo di loro p_tipo = E (estrazione delle partite aperte).
   function buildPianoWsEnvelope(item){
     return `<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:bapp="http://bapp_piano_ws.ws.localhost/">
@@ -4975,6 +4942,7 @@
          <bapp:p_UL></bapp:p_UL>
          <bapp:p_conto>${escapeXml(item.G20GEACC)}</bapp:p_conto>
          <bapp:p_cliente>${escapeXml(item.A19CLIEN)}</bapp:p_cliente>
+         <bapp:p_tipo>E</bapp:p_tipo>
       </bapp:bapp_piano_ws_Run>
    </soapenv:Body>
 </soapenv:Envelope>`;
@@ -5027,11 +4995,13 @@
   piEstrai.addEventListener("click", piEstraiPartite);
 
   // ---- Pagina 2: partite aperte con check ----
-  function piIntestazione(idCodice, idRagione, idDettagli){
+  // n = numero di fatture da scrivere: nella pagina delle partite è il totale, in quella del piano
+  // è il numero di quelle spuntate nella videata precedente.
+  function piIntestazione(idCodice, idRagione, idDettagli, n){
     document.getElementById(idCodice).textContent = piCliente.codice;
     document.getElementById(idRagione).textContent = piCliente.ragione;
     document.getElementById(idDettagli).textContent =
-      piCliente.citta + " (" + piCliente.provincia + ") \u00b7 " + piRighe.length + " fatture";
+      piCliente.citta + " (" + piCliente.provincia + ") \u00b7 " + n + " fatture";
   }
 
   function piApriPartite(item, righe){
@@ -5045,7 +5015,7 @@
       citta: String(r0["Città"] || "").trim(),
       provincia: String(r0["Provincia"] || "").trim()
     };
-    piIntestazione("pi-codice", "pi-ragione", "pi-dettagli");
+    piIntestazione("pi-codice", "pi-ragione", "pi-dettagli", piRighe.length);
     piRenderPartite();
     piAggiornaPiano();
     piMostra("partite");
@@ -5085,98 +5055,31 @@
   document.getElementById("pi-back-partite").addEventListener("click", () => piMostra("lista"));
   document.getElementById("pi-back-piano").addEventListener("click", () => piMostra("partite"));
 
-  // ---- Pagina 3: dati del piano e firma ----
-  const piFirmaCanvas = document.getElementById("pi-firma-canvas");
-  let piFirmaCtx = piFirmaCanvas.getContext("2d");
-  let piFirmaInchiostro = false;   // true se sul canvas c'è almeno un tratto
-  let piFirmaDisegno = false;      // true mentre il dito/penna è appoggiato
+  // ---- Pagina 3: dati del piano ----
+  const piCampiPiano = ["pi-n-scadenze", "pi-data-prima", "pi-giorni", "pi-tasso", "pi-data-tasso"]
+    .map((id) => document.getElementById(id));
 
-  function piFirmaDimensiona(){
-    const dpr = window.devicePixelRatio || 1;
-    const w = piFirmaCanvas.clientWidth;
-    const h = piFirmaCanvas.clientHeight;
-    if (!w || !h) return;
-    const pw = Math.round(w * dpr), ph = Math.round(h * dpr);
-    if (piFirmaCanvas.width !== pw || piFirmaCanvas.height !== ph){
-      piFirmaCanvas.width = pw;
-      piFirmaCanvas.height = ph;
-      piFirmaCtx = piFirmaCanvas.getContext("2d");
-      piFirmaCtx.scale(dpr, dpr);
-      piFirmaCtx.lineWidth = 2.4;
-      piFirmaCtx.lineCap = "round";
-      piFirmaCtx.lineJoin = "round";
-      piFirmaCtx.strokeStyle = "#111111";
-      piFirmaInchiostro = false;
-    }
+  // VISUALIZZA è attivo solo se tutti i campi delle informazioni sono pieni
+  function piAggiornaVisualizza(){
+    piVisualizzaBtn.disabled = !piCampiPiano.every((c) => c.value.trim() !== "");
   }
-
-  // CONFERMA è attivo solo quando la firma è presente
-  function piAggiornaConferma(){
-    piConfermaBtn.disabled = !piFirmaInchiostro;
-  }
-
-  function piFirmaPulisci(){
-    piFirmaCtx.save();
-    piFirmaCtx.setTransform(1, 0, 0, 1, 0, 0);
-    piFirmaCtx.clearRect(0, 0, piFirmaCanvas.width, piFirmaCanvas.height);
-    piFirmaCtx.restore();
-    piFirmaInchiostro = false;
-    piAggiornaConferma();
-  }
-
-  function piFirmaPunto(e){
-    const r = piFirmaCanvas.getBoundingClientRect();
-    return { x: e.clientX - r.left, y: e.clientY - r.top };
-  }
-
-  piFirmaCanvas.addEventListener("pointerdown", (e) => {
-    e.preventDefault();
-    piFirmaDimensiona();
-    piFirmaDisegno = true;
-    try { piFirmaCanvas.setPointerCapture(e.pointerId); } catch(_){}
-    const p = piFirmaPunto(e);
-    piFirmaCtx.beginPath();
-    piFirmaCtx.moveTo(p.x, p.y);
-    piFirmaCtx.lineTo(p.x + 0.01, p.y + 0.01);   // anche un tocco singolo lascia un punto
-    piFirmaCtx.stroke();
-    piFirmaCtx.beginPath();
-    piFirmaCtx.moveTo(p.x, p.y);
-    piFirmaInchiostro = true;
-    piAggiornaConferma();
+  piCampiPiano.forEach((c) => {
+    c.addEventListener("input", piAggiornaVisualizza);
+    c.addEventListener("change", piAggiornaVisualizza);
   });
-  piFirmaCanvas.addEventListener("pointermove", (e) => {
-    if (!piFirmaDisegno) return;
-    e.preventDefault();
-    const p = piFirmaPunto(e);
-    piFirmaCtx.lineTo(p.x, p.y);
-    piFirmaCtx.stroke();
-    piFirmaCtx.beginPath();
-    piFirmaCtx.moveTo(p.x, p.y);
-  });
-  ["pointerup", "pointercancel", "pointerleave"].forEach((ev) =>
-    piFirmaCanvas.addEventListener(ev, () => { piFirmaDisegno = false; })
-  );
-  document.getElementById("pi-firma-clear").addEventListener("click", piFirmaPulisci);
-
-  // PNG della firma in base64 (senza prefisso data:), sfondo trasparente
-  function piFirmaBase64(){
-    return piFirmaCanvas.toDataURL("image/png").replace(/^data:image\/png;base64,/, "");
-  }
 
   function piApriPiano(){
     if (piSelPartite.size === 0) return;
-    ["pi-n-scadenze", "pi-data-prima", "pi-giorni", "pi-tasso", "pi-data-tasso"].forEach((id) => {
-      document.getElementById(id).value = "";
-    });
-    piIntestazione("pi-codice-piano", "pi-ragione-piano", "pi-dettagli-piano");
+    piCampiPiano.forEach((c) => { c.value = ""; });
+    // il numero di fatture è quello delle partite spuntate nella pagina precedente, non il totale
+    piIntestazione("pi-codice-piano", "pi-ragione-piano", "pi-dettagli-piano", piSelPartite.size);
+    piAggiornaVisualizza();
     piMostra("piano");
-    piFirmaDimensiona();
-    piFirmaPulisci();
   }
   piPianoBtn.addEventListener("click", piApriPiano);
 
-  // Dati pronti per il web service di conferma (specifiche in arrivo)
-  function piDatiConferma(){
+  // Dati pronti per il web service di VISUALIZZA (specifiche in arrivo)
+  function piDatiPiano(){
     return {
       cliente: piCliente.codice,
       conto: piCliente.conto,
@@ -5185,19 +5088,18 @@
       dataPrimaScadenza: document.getElementById("pi-data-prima").value,
       giorniTraScadenze: document.getElementById("pi-giorni").value,
       tassoInteresse: document.getElementById("pi-tasso").value,
-      dataDecorrenzaTasso: document.getElementById("pi-data-tasso").value,
-      firma: piFirmaBase64()
+      dataDecorrenzaTasso: document.getElementById("pi-data-tasso").value
     };
   }
 
-  // *** DA COMPLETARE *** CONFERMA chiamerà un web service di cui non sono ancora state fornite le
-  // specifiche. Per ora non invia nulla: prepara i dati (piDatiConferma) e lo segnala a video.
-  function piConferma(){
-    if (piConfermaBtn.disabled) return;
-    window.__ultimoPianoDaConfermare = piDatiConferma();
-    piToast("Web service di conferma non ancora configurato: nessun dato inviato");
+  // *** DA COMPLETARE *** VISUALIZZA chiamerà un web service di cui non sono ancora state fornite le
+  // specifiche. Per ora non invia nulla: prepara i dati (piDatiPiano) e lo segnala a video.
+  function piVisualizza(){
+    if (piVisualizzaBtn.disabled) return;
+    window.__ultimoPianoDaVisualizzare = piDatiPiano();
+    piToast("Web service di visualizzazione non ancora configurato: nessun dato inviato");
   }
-  piConfermaBtn.addEventListener("click", piConferma);
+  piVisualizzaBtn.addEventListener("click", piVisualizza);
 
   btnPiano.addEventListener("click", () => {
     menuView.classList.add("hidden");
