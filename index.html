@@ -2089,7 +2089,7 @@
   }
   /* dati del piano */
   body.risctabelle-mode #pianoView .pi-form{
-    margin:-44px 20px 28px;
+    margin:-44px 20px 0;
     padding:20px;
     background:#ffffff;
     border:1px solid #e1e6ec;
@@ -2736,6 +2736,14 @@
           <label for="pi-data-tasso">Data di decorrenza del Tasso di interesse</label>
           <input type="date" id="pi-data-tasso">
         </div>
+      </div>
+      <div class="pi-dbg">
+        <div class="rt-debug-row">
+          <button type="button" class="rt-dbg" id="pi3-btn-req" aria-expanded="false">Chiamata</button>
+          <button type="button" class="rt-dbg" id="pi3-btn-resp" aria-expanded="false">Risposta</button>
+        </div>
+        <pre class="rt-panel" id="pi3-pan-req"></pre>
+        <pre class="rt-panel" id="pi3-pan-resp"></pre>
       </div>
     </div>
   </div>
@@ -4739,8 +4747,8 @@
   // Pagina 1: elenco clienti IDENTICO a RISCTABELLE (stessa query qapp_risc_ws, stesso envelope,
   //           stessa lettura, stesso elenco e bottone "Estrai partite aperte").
   // Pagina 2: partite aperte del cliente (chiamata a bapp_piano_ws), con check di selezione.
-  // Pagina 3: dati del piano; VISUALIZZA è attivo solo se tutti i campi sono pieni.
-  // (La firma del cliente sarà nella videata successiva.)
+  // Pagina 3: dati del piano; VISUALIZZA è attivo solo se tutti i campi sono pieni e chiama
+  // bapp_piano_ws (p_tipo = P). (La firma del cliente sarà nella videata successiva.)
   const btnPiano = document.getElementById("btnPiano");
   const pianoView = document.getElementById("pianoView");
   const pianoBackBtn = document.getElementById("pianoBackBtn");
@@ -4758,10 +4766,16 @@
   const piBtnReq = document.getElementById("pi-btn-req");
   const piBtnResp = document.getElementById("pi-btn-resp");
 
+  const piPanReq3 = document.getElementById("pi3-pan-req");
+  const piPanResp3 = document.getElementById("pi3-pan-resp");
+  const piBtnReq3 = document.getElementById("pi3-btn-req");
+  const piBtnResp3 = document.getElementById("pi3-btn-resp");
+
   let piItems = [];      // clienti (qapp_risc_ws)
   let piSelIndex = -1;   // cliente scelto nell'elenco
   let piCliente = null;  // { codice, ragione, citta, provincia, conto }
   let piRighe = [];      // partite aperte del cliente (righe nel tracciato RiscEXCEL)
+  let piItemEstratto = null;   // voce dell'elenco usata per l'estrazione: dà p_conto e p_cliente anche a VISUALIZZA
   let piSelPartite = new Set();   // indici delle partite spuntate
 
   // La modalità grafica di RISCTABELLE (body.risctabelle-mode) vale anche qui
@@ -4796,6 +4810,18 @@
   }
   piBtnReq.addEventListener("click", () => piDbgToggle(piPanReq, piBtnReq));
   piBtnResp.addEventListener("click", () => piDbgToggle(piPanResp, piBtnResp));
+
+  // Stessi pulsanti in fondo alla pagina del piano: chiamata e risposta di VISUALIZZA
+  function piDbg3Reset(){
+    piPanReq3.textContent = "(nessuna chiamata effettuata)";
+    piPanResp3.textContent = "(nessuna risposta ricevuta)";
+    [[piPanReq3, piBtnReq3], [piPanResp3, piBtnResp3]].forEach(([pan, btn]) => {
+      pan.classList.remove("show");
+      btn.setAttribute("aria-expanded", "false");
+    });
+  }
+  piBtnReq3.addEventListener("click", () => piDbgToggle(piPanReq3, piBtnReq3));
+  piBtnResp3.addEventListener("click", () => piDbgToggle(piPanResp3, piBtnResp3));
 
   // Tre pagine. Il Menu in alto c'è solo sull'elenco clienti (come in RISCTABELLE, dove le
   // schermate successive hanno solo la freccia di ritorno).
@@ -4843,6 +4869,7 @@
   async function caricaPiano(){
     piMostra("lista");
     piDbgReset();
+    piDbg3Reset();
     piItems = [];
     piSelIndex = -1;
     piEstrai.disabled = true;
@@ -4916,8 +4943,9 @@
 
   // ---- Chiamata a bapp_piano_ws: elenco delle partite aperte del cliente ----
   // Come da specifica: p_conto = G20GEACC e p_cliente = A19CLIEN del cliente scelto dall'utente;
-  // dopo di loro p_tipo = E (estrazione delle partite aperte).
-  function buildPianoWsEnvelope(item){
+  // dopo di loro p_tipo: E = estrazione delle partite aperte (Estrai partite aperte),
+  // P = piano di rientro (VISUALIZZA), che aggiunge p_dati con il JSON del piano.
+  function buildPianoWsEnvelope(item, tipo, dati){
     return `<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:bapp="http://bapp_piano_ws.ws.localhost/">
    <soapenv:Header/>
@@ -4942,7 +4970,8 @@
          <bapp:p_UL></bapp:p_UL>
          <bapp:p_conto>${escapeXml(item.G20GEACC)}</bapp:p_conto>
          <bapp:p_cliente>${escapeXml(item.A19CLIEN)}</bapp:p_cliente>
-         <bapp:p_tipo>E</bapp:p_tipo>
+         <bapp:p_tipo>${escapeXml(tipo)}</bapp:p_tipo>${tipo === "P" ? `
+         <bapp:p_dati>${escapeXml(dati || "")}</bapp:p_dati>` : ""}
       </bapp:bapp_piano_ws_Run>
    </soapenv:Body>
 </soapenv:Envelope>`;
@@ -4956,7 +4985,7 @@
     piEstrai.textContent = "Estrazione in corso\u2026";
     piPanResp.textContent = "(in attesa della risposta\u2026)";
     try {
-      const xml = buildPianoWsEnvelope(item);
+      const xml = buildPianoWsEnvelope(item, "E");
       piPanReq.textContent = xml;
       const resp = await fetch(WS_PIANO_URL, {
         method: "POST",
@@ -5007,7 +5036,9 @@
   function piApriPartite(item, righe){
     const r0 = righe[0];
     piRighe = righe;
+    piItemEstratto = item;
     piSelPartite = new Set();
+    piDbg3Reset();   // chiamata e risposta di VISUALIZZA riguardano il cliente precedente
     piCliente = {
       conto: item.G20GEACC,
       codice: String(r0["Cli-For"] || item.A19CLIEN || "").trim(),
@@ -5078,26 +5109,60 @@
   }
   piPianoBtn.addEventListener("click", piApriPiano);
 
-  // Dati pronti per il web service di VISUALIZZA (specifiche in arrivo)
-  function piDatiPiano(){
-    return {
-      cliente: piCliente.codice,
-      conto: piCliente.conto,
-      partite: [...piSelPartite].sort((a, b) => a - b).map((i) => piRighe[i]),
-      numeroScadenze: document.getElementById("pi-n-scadenze").value,
-      dataPrimaScadenza: document.getElementById("pi-data-prima").value,
-      giorniTraScadenze: document.getElementById("pi-giorni").value,
-      tassoInteresse: document.getElementById("pi-tasso").value,
-      dataDecorrenzaTasso: document.getElementById("pi-data-tasso").value
-    };
+  // JSON di p_dati: partite spuntate (anpar = Anno, prpar = Prefisso, nrpar = No) e dati del piano.
+  // Nomi e formati dei campi provvisori, in attesa di indicazioni: numeri come numeri, date come
+  // aaaa-mm-gg (il formato del selettore), decimale col punto.
+  function piCostruisciPDati(){
+    const val = (id) => document.getElementById(id).value;
+    return JSON.stringify({
+      partite: [...piSelPartite].sort((a, b) => a - b).map((i) => ({
+        anpar: String(piRighe[i]["Anno"]).trim(),
+        prpar: String(piRighe[i]["Prefisso"]).trim(),
+        nrpar: String(piRighe[i]["No"]).trim()
+      })),
+      numero_scadenze: Number(val("pi-n-scadenze")),
+      data_prima_scadenza: val("pi-data-prima"),
+      giorni_tra_scadenze: Number(val("pi-giorni")),
+      tasso_interesse: Number(val("pi-tasso")),
+      data_decorrenza_tasso: val("pi-data-tasso")
+    });
   }
 
-  // *** DA COMPLETARE *** VISUALIZZA chiamerà un web service di cui non sono ancora state fornite le
-  // specifiche. Per ora non invia nulla: prepara i dati (piDatiPiano) e lo segnala a video.
-  function piVisualizza(){
-    if (piVisualizzaBtn.disabled) return;
-    window.__ultimoPianoDaVisualizzare = piDatiPiano();
-    piToast("Web service di visualizzazione non ancora configurato: nessun dato inviato");
+  // VISUALIZZA: chiama bapp_piano_ws con p_tipo = P. p_conto e p_cliente sono quelli del cliente
+  // dell'estrazione; p_dati è il JSON qui sopra. okexp N -> si mostra messaggio; okexp Y -> la
+  // risposta contiene i dati da mostrare, ma come non è ancora definito: per ora un messaggio, e la
+  // risposta completa è nel pannello Risposta in fondo alla pagina.
+  async function piVisualizza(){
+    if (piVisualizzaBtn.disabled || !piItemEstratto) return;
+    const testoBtn = piVisualizzaBtn.textContent;
+    piVisualizzaBtn.disabled = true;
+    piVisualizzaBtn.textContent = "ATTENDERE\u2026";
+    piPanResp3.textContent = "(in attesa della risposta\u2026)";
+    try {
+      const xml = buildPianoWsEnvelope(piItemEstratto, "P", piCostruisciPDati());
+      piPanReq3.textContent = xml;
+      const resp = await fetch(WS_PIANO_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/xml; charset=utf-8" },
+        body: xml
+      });
+      const txt = await resp.text();
+      piPanResp3.textContent = deepDecode(txt) || "(risposta vuota)";
+      if (!resp.ok){ piToast("Errore HTTP " + resp.status + " " + resp.statusText); return; }
+      let data;
+      try { data = parseLoginResponse(txt); }
+      catch(e){ piToast("Risposta del web service non riconosciuta come JSON"); return; }
+      const ok = String(data.okexp == null ? "" : data.okexp).trim().toUpperCase() === "Y";
+      if (!ok){ piToast(data.messaggio || "Operazione non riuscita."); return; }
+      piToast("Risposta ricevuta: la visualizzazione dei dati non \u00e8 ancora configurata (vedi Risposta)");
+    } catch(err){
+      const msg = err && err.message ? err.message : String(err);
+      piPanResp3.textContent = "Chiamata non riuscita.\n\n" + msg;
+      piToast("Chiamata non riuscita: " + msg);
+    } finally {
+      piVisualizzaBtn.textContent = testoBtn;
+      piAggiornaVisualizza();
+    }
   }
   piVisualizzaBtn.addEventListener("click", piVisualizza);
 

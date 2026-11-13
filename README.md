@@ -442,28 +442,46 @@ tre pagine; stile G come RISCTABELLE.
    **PIANO DI RIENTRO è attivo solo se è spuntata almeno una partita** (scelta mia: la
    specifica non lo diceva). Il Menu in alto non c'è in questa pagina né nella
    successiva, come nelle schermate successive di Riscossione; ‹ torna indietro.
-3. **Piano di rientro.** In alto ‹, codice, ragione sociale e il bottone **VISUALIZZA**
-   (al posto di CONFERMA). Sotto la ragione sociale, "Città (Prov) · **N fatture**": qui
-   **N è il numero delle partite spuntate** nella pagina precedente, non il totale (la
-   pagina delle partite continua a mostrare il totale). Sotto i dati dell'incaricato,
-   nell'ordine: **Numero scadenze**, **Data prima scadenza**, **Nr giorni tra le
-   scadenze**, **Tasso di interesse**, **Data di decorrenza del Tasso di interesse**
-   (numeri e date con la tastiera/selettore adatti). **Non c'è più lo spazio per la
-   firma del cliente**: sarà nella videata successiva. **VISUALIZZA è attivo solo se
-   tutti e cinque i campi sono pieni** (un campo con 0 è pieno; basta svuotarne uno per
-   disattivarlo di nuovo). I campi si azzerano a ogni apertura della pagina; le spunte
-   delle partite si conservano tornando indietro con ‹.
+3. **Piano di rientro.** In alto ‹, codice, ragione sociale e il bottone **VISUALIZZA**.
+   Sotto la ragione sociale, "Città (Prov) · **N fatture**": **N è il numero delle
+   partite spuntate** nella pagina precedente, non il totale. Sotto i dati
+   dell'incaricato, nell'ordine: **Numero scadenze**, **Data prima scadenza**, **Nr
+   giorni tra le scadenze**, **Tasso di interesse**, **Data di decorrenza del Tasso di
+   interesse**. Non c'è spazio per la firma del cliente: sarà nella videata successiva.
+   **VISUALIZZA è attivo solo se tutti e cinque i campi sono pieni** (un campo con 0 è
+   pieno) e **chiama `bapp_piano_ws` con `p_tipo` = P** (vedi sotto); durante la chiamata
+   mostra "ATTENDERE…" ed è disattivato. In fondo alla pagina, **16 px sotto il
+   riquadro dei campi**, ci sono i pulsanti **Chiamata** e **Risposta**, uguali a quelli
+   dell'elenco clienti: mostrano la busta SOAP inviata e la risposta ricevuta (anche in
+   caso di errore HTTP o di rete); si azzerano a ogni nuova estrazione e a ogni
+   apertura di Piani di rientro. I campi si azzerano a ogni apertura della pagina; le
+   spunte delle partite si conservano tornando indietro con ‹.
 
-**Web service `bapp_piano_ws` (partite aperte) — secondo specifica.** Si chiama con
-*Estrai partite aperte* dopo aver scelto un cliente. Chiamata
-(`buildPianoWsEnvelope`, verso `…/servlet/bapp_piano_ws`, namespace
-`http://bapp_piano_ws.ws.localhost/`, operazione `bapp_piano_ws_Run`): `m_UserName` ws,
-`m_Password` ws_1234!, `m_Company`, `m_Instance`, `p_user`, `p_ws_call` Y, `p_Subs`,
-`p_Branc`, `p_Sect`, `p_Curr`, `p_PhiSite`, `p_PaySite`/`p_PaySubs`/`p_Wareh`/
-`p_DefaYearS`/`p_DefaSess`/`p_UL` vuoti, **`p_conto` = G20GEACC** e **`p_cliente` =
-A19CLIEN** del cliente scelto, seguiti da **`p_tipo` = E** (ultimo parametro) (verificato
-riga per riga con la specifica).
-Risposta JSON: se **`okexp` = N** si mostra il contenuto di **`messaggio`**; se
+**Web service `bapp_piano_ws` — secondo specifica.** Una sola funzione,
+`buildPianoWsEnvelope(item, tipo, dati)`, costruisce la chiamata (verso
+`…/servlet/bapp_piano_ws`, namespace `http://bapp_piano_ws.ws.localhost/`, operazione
+`bapp_piano_ws_Run`): `m_UserName` ws, `m_Password` ws_1234!, `m_Company`, `m_Instance`,
+`p_user`, `p_ws_call` Y, `p_Subs`, `p_Branc`, `p_Sect`, `p_Curr`, `p_PhiSite`,
+`p_PaySite`/`p_PaySubs`/`p_Wareh`/`p_DefaYearS`/`p_DefaSess`/`p_UL` vuoti, **`p_conto` =
+G20GEACC** e **`p_cliente` = A19CLIEN** del cliente scelto nell'elenco (**gli stessi in
+entrambe le chiamate**: per VISUALIZZA si riusa la voce dell'elenco dell'estrazione,
+`piItemEstratto`), poi **`p_tipo`**:
+
+- **`p_tipo` = E** — *Estrai partite aperte*: nessun altro parametro.
+- **`p_tipo` = P** — *VISUALIZZA*: in più **`p_dati`**, un **JSON** (con `escapeXml`, quindi
+  le virgolette vanno come `&quot;`) costruito da `piCostruisciPDati()`:
+  ```json
+  { "partite": [ { "anpar": "2014", "prpar": "A", "nrpar": "28" } ],
+    "numero_scadenze": 6, "data_prima_scadenza": "2026-12-15",
+    "giorni_tra_scadenze": 30, "tasso_interesse": 4.5,
+    "data_decorrenza_tasso": "2026-11-01" }
+  ```
+  `anpar`, `prpar`, `nrpar` sono Anno, Prefisso e No (senza spazi) delle sole partite
+  spuntate, nell'ordine dell'elenco; numeri come numeri (decimale col punto), date
+  `aaaa-mm-gg` come le dà il selettore. **I nomi dei campi (eccetto anpar/prpar/nrpar) e
+  i formati sono provvisori, in attesa di indicazioni.**
+
+Risposta alla chiamata **E** — Risposta JSON: se **`okexp` = N** si mostra il contenuto di **`messaggio`**; se
 **`okexp` = Y**, **`dati`** è l'**elenco (JSON) dei record** delle partite aperte, come in
 RISCTABELLE: **non si legge nessun file Excel**. Come in RISCTABELLE valgono i record
 che hanno il codice cliente (`Cli-For`); i campi usati sono Cli-For, Ragione Sociale,
@@ -474,14 +492,16 @@ vuoto o senza record; "I dati ricevuti non hanno la colonna attesa (Cli-For)." s
 record non la contengono; "Dati ricevuti in un formato non atteso: era attesa una lista
 di record." se `dati` non è una lista (per esempio un testo).
 
-**Cosa è ancora DA COMPLETARE:** **VISUALIZZA** non chiama ancora nessun web service
-(specifiche in arrivo): mostra "Web service di visualizzazione non ancora configurato:
-nessun dato inviato". I dati sono già pronti in `piDatiPiano()` (cliente, conto,
-partite spuntate e i cinque dati del piano; la firma non c'è, perché andrà nella
-videata successiva), così basterà costruire la chiamata quando arriveranno le
-specifiche.
+Risposta alla chiamata **P** (VISUALIZZA): se **`okexp` = N** si mostra **`messaggio`**; se
+**`okexp` = Y** la risposta contiene dei dati da mostrare.
 
-Lato Wigest/Tomcat: pubblicare `bapp_piano_ws` (e, a suo tempo, il web service di VISUALIZZA) su ogni
+**Cosa è ancora DA COMPLETARE:** la **visualizzazione dei dati** restituiti da VISUALIZZA
+(indicazioni in arrivo). Per ora, con `okexp` = Y compare "Risposta ricevuta: la
+visualizzazione dei dati non è ancora configurata (vedi Risposta)" e la risposta intera
+si legge nel pannello **Risposta** in fondo alla pagina. Anche la pagina successiva con
+la firma del cliente è da fare.
+
+Lato Wigest/Tomcat: pubblicare `bapp_piano_ws`  su ogni
 istanza interessata, con CORS su `/servlet/*`; la query `qapp_risc_ws` è la stessa
 già usata da RISCTABELLE.
 
