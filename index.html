@@ -5109,7 +5109,8 @@
   }
   piPianoBtn.addEventListener("click", piApriPiano);
 
-  // JSON di p_dati: partite spuntate (anpar = Anno, prpar = Prefisso, nrpar = No) e dati del piano.
+  // JSON di p_dati: partite spuntate (anpar = Anno, prpar = Prefisso, nrpar = No, importo = Saldo)
+  // e dati del piano.
   // Nomi e formati dei campi provvisori, in attesa di indicazioni: numeri come numeri, date come
   // aaaa-mm-gg (il formato del selettore), decimale col punto.
   function piCostruisciPDati(){
@@ -5118,7 +5119,8 @@
       partite: [...piSelPartite].sort((a, b) => a - b).map((i) => ({
         anpar: String(piRighe[i]["Anno"]).trim(),
         prpar: String(piRighe[i]["Prefisso"]).trim(),
-        nrpar: String(piRighe[i]["No"]).trim()
+        nrpar: String(piRighe[i]["No"]).trim(),
+        importo: parseImporto(piRighe[i]["Saldo"])   // il Saldo mostrato sulla scheda, come numero (può essere negativo)
       })),
       numero_scadenze: Number(val("pi-n-scadenze")),
       data_prima_scadenza: val("pi-data-prima"),

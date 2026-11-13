@@ -471,14 +471,15 @@ entrambe le chiamate**: per VISUALIZZA si riusa la voce dell'elenco dell'estrazi
 - **`p_tipo` = P** — *VISUALIZZA*: in più **`p_dati`**, un **JSON** (con `escapeXml`, quindi
   le virgolette vanno come `&quot;`) costruito da `piCostruisciPDati()`:
   ```json
-  { "partite": [ { "anpar": "2014", "prpar": "A", "nrpar": "28" } ],
+  { "partite": [ { "anpar": "2014", "prpar": "A", "nrpar": "28", "importo": -8907.18 } ],
     "numero_scadenze": 6, "data_prima_scadenza": "2026-12-15",
     "giorni_tra_scadenze": 30, "tasso_interesse": 4.5,
     "data_decorrenza_tasso": "2026-11-01" }
   ```
   `anpar`, `prpar`, `nrpar` sono Anno, Prefisso e No (senza spazi) delle sole partite
-  spuntate, nell'ordine dell'elenco; numeri come numeri (decimale col punto), date
-  `aaaa-mm-gg` come le dà il selettore. **I nomi dei campi (eccetto anpar/prpar/nrpar) e
+  spuntate, nell'ordine dell'elenco; `importo` è il **Saldo** della partita, lo stesso
+  mostrato sulla scheda, come numero col punto decimale (può essere negativo); numeri come numeri (decimale col punto), date
+  `aaaa-mm-gg` come le dà il selettore. **I nomi dei campi (eccetto anpar/prpar/nrpar; `importo` è il nome che mi hai indicato) e
   i formati sono provvisori, in attesa di indicazioni.**
 
 Risposta alla chiamata **E** — Risposta JSON: se **`okexp` = N** si mostra il contenuto di **`messaggio`**; se
