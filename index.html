@@ -2161,7 +2161,7 @@
   body.risctabelle-mode #pianoView .pi-riga{
     display:flex;
     align-items:baseline;
-    gap:8px;
+    gap:6px;
     padding:12px;
     background:#ffffff;
     border:1px solid #e1e6ec;
@@ -2188,6 +2188,13 @@
     flex:none;
     font-size:12.5px;
     color:#5b6877;
+    font-variant-numeric:tabular-nums;   /* cifre di larghezza uguale: il totale resta allineato agli importi sopra */
+  }
+  /* riga del totale */
+  body.risctabelle-mode #pianoView .pi-riga.pi-riga-tot{
+    background:#dcebf8;
+    border-color:#bcd7ee;
+    box-shadow:none;
   }
   body.risctabelle-mode #pianoView .pi-riga-vuoto{
     padding:4px 2px;
@@ -2233,6 +2240,13 @@
     body.risctabelle-mode #pianoView .pi-riga-imp{ font-size:12.5px; }
     body.risctabelle-mode #pianoView .pi-riga-sc{ font-size:11.5px; }
     body.risctabelle-mode #pianoView .pi-firma{ margin:0 16px; }
+  }
+  /* schermi molto stretti (fino a 340 px): carattere e spazi ancora più piccoli, per tenere ogni voce su una riga */
+  @media (max-width:340px){
+    body.risctabelle-mode #pianoView .pi-riga{ gap:5px; padding:12px 10px; }
+    body.risctabelle-mode #pianoView .pi-riga-id,
+    body.risctabelle-mode #pianoView .pi-riga-imp{ font-size:12px; }
+    body.risctabelle-mode #pianoView .pi-riga-sc{ font-size:11px; }
   }
   /* il Menu come pulsante circondato (lo stile G di RISCTABELLE lo copre già); icona nel menu */
   body.menu-mode .app-ico-piani{ background:#b4532a; }
@@ -2801,7 +2815,7 @@
       <div class="header pi-header">
         <button type="button" class="pi-back" id="pi-back-piano" aria-label="Indietro">&lsaquo;</button>
         <h1 id="pi-codice-piano"></h1>
-        <button type="button" class="pi-azione" id="pi-visualizza" disabled>VISUALIZZA</button>
+        <button type="button" class="pi-azione" id="pi-visualizza" disabled>VISUALIZZA PIANO</button>
       </div>
       <div class="pi-info">
         <div class="pi-ragione" id="pi-ragione-piano"></div>
@@ -5350,14 +5364,26 @@
       `<span class="pi-riga-sc">${escapeXml(formatData(scadenza))}</span></div>`;
   }
 
+  // Riga del totale: stessa struttura delle altre (una riga sola); la data è uno spazio invisibile della
+  // stessa larghezza, così l'importo del totale resta allineato a quelli delle righe sopra.
+  function piTotaleHtml(etichetta, somma){
+    const tot = Math.round(somma * 100) / 100;
+    return `<div class="pi-riga pi-riga-tot"><span class="pi-riga-id">${escapeXml(etichetta)}</span>` +
+      `<span class="pi-riga-imp">\u20ac ${formatImporto(tot)}</span>` +
+      `<span class="pi-riga-sc" aria-hidden="true" style="visibility:hidden">00/00/0000</span></div>`;
+  }
+
   function piApriConferma(){
     if (!piRispP) return;
     piIntestazione("pi-codice-conf", "pi-ragione-conf", "pi-dettagli-conf", piSelPartite.size);
-    const elenco = (arr, vuoto, riga) => arr.length ? arr.map(riga).join("") : `<div class="pi-riga-vuoto">${vuoto}</div>`;
+    // dopo l'ultima voce di ogni elenco, la riga del totale (somma dei valori esatti, scritta a 2 decimali)
+    const elenco = (arr, vuoto, riga, campo, etichetta) => arr.length
+      ? arr.map(riga).join("") + piTotaleHtml(etichetta, arr.reduce((t, r) => t + parseImporto(r[campo]), 0))
+      : `<div class="pi-riga-vuoto">${vuoto}</div>`;
     document.getElementById("pi-righe-partite").innerHTML =
-      elenco(piRispP.partite, "Nessuna partita.", (r) => piRigaHtml(piIdPartita(r), r["Saldo"], r["Scadenza"]));
+      elenco(piRispP.partite, "Nessuna partita.", (r) => piRigaHtml(piIdPartita(r), r["Saldo"], r["Scadenza"]), "Saldo", "Totale partite");
     document.getElementById("pi-righe-scadenze").innerHTML =
-      elenco(piRispP.scadenze, "Nessuna scadenza.", (r) => piRigaHtml(piIdPartita(r), r["Importo"], r["Scadenza"]));
+      elenco(piRispP.scadenze, "Nessuna scadenza.", (r) => piRigaHtml(piIdPartita(r), r["Importo"], r["Scadenza"]), "Importo", "Totale scadenze");
     piDbg4Reset();
     piMostra("conferma");
     piFirmaDimensiona();

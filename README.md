@@ -442,12 +442,13 @@ tre pagine; stile G come RISCTABELLE.
    **PIANO DI RIENTRO è attivo solo se è spuntata almeno una partita** (scelta mia: la
    specifica non lo diceva). Il Menu in alto non c'è in questa pagina né nella
    successiva, come nelle schermate successive di Riscossione; ‹ torna indietro.
-3. **Piano di rientro.** In alto ‹, codice, ragione sociale e il bottone **VISUALIZZA**.
+3. **Piano di rientro.** In alto ‹, codice, ragione sociale e il bottone **VISUALIZZA PIANO**
+   (nel resto del testo e nel codice lo chiamo "VISUALIZZA").
    Sotto la ragione sociale, "Città (Prov) · **N fatture**": **N è il numero delle
    partite spuntate** nella pagina precedente, non il totale. Sotto i dati
    dell'incaricato, nell'ordine: **Numero scadenze**, **Data prima scadenza**, **Nr
    giorni tra le scadenze**, **Tasso di interesse**, **Data di decorrenza del Tasso di
-   interesse**. **VISUALIZZA è attivo solo se tutti e cinque i campi sono pieni** (un
+   interesse**. **VISUALIZZA PIANO è attivo solo se tutti e cinque i campi sono pieni** (un
    campo con 0 è pieno) e **chiama `bapp_piano_ws` con `p_tipo` = P** (vedi sotto);
    durante la chiamata mostra "ATTENDERE…" ed è disattivato. Con `okexp` N compare il
    `messaggio` e si resta qui; con `okexp` Y si apre la pagina 4. In fondo alla pagina,
@@ -463,9 +464,15 @@ tre pagine; stile G come RISCTABELLE.
    (`anno\prefisso\numero` senza spazi, con il prefisso vuoto `anno\\numero`),
    **importo** a due decimali (per le partite il `Saldo`, per le scadenze l'`Importo`,
    anche se ricevuto con tre decimali: a video `250,62`, al server resta `250.617`) e
-   **data scadenza** `gg/mm/aaaa`. Fino a 380 px di larghezza il carattere si riduce
-   (12,5 px) perché la riga resti una; sotto i 340 px circa, con importi enormi,
-   l'identificativo può finire con i puntini ma non va mai a capo. Poi il riquadro
+   **data scadenza** `gg/mm/aaaa`. **Dopo l'ultima partita c'è la riga "Totale partite" e
+   dopo l'ultima scadenza "Totale scadenze"** (riga azzurra, sempre su una riga, con
+   l'importo allineato a quelli sopra): sono la **somma dei valori esatti**, scritta a 2
+   decimali (con le scadenze d'esempio, 3 × 250,617, il totale è `751,85` anche se le
+   tre righe mostrano `250,62`; sommando le righe arrotondate verrebbe 751,86). Le partite
+   sommano il `Saldo`, le scadenze l'`Importo`; senza voci non c'è totale. Fino a 380 px di
+   larghezza il carattere si riduce (12,5 px), sotto i 340 px ancora (12 px) perché la riga
+   resti una; con importi enormi l'identificativo può finire con i puntini ma non va mai
+   a capo. Poi il riquadro
    **Firma del cliente** (stesso di Aggiornamento Clienti: dito o penna, "Cancella
    firma") e in fondo i pulsanti **Chiamata** e **Risposta** per la chiamata C. La
    firma e i pannelli si azzerano a ogni apertura della pagina.
