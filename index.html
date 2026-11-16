@@ -5109,18 +5109,30 @@
   }
   piPianoBtn.addEventListener("click", piApriPiano);
 
-  // JSON di p_dati: partite spuntate (anpar = Anno, prpar = Prefisso, nrpar = No, importo = Saldo)
-  // e dati del piano.
+  // JSON di p_dati: partite spuntate (anpar = Anno, prpar = Prefisso, nrpar = No, importo = Saldo,
+  // data_documento = Data_Doc, data_scadenza = Scadenza) e dati del piano.
   // Nomi e formati dei campi provvisori, in attesa di indicazioni: numeri come numeri, date come
   // aaaa-mm-gg (il formato del selettore), decimale col punto.
   function piCostruisciPDati(){
     const val = (id) => document.getElementById(id).value;
+    // data della partita in aaaa-mm-gg (come le altre date del JSON), qualunque sia il formato ricevuto:
+    // "2014-04-03", "2014-04-03 00:00:00", "2014-04-03T00:00:00" o "03/04/2014 00:00:00"; vuota -> ""
+    const isoData = (v) => {
+      const s = String(v == null ? "" : v).trim().split(" ")[0].split("T")[0];
+      let m = s.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      if (m) return s;
+      m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+      if (m) return m[3] + "-" + m[2].padStart(2, "0") + "-" + m[1].padStart(2, "0");
+      return s;
+    };
     return JSON.stringify({
       partite: [...piSelPartite].sort((a, b) => a - b).map((i) => ({
         anpar: String(piRighe[i]["Anno"]).trim(),
         prpar: String(piRighe[i]["Prefisso"]).trim(),
         nrpar: String(piRighe[i]["No"]).trim(),
-        importo: parseImporto(piRighe[i]["Saldo"])   // il Saldo mostrato sulla scheda, come numero (può essere negativo)
+        importo: parseImporto(piRighe[i]["Saldo"]),   // il Saldo mostrato sulla scheda, come numero (può essere negativo)
+        data_documento: isoData(piRighe[i]["Data_Doc"]),
+        data_scadenza: isoData(piRighe[i]["Scadenza"])
       })),
       numero_scadenze: Number(val("pi-n-scadenze")),
       data_prima_scadenza: val("pi-data-prima"),
