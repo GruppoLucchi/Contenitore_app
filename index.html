@@ -5444,7 +5444,8 @@
   }
 
   // CONFERMA PIANO: chiama bapp_piano_ws con p_tipo = C. p_conto e p_cliente come nelle altre chiamate;
-  // p_dati = JSON con le partite e le scadenze ESATTAMENTE come ricevute da VISUALIZZA; p_firma = PNG
+  // p_dati = JSON con le partite e le scadenze come ricevute da VISUALIZZA (le scadenze con in più
+  // Nr_Scadenza, il numero progressivo da 1, che a video non si mostra); p_firma = PNG
   // della firma in base64. okexp N -> si mostra messaggio; okexp Y -> "Piano confermato" e si torna
   // all'elenco clienti. Nel pannello Chiamata la firma è abbreviata (è un'immagine lunga migliaia di
   // caratteri): la chiamata realmente inviata la contiene tutta.
@@ -5458,7 +5459,11 @@
     let fatto = false;
     try {
       const firma = piFirmaBase64();
-      const dati = JSON.stringify({ partite: piRispP.partite, scadenze: piRispP.scadenze });
+      // le scadenze come ricevute, con in più il numero progressivo (1, 2, 3, ...) nell'ordine dell'elenco
+      const dati = JSON.stringify({
+        partite: piRispP.partite,
+        scadenze: piRispP.scadenze.map((s, i) => ({ Nr_Scadenza: i + 1, ...s }))
+      });
       const xml = buildPianoWsEnvelope(piItemEstratto, "C", dati, firma);
       piPanReq4.textContent = xml.replace(firma, firma.slice(0, 80) + "\u2026 [firma PNG: " + firma.length + " caratteri]");
       const resp = await fetch(WS_PIANO_URL, {

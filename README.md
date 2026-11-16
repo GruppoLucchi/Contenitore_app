@@ -501,8 +501,11 @@ entrambe le chiamate**: per VISUALIZZA si riusa la voce dell'elenco dell'estrazi
   i formati sono provvisori, in attesa di indicazioni.**
 
 - **`p_tipo` = C** — *CONFERMA PIANO*: **`p_dati`** e **`p_firma`**.
-  `p_dati` è un JSON con **`partite`** e **`scadenze` esattamente come le ha restituite
-  VISUALIZZA**, senza modificare nulla (stesse chiavi — Anno, No, Data_Doc, Scadenza,
+  `p_dati` è un JSON con **`partite`** e **`scadenze` come le ha restituite
+  VISUALIZZA**; le partite non sono modificate, le scadenze hanno **in più
+  `Nr_Scadenza`**: il **numero progressivo** (1, 2, 3, …, intero) nell'ordine dell'elenco
+  ricevuto, messo come primo campo. **A video il numero non si mostra** (per ora).
+  Per il resto nessuna modifica (stesse chiavi — Anno, No, Data_Doc, Scadenza,
   Prefisso, Cli-For, Saldo, Conto per le partite; Anno, No, Scadenza, Prefisso, Cli-For,
   Conto, Importo per le scadenze — e stessi valori, spazi in fondo ai testi compresi).
   `p_firma` è la **firma in PNG codificato in base64**, senza il prefisso `data:` e con
