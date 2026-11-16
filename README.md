@@ -447,15 +447,28 @@ tre pagine; stile G come RISCTABELLE.
    partite spuntate** nella pagina precedente, non il totale. Sotto i dati
    dell'incaricato, nell'ordine: **Numero scadenze**, **Data prima scadenza**, **Nr
    giorni tra le scadenze**, **Tasso di interesse**, **Data di decorrenza del Tasso di
-   interesse**. Non c'è spazio per la firma del cliente: sarà nella videata successiva.
-   **VISUALIZZA è attivo solo se tutti e cinque i campi sono pieni** (un campo con 0 è
-   pieno) e **chiama `bapp_piano_ws` con `p_tipo` = P** (vedi sotto); durante la chiamata
-   mostra "ATTENDERE…" ed è disattivato. In fondo alla pagina, **16 px sotto il
-   riquadro dei campi**, ci sono i pulsanti **Chiamata** e **Risposta**, uguali a quelli
-   dell'elenco clienti: mostrano la busta SOAP inviata e la risposta ricevuta (anche in
-   caso di errore HTTP o di rete); si azzerano a ogni nuova estrazione e a ogni
-   apertura di Piani di rientro. I campi si azzerano a ogni apertura della pagina; le
+   interesse**. **VISUALIZZA è attivo solo se tutti e cinque i campi sono pieni** (un
+   campo con 0 è pieno) e **chiama `bapp_piano_ws` con `p_tipo` = P** (vedi sotto);
+   durante la chiamata mostra "ATTENDERE…" ed è disattivato. Con `okexp` N compare il
+   `messaggio` e si resta qui; con `okexp` Y si apre la pagina 4. In fondo alla pagina,
+   **16 px sotto il riquadro dei campi**, ci sono i pulsanti **Chiamata** e
+   **Risposta**: mostrano la busta SOAP inviata (P) e la risposta ricevuta (anche in
+   caso di errore HTTP o di rete). I campi si azzerano a ogni apertura della pagina; le
    spunte delle partite si conservano tornando indietro con ‹.
+4. **Conferma del piano** (`#pi-schermo-conferma`). Si apre con la risposta di
+   VISUALIZZA. In alto ‹ (torna ai campi, che restano compilati), codice, ragione
+   sociale, "Città (Prov) · N fatture" e il bottone **CONFERMA PIANO**, **attivo solo
+   quando la firma è presente** (si disattiva con "Cancella firma"). Sotto due elenchi,
+   **Partite** e **Scadenze**, con **ogni voce su una sola riga**: identificativo
+   (`anno\prefisso\numero` senza spazi, con il prefisso vuoto `anno\\numero`),
+   **importo** a due decimali (per le partite il `Saldo`, per le scadenze l'`Importo`,
+   anche se ricevuto con tre decimali: a video `250,62`, al server resta `250.617`) e
+   **data scadenza** `gg/mm/aaaa`. Fino a 380 px di larghezza il carattere si riduce
+   (12,5 px) perché la riga resti una; sotto i 340 px circa, con importi enormi,
+   l'identificativo può finire con i puntini ma non va mai a capo. Poi il riquadro
+   **Firma del cliente** (stesso di Aggiornamento Clienti: dito o penna, "Cancella
+   firma") e in fondo i pulsanti **Chiamata** e **Risposta** per la chiamata C. La
+   firma e i pannelli si azzerano a ogni apertura della pagina.
 
 **Web service `bapp_piano_ws` — secondo specifica.** Una sola funzione,
 `buildPianoWsEnvelope(item, tipo, dati)`, costruisce la chiamata (verso
@@ -487,6 +500,16 @@ entrambe le chiamate**: per VISUALIZZA si riusa la voce dell'elenco dell'estrazi
   `aaaa-mm-gg` come le dà il selettore. **I nomi dei campi (eccetto anpar/prpar/nrpar e `importo`, che mi hai indicato) e
   i formati sono provvisori, in attesa di indicazioni.**
 
+- **`p_tipo` = C** — *CONFERMA PIANO*: **`p_dati`** e **`p_firma`**.
+  `p_dati` è un JSON con **`partite`** e **`scadenze` esattamente come le ha restituite
+  VISUALIZZA**, senza modificare nulla (stesse chiavi — Anno, No, Data_Doc, Scadenza,
+  Prefisso, Cli-For, Saldo, Conto per le partite; Anno, No, Scadenza, Prefisso, Cli-For,
+  Conto, Importo per le scadenze — e stessi valori, spazi in fondo ai testi compresi).
+  `p_firma` è la **firma in PNG codificato in base64**, senza il prefisso `data:` e con
+  sfondo trasparente. **Nel pannello Chiamata la firma è abbreviata** (primi 80
+  caratteri e lunghezza totale, perché è un testo di migliaia di caratteri); la
+  chiamata realmente inviata la contiene tutta.
+
 Risposta alla chiamata **E** — Risposta JSON: se **`okexp` = N** si mostra il contenuto di **`messaggio`**; se
 **`okexp` = Y**, **`dati`** è l'**elenco (JSON) dei record** delle partite aperte, come in
 RISCTABELLE: **non si legge nessun file Excel**. Come in RISCTABELLE valgono i record
@@ -499,13 +522,16 @@ record non la contengono; "Dati ricevuti in un formato non atteso: era attesa un
 di record." se `dati` non è una lista (per esempio un testo).
 
 Risposta alla chiamata **P** (VISUALIZZA): se **`okexp` = N** si mostra **`messaggio`**; se
-**`okexp` = Y** la risposta contiene dei dati da mostrare.
+**`okexp` = Y** la risposta ha **`partite`** (le partite scelte, con `Saldo`) e
+**`scadenze`** (le scadenze calcolate, con `Importo`), e si apre la pagina 4; se non c'è né
+l'uno né l'altro compare "Dati ricevuti in un formato non atteso…".
 
-**Cosa è ancora DA COMPLETARE:** la **visualizzazione dei dati** restituiti da VISUALIZZA
-(indicazioni in arrivo). Per ora, con `okexp` = Y compare "Risposta ricevuta: la
-visualizzazione dei dati non è ancora configurata (vedi Risposta)" e la risposta intera
-si legge nel pannello **Risposta** in fondo alla pagina. Anche la pagina successiva con
-la firma del cliente è da fare.
+Risposta alla chiamata **C** (CONFERMA PIANO): se **`okexp` = N** si mostra **`messaggio`** e
+si resta sulla pagina (il bottone torna attivo, la firma resta); se **`okexp` = Y** compare
+"Piano confermato" e si **torna all'elenco clienti** (cliente deselezionato, Estrai non
+attivo, pronto per un nuovo piano). Errore HTTP o di rete: messaggio e pulsante di nuovo
+attivo. Dopo un esito Y i pannelli Chiamata/Risposta della pagina 4 non sono più
+raggiungibili (si azzerano).
 
 Lato Wigest/Tomcat: pubblicare `bapp_piano_ws`  su ogni
 istanza interessata, con CORS su `/servlet/*`; la query `qapp_risc_ws` è la stessa

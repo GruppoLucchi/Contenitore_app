@@ -2142,6 +2142,98 @@
     border-radius:12px;
     max-height:260px;
   }
+
+  /* Pagina di conferma del piano: partite e scadenze (una riga ciascuna) e firma */
+  body.risctabelle-mode #pianoView .pi-info.pi-info-corta{ padding-bottom:22px; }
+  body.risctabelle-mode #pianoView .pi-elenchi{ padding:16px 20px 0; }
+  body.risctabelle-mode #pianoView .pi-titolo{
+    margin:0 2px 8px;
+    font-size:12.5px;
+    font-weight:600;
+    color:#3c4c5c;
+  }
+  body.risctabelle-mode #pianoView .pi-righe{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    margin-bottom:18px;
+  }
+  body.risctabelle-mode #pianoView .pi-riga{
+    display:flex;
+    align-items:baseline;
+    gap:8px;
+    padding:12px;
+    background:#ffffff;
+    border:1px solid #e1e6ec;
+    border-radius:14px;
+    box-shadow:0 2px 8px rgba(28,43,57,.08);
+    white-space:nowrap;
+  }
+  body.risctabelle-mode #pianoView .pi-riga-id{
+    flex:1;
+    min-width:0;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    font-size:14px;
+    font-weight:600;
+    color:var(--ink);
+  }
+  body.risctabelle-mode #pianoView .pi-riga-imp{
+    flex:none;
+    font-size:14px;
+    font-weight:700;
+    color:var(--ink);
+  }
+  body.risctabelle-mode #pianoView .pi-riga-sc{
+    flex:none;
+    font-size:12.5px;
+    color:#5b6877;
+  }
+  body.risctabelle-mode #pianoView .pi-riga-vuoto{
+    padding:4px 2px;
+    font-size:13px;
+    color:#5b6877;
+  }
+  body.risctabelle-mode #pianoView .pi-firma{
+    margin:0 20px;
+    padding:16px 20px 8px;
+    background:#ffffff;
+    border:1px solid #e1e6ec;
+    border-radius:22px;
+    box-shadow:0 4px 14px rgba(28,43,57,.10);
+  }
+  body.risctabelle-mode #pianoView .pi-firma-label{
+    margin-bottom:8px;
+    font-size:12.5px;
+    font-weight:600;
+    color:#3c4c5c;
+  }
+  body.risctabelle-mode #pianoView #pi-firma-canvas{
+    display:block;
+    width:100%;
+    height:160px;
+    border:1.5px dashed #9bb3c9;
+    border-radius:14px;
+    background:#ffffff;
+    touch-action:none;
+  }
+  body.risctabelle-mode #pianoView .pi-firma .btn-link{
+    min-height:44px;
+    display:inline-flex;
+    align-items:center;
+    color:var(--ink);
+    font-size:13px;
+    font-weight:600;
+    text-decoration:underline;
+    text-underline-offset:3px;
+  }
+  @media (max-width:380px){
+    body.risctabelle-mode #pianoView .pi-elenchi{ padding:16px 16px 0; }
+    body.risctabelle-mode #pianoView .pi-riga-id,
+    body.risctabelle-mode #pianoView .pi-riga-imp{ font-size:12.5px; }
+    body.risctabelle-mode #pianoView .pi-riga-sc{ font-size:11.5px; }
+    body.risctabelle-mode #pianoView .pi-firma{ margin:0 16px; }
+  }
   /* il Menu come pulsante circondato (lo stile G di RISCTABELLE lo copre già); icona nel menu */
   body.menu-mode .app-ico-piani{ background:#b4532a; }
 </style>
@@ -2744,6 +2836,38 @@
         </div>
         <pre class="rt-panel" id="pi3-pan-req"></pre>
         <pre class="rt-panel" id="pi3-pan-resp"></pre>
+      </div>
+    </div>
+
+    <!-- 4) conferma del piano: partite, scadenze calcolate, firma del cliente -->
+    <div id="pi-schermo-conferma" class="hidden">
+      <div class="header pi-header">
+        <button type="button" class="pi-back" id="pi-back-conferma" aria-label="Indietro">&lsaquo;</button>
+        <h1 id="pi-codice-conf"></h1>
+        <button type="button" class="pi-azione" id="pi-conferma" disabled>CONFERMA PIANO</button>
+      </div>
+      <div class="pi-info pi-info-corta">
+        <div class="pi-ragione" id="pi-ragione-conf"></div>
+        <div class="pi-dettagli" id="pi-dettagli-conf"></div>
+      </div>
+      <div class="pi-elenchi">
+        <div class="pi-titolo">Partite</div>
+        <div class="pi-righe" id="pi-righe-partite"></div>
+        <div class="pi-titolo">Scadenze</div>
+        <div class="pi-righe" id="pi-righe-scadenze"></div>
+      </div>
+      <div class="pi-firma">
+        <div class="pi-firma-label">Firma del cliente</div>
+        <canvas id="pi-firma-canvas"></canvas>
+        <button type="button" class="btn-link" id="pi-firma-clear">Cancella firma</button>
+      </div>
+      <div class="pi-dbg">
+        <div class="rt-debug-row">
+          <button type="button" class="rt-dbg" id="pi4-btn-req" aria-expanded="false">Chiamata</button>
+          <button type="button" class="rt-dbg" id="pi4-btn-resp" aria-expanded="false">Risposta</button>
+        </div>
+        <pre class="rt-panel" id="pi4-pan-req"></pre>
+        <pre class="rt-panel" id="pi4-pan-resp"></pre>
       </div>
     </div>
   </div>
@@ -4766,6 +4890,10 @@
   const piBtnReq = document.getElementById("pi-btn-req");
   const piBtnResp = document.getElementById("pi-btn-resp");
 
+  const piPanReq4 = document.getElementById("pi4-pan-req");
+  const piPanResp4 = document.getElementById("pi4-pan-resp");
+  const piBtnReq4 = document.getElementById("pi4-btn-req");
+  const piBtnResp4 = document.getElementById("pi4-btn-resp");
   const piPanReq3 = document.getElementById("pi3-pan-req");
   const piPanResp3 = document.getElementById("pi3-pan-resp");
   const piBtnReq3 = document.getElementById("pi3-btn-req");
@@ -4775,6 +4903,7 @@
   let piSelIndex = -1;   // cliente scelto nell'elenco
   let piCliente = null;  // { codice, ragione, citta, provincia, conto }
   let piRighe = [];      // partite aperte del cliente (righe nel tracciato RiscEXCEL)
+  let piRispP = null;          // risposta di VISUALIZZA (partite e scadenze): alimenta la pagina di conferma
   let piItemEstratto = null;   // voce dell'elenco usata per l'estrazione: dà p_conto e p_cliente anche a VISUALIZZA
   let piSelPartite = new Set();   // indici delle partite spuntate
 
@@ -4823,12 +4952,26 @@
   piBtnReq3.addEventListener("click", () => piDbgToggle(piPanReq3, piBtnReq3));
   piBtnResp3.addEventListener("click", () => piDbgToggle(piPanResp3, piBtnResp3));
 
+  // Idem in fondo alla pagina di conferma: chiamata (C) e risposta
+  function piDbg4Reset(){
+    piPanReq4.textContent = "(nessuna chiamata effettuata)";
+    piPanResp4.textContent = "(nessuna risposta ricevuta)";
+    [[piPanReq4, piBtnReq4], [piPanResp4, piBtnResp4]].forEach(([pan, btn]) => {
+      pan.classList.remove("show");
+      btn.setAttribute("aria-expanded", "false");
+    });
+  }
+  piBtnReq4.addEventListener("click", () => piDbgToggle(piPanReq4, piBtnReq4));
+  piBtnResp4.addEventListener("click", () => piDbgToggle(piPanResp4, piBtnResp4));
+
   // Tre pagine. Il Menu in alto c'è solo sull'elenco clienti (come in RISCTABELLE, dove le
   // schermate successive hanno solo la freccia di ritorno).
   function piMostra(s){
     document.getElementById("pi-schermo-lista").classList.toggle("hidden", s !== "lista");
     document.getElementById("pi-schermo-partite").classList.toggle("hidden", s !== "partite");
     document.getElementById("pi-schermo-piano").classList.toggle("hidden", s !== "piano");
+    document.getElementById("pi-schermo-conferma").classList.toggle("hidden", s !== "conferma");
+    if (s === "conferma") piFirmaDimensiona();   // il canvas va dimensionato a pagina visibile
     pianoBackBtn.classList.toggle("hidden", s !== "lista");
     window.scrollTo(0, 0);
   }
@@ -4870,6 +5013,7 @@
     piMostra("lista");
     piDbgReset();
     piDbg3Reset();
+    piDbg4Reset();
     piItems = [];
     piSelIndex = -1;
     piEstrai.disabled = true;
@@ -4944,8 +5088,10 @@
   // ---- Chiamata a bapp_piano_ws: elenco delle partite aperte del cliente ----
   // Come da specifica: p_conto = G20GEACC e p_cliente = A19CLIEN del cliente scelto dall'utente;
   // dopo di loro p_tipo: E = estrazione delle partite aperte (Estrai partite aperte),
-  // P = piano di rientro (VISUALIZZA), che aggiunge p_dati con il JSON del piano.
-  function buildPianoWsEnvelope(item, tipo, dati){
+  // P = piano di rientro (VISUALIZZA), che aggiunge p_dati con il JSON del piano,
+  // C = conferma del piano (CONFERMA PIANO), che aggiunge p_dati (partite e scadenze ricevute da P)
+  // e p_firma (immagine PNG della firma in base64).
+  function buildPianoWsEnvelope(item, tipo, dati, firma){
     return `<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:bapp="http://bapp_piano_ws.ws.localhost/">
    <soapenv:Header/>
@@ -4970,8 +5116,9 @@
          <bapp:p_UL></bapp:p_UL>
          <bapp:p_conto>${escapeXml(item.G20GEACC)}</bapp:p_conto>
          <bapp:p_cliente>${escapeXml(item.A19CLIEN)}</bapp:p_cliente>
-         <bapp:p_tipo>${escapeXml(tipo)}</bapp:p_tipo>${tipo === "P" ? `
-         <bapp:p_dati>${escapeXml(dati || "")}</bapp:p_dati>` : ""}
+         <bapp:p_tipo>${escapeXml(tipo)}</bapp:p_tipo>${tipo === "P" || tipo === "C" ? `
+         <bapp:p_dati>${escapeXml(dati || "")}</bapp:p_dati>` : ""}${tipo === "C" ? `
+         <bapp:p_firma>${escapeXml(firma || "")}</bapp:p_firma>` : ""}
       </bapp:bapp_piano_ws_Run>
    </soapenv:Body>
 </soapenv:Envelope>`;
@@ -5038,7 +5185,9 @@
     piRighe = righe;
     piItemEstratto = item;
     piSelPartite = new Set();
-    piDbg3Reset();   // chiamata e risposta di VISUALIZZA riguardano il cliente precedente
+    piDbg3Reset();   // chiamata e risposta di VISUALIZZA e di CONFERMA PIANO riguardano il cliente precedente
+    piDbg4Reset();
+    piRispP = null;
     piCliente = {
       conto: item.G20GEACC,
       codice: String(r0["Cli-For"] || item.A19CLIEN || "").trim(),
@@ -5144,8 +5293,7 @@
 
   // VISUALIZZA: chiama bapp_piano_ws con p_tipo = P. p_conto e p_cliente sono quelli del cliente
   // dell'estrazione; p_dati è il JSON qui sopra. okexp N -> si mostra messaggio; okexp Y -> la
-  // risposta contiene i dati da mostrare, ma come non è ancora definito: per ora un messaggio, e la
-  // risposta completa è nel pannello Risposta in fondo alla pagina.
+  // risposta ha "partite" e "scadenze" e si apre la pagina di conferma del piano.
   async function piVisualizza(){
     if (piVisualizzaBtn.disabled || !piItemEstratto) return;
     const testoBtn = piVisualizzaBtn.textContent;
@@ -5168,7 +5316,16 @@
       catch(e){ piToast("Risposta del web service non riconosciuta come JSON"); return; }
       const ok = String(data.okexp == null ? "" : data.okexp).trim().toUpperCase() === "Y";
       if (!ok){ piToast(data.messaggio || "Operazione non riuscita."); return; }
-      piToast("Risposta ricevuta: la visualizzazione dei dati non \u00e8 ancora configurata (vedi Risposta)");
+      // okexp = Y: la risposta ha le partite e le scadenze del piano -> pagina di conferma
+      if (!Array.isArray(data.partite) && !Array.isArray(data.scadenze)){
+        piToast("Dati ricevuti in un formato non atteso: mancano partite e scadenze (vedi Risposta).");
+        return;
+      }
+      piRispP = {
+        partite: Array.isArray(data.partite) ? data.partite : [],
+        scadenze: Array.isArray(data.scadenze) ? data.scadenze : []
+      };
+      piApriConferma();
     } catch(err){
       const msg = err && err.message ? err.message : String(err);
       piPanResp3.textContent = "Chiamata non riuscita.\n\n" + msg;
@@ -5179,6 +5336,172 @@
     }
   }
   piVisualizzaBtn.addEventListener("click", piVisualizza);
+
+  // ---- Pagina 4: conferma del piano ----
+  // Identificativo della partita come nelle altre pagine: anno\prefisso\numero, senza spazi
+  // (con il prefisso vuoto viene anno\\numero).
+  function piIdPartita(r){
+    return [r["Anno"], r["Prefisso"], r["No"]].map((x) => String(x == null ? "" : x).trim()).join("\\");
+  }
+  // Una riga sola: identificativo, importo (a 2 decimali) e data scadenza
+  function piRigaHtml(id, importo, scadenza){
+    return `<div class="pi-riga"><span class="pi-riga-id">${escapeXml(id)}</span>` +
+      `<span class="pi-riga-imp">\u20ac ${formatImporto(parseImporto(importo))}</span>` +
+      `<span class="pi-riga-sc">${escapeXml(formatData(scadenza))}</span></div>`;
+  }
+
+  function piApriConferma(){
+    if (!piRispP) return;
+    piIntestazione("pi-codice-conf", "pi-ragione-conf", "pi-dettagli-conf", piSelPartite.size);
+    const elenco = (arr, vuoto, riga) => arr.length ? arr.map(riga).join("") : `<div class="pi-riga-vuoto">${vuoto}</div>`;
+    document.getElementById("pi-righe-partite").innerHTML =
+      elenco(piRispP.partite, "Nessuna partita.", (r) => piRigaHtml(piIdPartita(r), r["Saldo"], r["Scadenza"]));
+    document.getElementById("pi-righe-scadenze").innerHTML =
+      elenco(piRispP.scadenze, "Nessuna scadenza.", (r) => piRigaHtml(piIdPartita(r), r["Importo"], r["Scadenza"]));
+    piDbg4Reset();
+    piMostra("conferma");
+    piFirmaDimensiona();
+    piFirmaPulisci();
+  }
+  document.getElementById("pi-back-conferma").addEventListener("click", () => piMostra("piano"));
+
+  // Firma del cliente (stesso riquadro di Aggiornamento Clienti)
+  const piFirmaCanvas = document.getElementById("pi-firma-canvas");
+  let piFirmaCtx = piFirmaCanvas.getContext("2d");
+  let piFirmaInchiostro = false;   // true se sul canvas c'è almeno un tratto
+  let piFirmaDisegno = false;      // true mentre il dito/penna è appoggiato
+
+  function piFirmaDimensiona(){
+    const dpr = window.devicePixelRatio || 1;
+    const w = piFirmaCanvas.clientWidth;
+    const h = piFirmaCanvas.clientHeight;
+    if (!w || !h) return;
+    const pw = Math.round(w * dpr), ph = Math.round(h * dpr);
+    if (piFirmaCanvas.width !== pw || piFirmaCanvas.height !== ph){
+      piFirmaCanvas.width = pw;
+      piFirmaCanvas.height = ph;
+      piFirmaCtx = piFirmaCanvas.getContext("2d");
+      piFirmaCtx.scale(dpr, dpr);
+      piFirmaCtx.lineWidth = 2.4;
+      piFirmaCtx.lineCap = "round";
+      piFirmaCtx.lineJoin = "round";
+      piFirmaCtx.strokeStyle = "#111111";
+      piFirmaInchiostro = false;
+    }
+  }
+
+  // CONFERMA PIANO è attivo solo quando la firma è presente
+  function piAggiornaConferma(){
+    document.getElementById("pi-conferma").disabled = !piFirmaInchiostro;
+  }
+
+  function piFirmaPulisci(){
+    piFirmaCtx.save();
+    piFirmaCtx.setTransform(1, 0, 0, 1, 0, 0);
+    piFirmaCtx.clearRect(0, 0, piFirmaCanvas.width, piFirmaCanvas.height);
+    piFirmaCtx.restore();
+    piFirmaInchiostro = false;
+    piAggiornaConferma();
+  }
+
+  function piFirmaPunto(e){
+    const r = piFirmaCanvas.getBoundingClientRect();
+    return { x: e.clientX - r.left, y: e.clientY - r.top };
+  }
+
+  piFirmaCanvas.addEventListener("pointerdown", (e) => {
+    e.preventDefault();
+    piFirmaDimensiona();
+    piFirmaDisegno = true;
+    try { piFirmaCanvas.setPointerCapture(e.pointerId); } catch(_){}
+    const p = piFirmaPunto(e);
+    piFirmaCtx.beginPath();
+    piFirmaCtx.moveTo(p.x, p.y);
+    piFirmaCtx.lineTo(p.x + 0.01, p.y + 0.01);   // anche un tocco singolo lascia un punto
+    piFirmaCtx.stroke();
+    piFirmaCtx.beginPath();
+    piFirmaCtx.moveTo(p.x, p.y);
+    piFirmaInchiostro = true;
+    piAggiornaConferma();
+  });
+  piFirmaCanvas.addEventListener("pointermove", (e) => {
+    if (!piFirmaDisegno) return;
+    e.preventDefault();
+    const p = piFirmaPunto(e);
+    piFirmaCtx.lineTo(p.x, p.y);
+    piFirmaCtx.stroke();
+    piFirmaCtx.beginPath();
+    piFirmaCtx.moveTo(p.x, p.y);
+  });
+  ["pointerup", "pointercancel", "pointerleave"].forEach((ev) =>
+    piFirmaCanvas.addEventListener(ev, () => { piFirmaDisegno = false; })
+  );
+  document.getElementById("pi-firma-clear").addEventListener("click", piFirmaPulisci);
+
+  // PNG della firma in base64 (senza prefisso data:), sfondo trasparente
+  function piFirmaBase64(){
+    return piFirmaCanvas.toDataURL("image/png").replace(/^data:image\/png;base64,/, "");
+  }
+
+  // CONFERMA PIANO: chiama bapp_piano_ws con p_tipo = C. p_conto e p_cliente come nelle altre chiamate;
+  // p_dati = JSON con le partite e le scadenze ESATTAMENTE come ricevute da VISUALIZZA; p_firma = PNG
+  // della firma in base64. okexp N -> si mostra messaggio; okexp Y -> "Piano confermato" e si torna
+  // all'elenco clienti. Nel pannello Chiamata la firma è abbreviata (è un'immagine lunga migliaia di
+  // caratteri): la chiamata realmente inviata la contiene tutta.
+  async function piConfermaPiano(){
+    const btn = document.getElementById("pi-conferma");
+    if (btn.disabled || !piItemEstratto || !piRispP) return;
+    const testoBtn = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = "ATTENDERE\u2026";
+    piPanResp4.textContent = "(in attesa della risposta\u2026)";
+    let fatto = false;
+    try {
+      const firma = piFirmaBase64();
+      const dati = JSON.stringify({ partite: piRispP.partite, scadenze: piRispP.scadenze });
+      const xml = buildPianoWsEnvelope(piItemEstratto, "C", dati, firma);
+      piPanReq4.textContent = xml.replace(firma, firma.slice(0, 80) + "\u2026 [firma PNG: " + firma.length + " caratteri]");
+      const resp = await fetch(WS_PIANO_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/xml; charset=utf-8" },
+        body: xml
+      });
+      const txt = await resp.text();
+      piPanResp4.textContent = deepDecode(txt) || "(risposta vuota)";
+      if (!resp.ok){ piToast("Errore HTTP " + resp.status + " " + resp.statusText); return; }
+      let data;
+      try { data = parseLoginResponse(txt); }
+      catch(e){ piToast("Risposta del web service non riconosciuta come JSON"); return; }
+      const ok = String(data.okexp == null ? "" : data.okexp).trim().toUpperCase() === "Y";
+      if (!ok){ piToast(data.messaggio || "Operazione non riuscita."); return; }
+      fatto = true;
+      piPianoConfermato();
+    } catch(err){
+      const msg = err && err.message ? err.message : String(err);
+      piPanResp4.textContent = "Chiamata non riuscita.\n\n" + msg;
+      piToast("Chiamata non riuscita: " + msg);
+    } finally {
+      btn.textContent = testoBtn;
+      if (!fatto) piAggiornaConferma();
+    }
+  }
+  document.getElementById("pi-conferma").addEventListener("click", piConfermaPiano);
+
+  // Piano confermato: messaggio e ritorno all'elenco clienti, pronto per un nuovo cliente
+  function piPianoConfermato(){
+    piToast("Piano confermato");
+    piRispP = null;
+    piRighe = [];
+    piItemEstratto = null;
+    piSelPartite = new Set();
+    piSelIndex = -1;
+    piEstrai.disabled = true;
+    piFirmaPulisci();
+    piDbg3Reset();
+    piDbg4Reset();
+    piMostra("lista");
+    renderPiano();
+  }
 
   btnPiano.addEventListener("click", () => {
     menuView.classList.add("hidden");
