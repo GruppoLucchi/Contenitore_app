@@ -462,17 +462,21 @@ tre pagine; stile G come RISCTABELLE.
    quando la firma è presente** (si disattiva con "Cancella firma"). Sotto due elenchi,
    **Partite** e **Scadenze**, con **ogni voce su una sola riga**: identificativo
    (`anno\prefisso\numero` senza spazi, con il prefisso vuoto `anno\\numero`),
-   **importo** a due decimali (per le partite il `Saldo`, per le scadenze l'`Importo`,
-   anche se ricevuto con tre decimali: a video `250,62`, al server resta `250.617`) e
-   **data scadenza** `gg/mm/aaaa`. **Dopo l'ultima partita c'è la riga "Totale partite" e
+   **data scadenza** `gg/mm/aaaa` **in grassetto** e, per ultimo, **importo** a due
+   decimali (in questo ordine: identificativo, data, importo; per le partite l'importo è
+   il `Saldo`, per le scadenze l'`Importo`, anche se ricevuto con tre decimali: a video
+   `250,62`, al server resta `250.617`). Gli importi stanno in una colonna di larghezza
+   fissa (6,1 em, cioè fino a 99.999,99), allineati a destra, così **le date risultano
+   incolonnate**. **Dopo l'ultima partita c'è la riga "Totale partite" e
    dopo l'ultima scadenza "Totale scadenze"** (riga azzurra, sempre su una riga, con
-   l'importo allineato a quelli sopra): sono la **somma dei valori esatti**, scritta a 2
+   l'importo allineato a quelli sopra, senza data): sono la **somma dei valori esatti**, scritta a 2
    decimali (con le scadenze d'esempio, 3 × 250,617, il totale è `751,85` anche se le
    tre righe mostrano `250,62`; sommando le righe arrotondate verrebbe 751,86). Le partite
-   sommano il `Saldo`, le scadenze l'`Importo`; senza voci non c'è totale. Fino a 380 px di
-   larghezza il carattere si riduce (12,5 px), sotto i 340 px ancora (12 px) perché la riga
-   resti una; con importi enormi l'identificativo può finire con i puntini ma non va mai
-   a capo. Poi il riquadro
+   sommano il `Saldo`, le scadenze l'`Importo`; senza voci non c'è totale. Fino a 400 px di
+   larghezza (la maggior parte dei telefoni) il carattere delle righe è 12,5 px, sotto i
+   340 px 12 px e senza colonna fissa degli importi (le date non sono più incolonnate),
+   perché la riga resti una; con importi enormi l'identificativo può finire con i
+   puntini ma non va mai a capo. Poi il riquadro
    **Firma del cliente** (stesso di Aggiornamento Clienti: dito o penna, "Cancella
    firma") e in fondo i pulsanti **Chiamata** e **Risposta** per la chiamata C. La
    firma e i pannelli si azzerano a ogni apertura della pagina.

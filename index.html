@@ -2180,15 +2180,19 @@
   }
   body.risctabelle-mode #pianoView .pi-riga-imp{
     flex:none;
+    min-width:6.1em;          /* colonna degli importi di larghezza fissa (fino a 99.999,99): le date restano incolonnate */
+    text-align:right;
     font-size:14px;
     font-weight:700;
     color:var(--ink);
+    font-variant-numeric:tabular-nums;
   }
   body.risctabelle-mode #pianoView .pi-riga-sc{
     flex:none;
-    font-size:12.5px;
-    color:#5b6877;
-    font-variant-numeric:tabular-nums;   /* cifre di larghezza uguale: il totale resta allineato agli importi sopra */
+    font-size:14px;
+    font-weight:600;          /* data in grassetto, come l'identificativo */
+    color:var(--ink);
+    font-variant-numeric:tabular-nums;
   }
   /* riga del totale */
   body.risctabelle-mode #pianoView .pi-riga.pi-riga-tot{
@@ -2236,17 +2240,22 @@
   }
   @media (max-width:380px){
     body.risctabelle-mode #pianoView .pi-elenchi{ padding:16px 16px 0; }
-    body.risctabelle-mode #pianoView .pi-riga-id,
-    body.risctabelle-mode #pianoView .pi-riga-imp{ font-size:12.5px; }
-    body.risctabelle-mode #pianoView .pi-riga-sc{ font-size:11.5px; }
     body.risctabelle-mode #pianoView .pi-firma{ margin:0 16px; }
+  }
+  /* schermi fino a 400 px (la maggior parte dei telefoni): carattere delle righe 12,5 px, perché ogni voce
+     resti su una riga con identificativo, data in grassetto e importo */
+  @media (max-width:400px){
+    body.risctabelle-mode #pianoView .pi-riga-id,
+    body.risctabelle-mode #pianoView .pi-riga-sc,
+    body.risctabelle-mode #pianoView .pi-riga-imp{ font-size:12.5px; }
   }
   /* schermi molto stretti (fino a 340 px): carattere e spazi ancora più piccoli, per tenere ogni voce su una riga */
   @media (max-width:340px){
     body.risctabelle-mode #pianoView .pi-riga{ gap:5px; padding:12px 10px; }
+    body.risctabelle-mode #pianoView .pi-riga-imp{ min-width:0; }   /* qui si rinuncia all'incolonnamento delle date per dare spazio all'identificativo */
     body.risctabelle-mode #pianoView .pi-riga-id,
+    body.risctabelle-mode #pianoView .pi-riga-sc,
     body.risctabelle-mode #pianoView .pi-riga-imp{ font-size:12px; }
-    body.risctabelle-mode #pianoView .pi-riga-sc{ font-size:11px; }
   }
   /* il Menu come pulsante circondato (lo stile G di RISCTABELLE lo copre già); icona nel menu */
   body.menu-mode .app-ico-piani{ background:#b4532a; }
@@ -5357,20 +5366,19 @@
   function piIdPartita(r){
     return [r["Anno"], r["Prefisso"], r["No"]].map((x) => String(x == null ? "" : x).trim()).join("\\");
   }
-  // Una riga sola: identificativo, importo (a 2 decimali) e data scadenza
+  // Una riga sola: identificativo, data scadenza (in grassetto) e importo (a 2 decimali)
   function piRigaHtml(id, importo, scadenza){
     return `<div class="pi-riga"><span class="pi-riga-id">${escapeXml(id)}</span>` +
-      `<span class="pi-riga-imp">\u20ac ${formatImporto(parseImporto(importo))}</span>` +
-      `<span class="pi-riga-sc">${escapeXml(formatData(scadenza))}</span></div>`;
+      `<span class="pi-riga-sc">${escapeXml(formatData(scadenza))}</span>` +
+      `<span class="pi-riga-imp">\u20ac ${formatImporto(parseImporto(importo))}</span></div>`;
   }
 
-  // Riga del totale: stessa struttura delle altre (una riga sola); la data è uno spazio invisibile della
-  // stessa larghezza, così l'importo del totale resta allineato a quelli delle righe sopra.
+  // Riga del totale: etichetta e importo (senza data); l'importo è l'ultimo elemento della riga, quindi
+  // resta allineato a destra con quelli delle righe sopra.
   function piTotaleHtml(etichetta, somma){
     const tot = Math.round(somma * 100) / 100;
     return `<div class="pi-riga pi-riga-tot"><span class="pi-riga-id">${escapeXml(etichetta)}</span>` +
-      `<span class="pi-riga-imp">\u20ac ${formatImporto(tot)}</span>` +
-      `<span class="pi-riga-sc" aria-hidden="true" style="visibility:hidden">00/00/0000</span></div>`;
+      `<span class="pi-riga-imp">\u20ac ${formatImporto(tot)}</span></div>`;
   }
 
   function piApriConferma(){
