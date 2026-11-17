@@ -540,12 +540,29 @@ Risposta alla chiamata **P** (VISUALIZZA): se **`okexp` = N** si mostra **`messa
 **`scadenze`** (le scadenze calcolate, con `Importo`), e si apre la pagina 4; se non c'è né
 l'uno né l'altro compare "Dati ricevuti in un formato non atteso…".
 
-Risposta alla chiamata **C** (CONFERMA PIANO): se **`okexp` = N** si mostra **`messaggio`** e
-si resta sulla pagina (il bottone torna attivo, la firma resta); se **`okexp` = Y** compare
-"Piano confermato" e si **torna all'elenco clienti** (cliente deselezionato, Estrai non
-attivo, pronto per un nuovo piano). Errore HTTP o di rete: messaggio e pulsante di nuovo
-attivo. Dopo un esito Y i pannelli Chiamata/Risposta della pagina 4 non sono più
-raggiungibili (si azzerano).
+Risposta alla chiamata **C** (CONFERMA PIANO): il messaggio è un **banner nella pagina di
+conferma**, **subito sotto l'intestazione** (14 px dalla fascia scura, 16 px sopra
+"Partite"), in qualunque caso; non compare mai sull'elenco clienti. Non si chiude da solo.
+
+- **Rosso** — `okexp` = N (con il `messaggio` del server), errore HTTP, rete assente o
+  risposta non JSON. Si resta sulla pagina (il bottone torna attivo, la firma resta). Si
+  chiude toccando **un punto qualunque dello schermo**, anche un altro bottone (che fa
+  comunque il suo lavoro, per esempio "Cancella firma"), compreso il banner stesso;
+  scorrere la pagina non lo chiude.
+- **Verde** — `okexp` = Y: il `messaggio` del server oppure, se è vuoto, "Piano confermato".
+  **Si resta sulla pagina di conferma** e **si torna all'elenco clienti solo quando
+  l'utente tocca il messaggio stesso**: toccare altrove, scorrere o usare gli altri
+  bottoni (anche **Risposta** per leggere la risposta di conferma) non lo chiude. Finché è
+  lì, **CONFERMA PIANO resta disattivato** (anche rifacendo la firma), così il piano non si
+  può confermare due volte. La freccia ‹ in questo stato va all'elenco clienti, come il
+  tocco sul messaggio (non ai campi del piano). Tornando all'elenco: cliente deselezionato,
+  Estrai non attivo, firma e pannelli azzerati, pronto per un nuovo piano.
+
+Un solo banner per volta; ci si porta in cima alla pagina perché si veda; il contenitore
+vuoto non occupa spazio. Vale **solo per la risposta di CONFERMA PIANO**: gli altri
+messaggi di Piani di rientro (estrazione, VISUALIZZA, ricerca vocale) restano la striscia
+scura temporanea in basso. Codice: `piMessaggio`, `piMessaggiPulisci`,
+`piPianoConfermatoChiudi`, contenitore `#pi-msg-conferma`, flag `piConfermaFatta`.
 
 Lato Wigest/Tomcat: pubblicare `bapp_piano_ws`  su ogni
 istanza interessata, con CORS su `/servlet/*`; la query `qapp_risc_ws` è la stessa
