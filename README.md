@@ -544,25 +544,27 @@ Risposta alla chiamata **C** (CONFERMA PIANO): il messaggio è un **banner nella
 conferma**, **subito sotto l'intestazione** (14 px dalla fascia scura, 16 px sopra
 "Partite"), in qualunque caso; non compare mai sull'elenco clienti. Non si chiude da solo.
 
-- **Rosso** — `okexp` = N (con il `messaggio` del server), errore HTTP, rete assente o
-  risposta non JSON. Si resta sulla pagina (il bottone torna attivo, la firma resta). Si
-  chiude toccando **un punto qualunque dello schermo**, anche un altro bottone (che fa
-  comunque il suo lavoro, per esempio "Cancella firma"), compreso il banner stesso;
-  scorrere la pagina non lo chiude.
 - **Verde** — `okexp` = Y: il `messaggio` del server oppure, se è vuoto, "Piano confermato".
-  **Si resta sulla pagina di conferma** e **si torna all'elenco clienti solo quando
-  l'utente tocca il messaggio stesso**: toccare altrove, scorrere o usare gli altri
-  bottoni (anche **Risposta** per leggere la risposta di conferma) non lo chiude. Finché è
-  lì, **CONFERMA PIANO resta disattivato** (anche rifacendo la firma), così il piano non si
-  può confermare due volte. La freccia ‹ in questo stato va all'elenco clienti, come il
-  tocco sul messaggio (non ai campi del piano). Tornando all'elenco: cliente deselezionato,
-  Estrai non attivo, firma e pannelli azzerati, pronto per un nuovo piano.
+- **Rosso, esito negativo** — `okexp` = N, con il `messaggio` del server.
+
+  Questi due banner **restano finché l'utente NON tocca il banner stesso**; solo allora **si
+  torna all'elenco clienti** (cliente deselezionato, Estrai non attivo, firma e pannelli
+  azzerati, pronto per un nuovo piano). Toccare altrove, scorrere o usare gli altri bottoni
+  (anche **Risposta**, per leggere la risposta di conferma) non li chiude. Dopo il **verde**
+  **CONFERMA PIANO resta disattivato** (anche rifacendo la firma), così il piano non si può
+  confermare due volte, e la freccia ‹ va all'elenco clienti come il tocco sul messaggio.
+  Dopo il **rosso** CONFERMA PIANO resta attivo (si può riprovare dalla stessa pagina).
+- **Rosso, errore tecnico** — errore HTTP, rete assente o risposta non JSON. Non è un esito del
+  servizio: si chiude toccando **un punto qualunque dello schermo**, anche un altro bottone (che
+  fa comunque il suo lavoro), compreso il banner; scorrere non lo chiude. **Si resta sulla pagina**
+  con firma e dati, per ritentare, e il bottone torna attivo.
 
 Un solo banner per volta; ci si porta in cima alla pagina perché si veda; il contenitore
 vuoto non occupa spazio. Vale **solo per la risposta di CONFERMA PIANO**: gli altri
 messaggi di Piani di rientro (estrazione, VISUALIZZA, ricerca vocale) restano la striscia
 scura temporanea in basso. Codice: `piMessaggio`, `piMessaggiPulisci`,
-`piPianoConfermatoChiudi`, contenitore `#pi-msg-conferma`, flag `piConfermaFatta`.
+`piPianoConfermatoChiudi`, contenitore `#pi-msg-conferma`, flag `piConfermaFatta`; tipi di banner:
+`ok` (verde), `no` (rosso, esito N), `err` (rosso, errore tecnico).
 
 Lato Wigest/Tomcat: pubblicare `bapp_piano_ws`  su ogni
 istanza interessata, con CORS su `/servlet/*`; la query `qapp_risc_ws` è la stessa

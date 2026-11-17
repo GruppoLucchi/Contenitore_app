@@ -2278,7 +2278,8 @@
     cursor:pointer;
   }
   body.risctabelle-mode #pianoView .pi-msg-ok{ background:var(--verde); }
-  body.risctabelle-mode #pianoView .pi-msg-err{ background:#B3261E; }
+  body.risctabelle-mode #pianoView .pi-msg-err,
+  body.risctabelle-mode #pianoView .pi-msg-no{ background:#B3261E; }
   body.risctabelle-mode #pianoView .pi-msg-testo{ flex:1; min-width:0; word-break:break-word; }
   body.risctabelle-mode #pianoView .pi-msg-x{ flex:none; font-size:20px; line-height:1; font-weight:400; opacity:.85; }
   /* il Menu come pulsante circondato (lo stile G di RISCTABELLE lo copre già); icona nel menu */
@@ -5015,10 +5016,12 @@
 
   // Messaggio di risposta di CONFERMA PIANO: un banner nella pagina di conferma, subito sotto
   // l'intestazione. Non si chiude da solo.
-  //  - ROSSO (tipo "err": okexp N, errori HTTP o di rete, risposta non JSON): si chiude toccando un punto
-  //    qualunque dello schermo, anche un altro bottone; si resta sulla pagina.
-  //  - VERDE (tipo "ok": okexp Y, piano confermato): resta finché l'utente NON tocca il banner stesso;
-  //    solo allora si torna all'elenco clienti (vedi piPianoConfermatoChiudi). Toccare altrove non lo chiude.
+  //  - VERDE (tipo "ok": okexp Y, piano confermato) e ROSSO (tipo "no": okexp N, esito negativo del web
+  //    service): restano finché l'utente NON tocca il banner stesso; solo allora si torna all'elenco
+  //    clienti (vedi piPianoConfermatoChiudi). Toccare altrove non li chiude.
+  //  - ROSSO (tipo "err": errore HTTP o di rete, risposta non JSON): è un guasto tecnico, non un esito;
+  //    si chiude toccando un punto qualunque dello schermo, anche un altro bottone, e si resta sulla
+  //    pagina (con la firma e i dati) per ritentare.
   function piMessaggiPulisci(){
     document.getElementById("pi-msg-conferma").textContent = "";
   }
@@ -5028,7 +5031,7 @@
     const b = document.createElement("button");
     b.type = "button";
     b.className = "pi-msg pi-msg-" + tipo;
-    b.setAttribute("role", tipo === "err" ? "alert" : "status");
+    b.setAttribute("role", tipo === "ok" ? "status" : "alert");
     const t = document.createElement("span");
     t.className = "pi-msg-testo";
     t.textContent = testo;                 // il testo del web service non è mai interpretato come HTML
@@ -5038,13 +5041,13 @@
     x.textContent = "\u00d7";
     b.appendChild(t);
     b.appendChild(x);
-    if (tipo === "ok") b.addEventListener("click", piPianoConfermatoChiudi);
+    if (tipo === "ok" || tipo === "no") b.addEventListener("click", piPianoConfermatoChiudi);
     cont.appendChild(b);
     window.scrollTo(0, 0);                 // il banner sta in cima alla pagina: ci si porta lì perché si veda
   }
-  // Un tocco qualunque chiude il banner ROSSO (listener in fase di cattura e senza fermare l'evento: il
-  // bottone toccato fa comunque il suo lavoro). Si usa "click": scorrere la pagina non lo chiude.
-  // Il banner VERDE non viene toccato da questo listener.
+  // Un tocco qualunque chiude il banner degli ERRORI TECNICI (tipo "err"; listener in fase di cattura e
+  // senza fermare l'evento: il bottone toccato fa comunque il suo lavoro). Si usa "click": scorrere la
+  // pagina non lo chiude. I banner "ok" e "no" non vengono toccati da questo listener.
   document.addEventListener("click", () => {
     if (pianoView.classList.contains("hidden")) return;
     const err = document.querySelector("#pi-msg-conferma .pi-msg-err");
@@ -5584,7 +5587,7 @@
       try { data = parseLoginResponse(txt); }
       catch(e){ piMessaggio("Risposta del web service non riconosciuta come JSON", "err"); return; }
       const ok = String(data.okexp == null ? "" : data.okexp).trim().toUpperCase() === "Y";
-      if (!ok){ piMessaggio(data.messaggio || "Operazione non riuscita.", "err"); return; }
+      if (!ok){ piMessaggio(data.messaggio || "Operazione non riuscita.", "no"); return; }
       // okexp = Y: piano confermato. Si RESTA sulla pagina di conferma con il messaggio in verde; si
       // tornerà all'elenco clienti solo quando l'utente toccherà il messaggio.
       fatto = true;
@@ -5601,8 +5604,8 @@
   }
   document.getElementById("pi-conferma").addEventListener("click", piConfermaPiano);
 
-  // L'utente ha toccato il messaggio verde (o la freccia) dopo un piano confermato: si torna all'elenco
-  // clienti, pronto per un nuovo cliente.
+  // L'utente ha toccato il messaggio (verde dopo un piano confermato, rosso dopo un esito N) o la freccia
+  // dopo un piano confermato: si torna all'elenco clienti, pronto per un nuovo cliente.
   function piPianoConfermatoChiudi(){
     piMessaggiPulisci();
     piConfermaFatta = false;
