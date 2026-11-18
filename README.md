@@ -458,7 +458,8 @@ tre pagine; stile G come RISCTABELLE.
    spunte delle partite si conservano tornando indietro con ‹.
 4. **Conferma del piano** (`#pi-schermo-conferma`). Si apre con la risposta di
    VISUALIZZA. In alto ‹ (torna ai campi, che restano compilati), codice, ragione
-   sociale, "Città (Prov) · N fatture" e il bottone **CONFERMA PIANO**, **attivo solo
+   sociale, "Città (Prov) · N fatture", **sotto il cliente e prima di "Partite" (nella fascia
+   scura) il Tasso di interesse e il Totale interessi** e il bottone **CONFERMA PIANO**, **attivo solo
    quando la firma è presente** (si disattiva con "Cancella firma"). Sotto due elenchi,
    **Partite** e **Scadenze**, con **ogni voce su una sola riga**: identificativo
    (`anno\prefisso\numero` senza spazi, con il prefisso vuoto `anno\\numero`),
@@ -512,7 +513,9 @@ entrambe le chiamate**: per VISUALIZZA si riusa la voce dell'elenco dell'estrazi
   i formati sono provvisori, in attesa di indicazioni.**
 
 - **`p_tipo` = C** — *CONFERMA PIANO*: **`p_dati`** e **`p_firma`**.
-  `p_dati` è un JSON con **`partite`** e **`scadenze` come le ha restituite
+  `p_dati` è un JSON con **`tasso_interesse`** e **`tot_interessi`** (come li ha restituiti
+  VISUALIZZA PIANO, numeri senza arrotondare; **se mancano nella risposta valgono 0**, e
+  vanno comunque in `p_dati`), poi **`partite`** e **`scadenze` come le ha restituite
   VISUALIZZA**; le partite non sono modificate, le scadenze hanno **in più
   `Nr_Scadenza`**: il **numero progressivo** (1, 2, 3, …, intero) nell'ordine dell'elenco
   ricevuto, messo come primo campo. **A video il numero non si mostra** (per ora).
@@ -536,8 +539,12 @@ record non la contengono; "Dati ricevuti in un formato non atteso: era attesa un
 di record." se `dati` non è una lista (per esempio un testo).
 
 Risposta alla chiamata **P** (VISUALIZZA): se **`okexp` = N** si mostra **`messaggio`**; se
-**`okexp` = Y** la risposta ha **`partite`** (le partite scelte, con `Saldo`) e
-**`scadenze`** (le scadenze calcolate, con `Importo`), e si apre la pagina 4; se non c'è né
+**`okexp` = Y** la risposta ha **`partite`** (le partite scelte, con `Saldo`),
+**`scadenze`** (le scadenze calcolate, con `Importo`), **`tasso_interesse`** (tasso di
+interesse) e **`tot_interessi`** (importo totale degli interessi), e si apre la pagina 4,
+che mostra il tasso (virgola, almeno 2 e fino a 4 decimali: `4,50 %`, `4,125 %`) e il totale
+interessi (2 decimali: `€ 12,34`) **nella fascia scura, sotto il cliente e prima di "Partite"**;
+se uno dei due campi manca (o è vuoto) vale 0 (`0,00 %`, `€ 0,00`); se non c'è né
 l'uno né l'altro compare "Dati ricevuti in un formato non atteso…".
 
 Risposta alla chiamata **C** (CONFERMA PIANO): il messaggio è un **banner nella pagina di

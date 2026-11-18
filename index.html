@@ -2143,6 +2143,24 @@
     max-height:260px;
   }
 
+  /* Tasso di interesse e totale interessi: nella fascia scura, sotto il cliente, prima delle partite */
+  body.risctabelle-mode #pianoView .pi-interessi{
+    display:flex;
+    gap:10px;
+    margin-top:14px;
+    padding-top:12px;
+    border-top:1px solid rgba(255,255,255,.25);
+  }
+  body.risctabelle-mode #pianoView .pi-int-voce{ flex:1; min-width:0; display:flex; flex-direction:column; gap:2px; }
+  body.risctabelle-mode #pianoView .pi-int-lbl{ font-size:11.5px; line-height:1.3; color:#c3cfda; }
+  body.risctabelle-mode #pianoView .pi-int-val{
+    font-size:16px;
+    font-weight:600;
+    line-height:1.3;
+    color:#ffffff;
+    font-variant-numeric:tabular-nums;
+  }
+
   /* Pagina di conferma del piano: partite e scadenze (una riga ciascuna) e firma */
   body.risctabelle-mode #pianoView .pi-info.pi-info-corta{ padding-bottom:22px; }
   body.risctabelle-mode #pianoView .pi-elenchi{ padding:16px 20px 0; }
@@ -2897,6 +2915,16 @@
       <div class="pi-info pi-info-corta">
         <div class="pi-ragione" id="pi-ragione-conf"></div>
         <div class="pi-dettagli" id="pi-dettagli-conf"></div>
+        <div class="pi-interessi">
+          <div class="pi-int-voce">
+            <span class="pi-int-lbl">Tasso di interesse</span>
+            <span class="pi-int-val" id="pi-tasso-conf"></span>
+          </div>
+          <div class="pi-int-voce">
+            <span class="pi-int-lbl">Totale interessi</span>
+            <span class="pi-int-val" id="pi-interessi-conf"></span>
+          </div>
+        </div>
       </div>
       <div class="pi-messaggi" id="pi-msg-conferma" aria-live="polite"></div>
       <div class="pi-elenchi">
@@ -5412,9 +5440,13 @@
         piToast("Dati ricevuti in un formato non atteso: mancano partite e scadenze (vedi Risposta).");
         return;
       }
+      // tasso_interesse e tot_interessi arrivano nella risposta; se mancano valgono 0
+      const o0 = (v) => (v == null || v === "") ? 0 : v;
       piRispP = {
         partite: Array.isArray(data.partite) ? data.partite : [],
-        scadenze: Array.isArray(data.scadenze) ? data.scadenze : []
+        scadenze: Array.isArray(data.scadenze) ? data.scadenze : [],
+        tassoInteresse: o0(data.tasso_interesse),
+        totInteressi: o0(data.tot_interessi)
       };
       piApriConferma();
     } catch(err){
@@ -5449,11 +5481,23 @@
       `<span class="pi-riga-imp">\u20ac ${formatImporto(tot)}</span></div>`;
   }
 
+  // Tasso scritto con la virgola, almeno 2 decimali e fino a 4 (4,50 %  /  4,125 %)
+  function piFormatTasso(v){
+    const n = parseImporto(v);
+    let [intero, dec] = Math.abs(n).toFixed(4).split(".");
+    dec = dec.replace(/0+$/, "");
+    while (dec.length < 2) dec += "0";
+    return (n < 0 ? "-" : "") + intero + "," + dec + " %";
+  }
+
   function piApriConferma(){
     if (!piRispP) return;
     piConfermaFatta = false;
     piMessaggiPulisci();
     piIntestazione("pi-codice-conf", "pi-ragione-conf", "pi-dettagli-conf", piSelPartite.size);
+    // sotto il cliente, prima di "Partite": tasso di interesse e totale degli interessi (0 se non ci sono)
+    document.getElementById("pi-tasso-conf").textContent = piFormatTasso(piRispP.tassoInteresse);
+    document.getElementById("pi-interessi-conf").textContent = "\u20ac " + formatImporto(parseImporto(piRispP.totInteressi));
     // dopo l'ultima voce di ogni elenco, la riga del totale (somma dei valori esatti, scritta a 2 decimali)
     const elenco = (arr, vuoto, riga, campo, etichetta) => arr.length
       ? arr.map(riga).join("") + piTotaleHtml(etichetta, arr.reduce((t, r) => t + parseImporto(r[campo]), 0))
@@ -5552,8 +5596,9 @@
   }
 
   // CONFERMA PIANO: chiama bapp_piano_ws con p_tipo = C. p_conto e p_cliente come nelle altre chiamate;
-  // p_dati = JSON con le partite e le scadenze come ricevute da VISUALIZZA (le scadenze con in più
-  // Nr_Scadenza, il numero progressivo da 1, che a video non si mostra); p_firma = PNG
+  // p_dati = JSON con tasso_interesse e tot_interessi (come ricevuti da VISUALIZZA, 0 se mancano), le
+  // partite e le scadenze come ricevute (le scadenze con in più Nr_Scadenza, il numero progressivo da 1,
+  // che a video non si mostra); p_firma = PNG
   // della firma in base64. okexp N -> si mostra messaggio (banner rosso, si resta qui); okexp Y -> si resta
   // qui con il messaggio del server (o "Piano confermato") in un banner verde; toccandolo si torna
   // all'elenco clienti. Nel pannello Chiamata la firma è abbreviata (è un'immagine lunga migliaia di
@@ -5570,6 +5615,8 @@
       const firma = piFirmaBase64();
       // le scadenze come ricevute, con in più il numero progressivo (1, 2, 3, ...) nell'ordine dell'elenco
       const dati = JSON.stringify({
+        tasso_interesse: piRispP.tassoInteresse,
+        tot_interessi: piRispP.totInteressi,
         partite: piRispP.partite,
         scadenze: piRispP.scadenze.map((s, i) => ({ Nr_Scadenza: i + 1, ...s }))
       });
