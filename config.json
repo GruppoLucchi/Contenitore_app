@@ -1,0 +1,86 @@
+{
+  "profili": [
+    {
+      "id": 1,
+      "nome": "WIGEST Amici di GIGI",
+      "aziende": [
+        {
+          "nome": "WIGEST Amici di GIGI",
+          "url": "https://www.lucchi.com:448/wigest617/servlet/",
+          "istanze": ["SERVLET_WIGEST_AMICIGIGI_1105"]
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "nome": "WIGEST MDB 7 Agosto",
+      "aziende": [
+        {
+          "nome": "WIGEST MDB 7 Agosto",
+          "url": "https://www.lucchi.com:448/wigest617/servlet/",
+          "istanze": ["SERVLET_WIGEST_MDB_07082026"]
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "nome": "ANARB",
+      "aziende": [
+        {
+          "nome": "ANARB",
+          "url": "https://www.lucchi.com:448/wigest617/servlet/",
+          "istanze": ["SERVLET_WIGEST_ANARB_15062026"]
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "nome": "Multicliente",
+      "aziende_ref": [1, 2]
+    },
+    {
+      "id": 5,
+      "nome": "WIGEST Amici di Gigi multi istanza",
+      "aziende": [
+        {
+          "nome": "WIGEST Amici di Gigi multi istanza",
+          "url": "https://www.lucchi.com:448/wigest617/servlet/",
+          "istanze": ["SERVLET_WIGEST_AMICIGIGI_1105", "SERVLET_WIGEST_AMICIGIGI_1009"]
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "nome": "Demo AI",
+      "aziende": [
+        {
+          "nome": "Demo AI",
+          "url": "https://www.lucchi.com:448/wigest617/servlet/",
+          "istanze": ["SERVLET_WIGEST_AI"]
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "nome": "ANAFIBJ PRODUZIONE",
+      "aziende": [
+        {
+          "nome": "ANAFIBJ PRODUZIONE",
+          "url": "https://wigest.anafibj.it/wigest617/servlet/",
+          "istanze": ["WIGEST_ANAFIBJ"]
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "nome": "ANAFIBJ TEST",
+      "aziende": [
+        {
+          "nome": "ANAFIBJ TEST",
+          "url": "https://www.lucchi.com:448/wigest617/servlet/",
+          "istanze": ["SERVLET_WIGEST_ANAFIBJ_09112026"]
+        }
+      ]
+    }
+  ]
+}
